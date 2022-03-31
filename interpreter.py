@@ -1,6 +1,6 @@
 from parser import parse_sequence
 
-class Interpreter:
+ Interpreter:
     """
     Interpreter gets an initialisation sequence, a sequence and an instance.
     The initialisation sequence is parsed and interpreted at the beginnig.
