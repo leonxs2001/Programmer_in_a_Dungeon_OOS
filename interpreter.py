@@ -1,4 +1,4 @@
-4from parser import parse_sequence
+from parser import parse_sequence
 
 class Interpreter:
     """
