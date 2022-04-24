@@ -5,9 +5,9 @@ import fight.interpreter.interpreter as interpreter
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load("fight/image/player.png")
-        self.image = pygame.transform.scale(self.image,(75,75))
-        self.rect = self.image.get_rect()
+        self.image1 = pygame.image.load("fight/image/player.png")
+        self.image1 = pygame.transform.scale(self.image1,(75,75))
+        self.rect = self.image1.get_rect()
         self.rect.topleft = (0,0)
         self.ready = True
         self.destination = self.rect.topleft
@@ -28,7 +28,7 @@ class Player(pygame.sprite.Sprite):
         self.interpreter = interpreter.Interpreter("$y_direction=1 $x_direction=2",code,self)
 
     def draw(self, screen):
-        screen.blit(self.image, self.rect)
+        screen.blit(self.image1, self.rect)
 
     def update(self):
         x_distance = self.destination[0] - self.rect.left
