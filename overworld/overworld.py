@@ -2,7 +2,7 @@ from level import Level
 
 class OverWorld(Level):
     def __init__(self):
-        """Enteties, Assign Variables etc"""
+        """Entities, Assign Variables etc"""
     def update(self):
         """Update everything important"""
         pass
@@ -10,6 +10,6 @@ class OverWorld(Level):
         """Draw everything important on the screen."""
         pass
     def give_event(self,event):
-        """Get the Events and handel them"""
+        """Get the Events and handle them"""
         pass
 
