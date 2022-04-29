@@ -6,6 +6,7 @@ import pygame
 from pygame.locals import *
 from fight.fight import Fight
 from overworld.overworld import OverWorld
+from level import Level 
 
 pygame.init()
 # Display
@@ -20,7 +21,6 @@ overworld = OverWorld()
 # Assign Variables
 keep_going = True
 clock = pygame.time.Clock()
-state = 1
 # Loop
 while keep_going:
     # Time
@@ -33,23 +33,23 @@ while keep_going:
             pygame.quit()
             break
         else:
-            if state == 0:
+            if Level.state == 0:
                 overworld.give_event(event)
                 pass
-            elif state == 1:
+            elif Level.state == 1:
                 fight_scene.give_event(event)  
 
     #update
-    if state == 0:
+    if Level.state == 0:
         overworld.update()
         pass
-    elif state == 1:
+    elif Level.state == 1:
         fight_scene.update()
 
     # Redisplay
-    if state == 0:
+    if Level.state == 0:
         overworld.update()
         pass
-    elif state == 1:
+    elif Level.state == 1:
         fight_scene.draw(screen)
     pygame.display.flip()
