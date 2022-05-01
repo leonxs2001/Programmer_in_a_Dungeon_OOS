@@ -8,8 +8,9 @@ class Bullet(pygame.sprite.Sprite):
         self.image = pygame.Surface(self.size)
         self.rect = self.image.get_rect()
         speed = 15
-
-        direction.scale_to_length(speed)
+        direction = direction.copy()
+        if direction.length != 0:
+            direction.scale_to_length(speed)
         self.movement = direction.copy()
         self.position = position.copy()
 
@@ -17,8 +18,8 @@ class Bullet(pygame.sprite.Sprite):
         movement = self.movement * (33.33 / elapsed_time)
         self.position += movement
 
-        if self.position.x - self.size[0] < 0 or self.position.x + self.size[0] > 1200 or\
-            self.position.y - self.size[1] < 0 or self.position.y + self.size[1] > 675:
+        if self.position.x + self.size[0] < 0 or self.position.x - self.size[0] > 1200 or\
+            self.position.y + self.size[1] < 0 or self.position.y - self.size[1] > 675:
             self.kill()
 
 

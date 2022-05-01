@@ -19,6 +19,7 @@ class Fight(Level):
             
             }  
         }
+        .shootTo(0,0)
         """
         self.player = player.Player("$x=10",playercode)
         self.opponent = opponent.Opponent("$x=-10",playercode)
