@@ -9,20 +9,31 @@ class Fight(Level):
     def __init__(self):
         #Entities
         playercode = """
-        .move($x,0)
-        ?(.onRightBorder()){
-            $x = -10
-        }!{
-            ?(.onLeftBorder()){
-                $x = 10
-            }!{
-            
-            }  
+        
+        ?(.onBorder()){
+            $var = $var * -1
         }
-        .shootTo(0,0)
+        ?(.getLifes() < 50){
+            .move(0,$var)
+        }!{
+            .move($var,0)
+        }
         """
-        self.player = player.Player("$x=10",playercode)
-        self.opponent = opponent.Opponent("$x=-10",playercode)
+        opponentcode = """
+        ?(.getOpLifes() < 70){
+            .move(.getOpMovementX(),.getOpMovementY())
+        }!{
+            ?(.onBorder()){
+                $y = $y * -1
+            }
+            .move(0,$y)
+        }
+        .shootTo(.getOpPos())
+        """
+        self.player = player.Player("$var=-1",playercode)
+        self.opponent = opponent.Opponent("$y=-10",opponentcode)
+        self.player.opponent = self.opponent
+        self.opponent.opponent = self.player
         self.bg = pygame.image.load("fight/image/bg.png")
         self.bg = pygame.transform.scale(self.bg, (1200, 675))
         self.menu = menu.Menu()

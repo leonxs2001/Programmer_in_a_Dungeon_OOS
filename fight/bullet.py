@@ -13,6 +13,7 @@ class Bullet(pygame.sprite.Sprite):
             direction.scale_to_length(speed)
         self.movement = direction.copy()
         self.position = position.copy()
+        self.damage = 10
 
     def update(self, elapsed_time):
         movement = self.movement * (33.33 / elapsed_time)
