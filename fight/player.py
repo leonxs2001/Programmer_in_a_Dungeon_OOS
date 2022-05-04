@@ -62,7 +62,11 @@ class Player(pygame.sprite.Sprite):
             if self.rect.colliderect(bullet.rect):
                 self.life_controller.lifes -= bullet.damage
                 bullet.kill()
-            
+                
+    def process_collision(self, elapsed_time):
+        movement = self.movement * (elapsed_time/33.333)
+        self.position -= movement
+
     def call_method(self, name : str, parameters : tuple):
         if name == "goto":
             if len(parameters) == 2:

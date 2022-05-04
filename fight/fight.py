@@ -48,6 +48,11 @@ class Fight(Level):
         if not self.menu.wait:
             self.player.update(elapsed_time)
             self.opponent.update(elapsed_time)
+            #check collsion between the two players
+            if self.player.rect.colliderect(self.opponent.rect):
+                self.player.process_collision(elapsed_time)
+                self.opponent.process_collision(elapsed_time)
+
         
 
     def give_event(self, event):
