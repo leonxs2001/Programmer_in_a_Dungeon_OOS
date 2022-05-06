@@ -23,7 +23,6 @@ class Player:
 
         self.life_controller = LifeController(100,self.size[1])
         self.interpreter = Interpreter(initial_sequence_string,sequence_string,self)
-        self.bullet_group = pygame.sprite.Group()
 
         if isOpponent:
             self.image = pygame.transform.rotate(self.image, 180)
@@ -35,15 +34,12 @@ class Player:
     opponent = property(fset=setOpponent)
 
     def draw(self, screen : pygame.Surface):
-        self.bullet_group.draw(screen)
         screen.blit(self.image, self.rect)
         self.life_controller.draw(screen, self.position)
 
     def update(self,elapsed_time):
 
         self.interpreter.interpret()#interpret sequence
-        
-        self.bullet_group.update(elapsed_time)
 
         #move towards destination
         if(self.position != self.destination):
@@ -58,10 +54,11 @@ class Player:
         self.rect.topleft = (self.position.x, self.position.y)
 
         #check collision with opponent bullets
-        for bullet in self.opponent_player.bullet_group:
-            if self.rect.colliderect(bullet.rect):
-                self.life_controller.lifes -= bullet.damage
-                bullet.kill()
+        if self.opponent_player.id == "shooting":
+            for bullet in self.opponent_player.bullet_group:
+                if self.rect.colliderect(bullet.rect):
+                    self.life_controller.lifes -= bullet.damage
+                    bullet.kill()
                 
     def process_collision(self, elapsed_time):
         movement = self.movement * (elapsed_time/33.333)

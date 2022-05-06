@@ -5,15 +5,18 @@ class ShootingPlayer(Player):
     def __init__(self,initial_sequence_string : str, sequence_string : str, isOpponent : bool):
         super().__init__(initial_sequence_string, sequence_string, isOpponent)
         self.id = "shooting"
+        self.bullet_group = pygame.sprite.Group()
         self.shoot_delay = 2000 #min delay between the single shoots in ms
         self.elapsed_time = self.shoot_delay + 1
         
     def update(self, elapsed_time):
         if self.elapsed_time <= self.shoot_delay:
             self.elapsed_time += elapsed_time
-
         super().update(elapsed_time)
-
+        self.bullet_group.update(elapsed_time)
+    def draw(self, screen: pygame.Surface):
+        self.bullet_group.draw(screen)
+        return super().draw(screen)
     def call_method(self, name : str, parameters : tuple):
         if name == "shoot":
             if len(parameters) == 0:#shoots in movementdirection
