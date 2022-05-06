@@ -4,6 +4,7 @@ class LifeController:
     def __init__(self,max_lifes, width):
         self.size = (width,width/6)
         self.image = pygame.Surface(self.size)
+        self.image.set_alpha(180)
         self.live_bar_size = (self.size[0]-4, self.size[1]-4)
         self.white_bar = pygame.Surface(self.live_bar_size)
         self.white_bar.fill((255,255,255))

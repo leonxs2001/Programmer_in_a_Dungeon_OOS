@@ -1,8 +1,8 @@
 import pygame
 from pygame.locals import *
-import fight.opponent as opponent
-import fight.player as player
-import fight.menu as menu
+from fight.player.shootingplayer import ShootingPlayer
+from fight.player.touchingplayer import TouchingPlayer
+from fight.menu import Menu
 from level import Level
 
 class Fight(Level):
@@ -18,26 +18,21 @@ class Fight(Level):
         }!{
             .move($var,0)
         }
+        .shoot()
         """
         opponentcode = """
-        ?(.getOpLifes() < 70){
-            .move(.getOpMovementX(),.getOpMovementY())
-        }!{
-            ?(.onBorder()){
-                $y = $y * -1
-            }
-            .move(0,$y)
-        }
-        .shootTo(.getOpPos())
+        .move($y,0)
+        .print(.getOpTimeToNextAttack())
         """
-        self.player = player.Player("$var=-1",playercode)
-        self.opponent = opponent.Opponent("$y=-10",opponentcode)
+        self.player = ShootingPlayer("$var=-1",playercode, False)
+        self.opponent = TouchingPlayer("$y=-10",opponentcode, True)
         self.player.opponent = self.opponent
         self.opponent.opponent = self.player
         self.bg = pygame.image.load("fight/image/bg.png")
         self.bg = pygame.transform.scale(self.bg, (1200, 675))
-        self.menu = menu.Menu()
+        self.menu = Menu()
         self.last_time = pygame.time.get_ticks()
+        
     def update(self):
         #calculate elapsed time
         new_time = pygame.time.get_ticks()
