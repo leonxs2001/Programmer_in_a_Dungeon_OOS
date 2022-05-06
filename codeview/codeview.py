@@ -1,3 +1,4 @@
+from tabnanny import check
 import pygame
 from pygame.locals import *
 from fight.bullet import Bullet
@@ -41,8 +42,15 @@ class CodeView(Level):
             mouse_position = pygame.Vector2(pygame.mouse.get_pos())
             distance = self.last_mouse_position - mouse_position
             self.last_mouse_position = mouse_position
+            is_on_code_block = False
             for code_block in self.code_block_group:
-                code_block.position -= distance
+                if code_block.in_focus:
+                    is_on_code_block = True
+                    code_block.position -= distance
+                    break
+            if not is_on_code_block:
+                for code_block in self.code_block_group:
+                    code_block.position -= distance
         self.code_block_group.update()
     def draw(self, screen):
         screen.fill((255,255,255))

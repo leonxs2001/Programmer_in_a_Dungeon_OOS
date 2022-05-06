@@ -50,11 +50,10 @@ class CodeBlock(pygame.sprite.Sprite):
         pygame.draw.circle(self.image,(0,0,0),(circle_x ,-circle_overlap),circle_radius,width=border_size)
 
     def mouse_button_down(self):
-        mouse_position = pygame.mouse.get_pos()
+        
         #check collision with mouse
-        if self.rect.collidepoint(mouse_position):
+        if self.rect.collidepoint(pygame.mouse.get_pos()):
             self.in_focus = True
-            self.position_in_image = mouse_position - self.position
 
     def mouse_button_up(self):
         self.in_focus = False
