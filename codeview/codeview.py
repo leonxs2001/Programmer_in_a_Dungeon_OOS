@@ -14,9 +14,13 @@ class CodeView(Level):
         self.last_mouse_position = pygame.Vector2(0,0)
         self.is_mouse_button_down = False
         start = CodeBlock((255,130,0))
+        bla = MethodBlock()
+        bla.append(MethodBlock())
         start.position = pygame.Vector2(600,400)
-        start.connect(MethodBlock())
-        start.connect(MethodBlock())
+        start.append(MethodBlock())
+        start.append(MethodBlock())
+        start.append(MethodBlock())
+        start.append(bla)
         self.code_block_list = [start, MethodBlock()]
         
     def give_event(self, event):
@@ -34,10 +38,14 @@ class CodeView(Level):
             self.code_block_list += new_blocks
 
         elif event.type == MOUSEBUTTONUP:
-            for code_block in self.code_block_list:
-                if code_block.in_focus:
-                    
-                    break
+            #check for new connections
+            for code_block1 in self.code_block_list:
+                if code_block1.in_focus:
+                    for code_block2 in self.code_block_list:
+                        if code_block1 != code_block2:
+                            appended_block = code_block1.try_to_connect(code_block2)
+                            if appended_block:
+                                self.code_block_list.remove(appended_block)
             self.is_mouse_button_down = False
             for code_block in self.code_block_list:
                 code_block.mouse_button_up()
@@ -52,7 +60,6 @@ class CodeView(Level):
                 code_block.update_scale_factor(self.scale_factor)
 
     def update(self):
-        
         if self.is_mouse_button_down:
             mouse_position = pygame.Vector2(pygame.mouse.get_pos())
             movement = mouse_position - self.last_mouse_position

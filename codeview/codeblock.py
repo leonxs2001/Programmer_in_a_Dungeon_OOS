@@ -27,12 +27,6 @@ class CodeBlock(pygame.sprite.Sprite):
             self.next_block.update_scale_factor(scalefactor)
             self.adjust_blocks()
 
-
-    def move(self, movement : pygame.Vector2):
-        self.position += movement
-        if self.next_block:
-            self.next_block.move(movement)
-
     def build_image(self, size):
         self.image = pygame.Surface(size)
         self.rect = self.image.get_rect()
@@ -46,6 +40,7 @@ class CodeBlock(pygame.sprite.Sprite):
         #the collision box should only be on the visible part of the surface
         self.rect.size = self.visible_size.copy()
         rect = pygame.Rect((0,0),self.visible_size)
+
         pygame.draw.rect(self.image,self.background_color,rect)
         pygame.draw.rect(self.image,(0,0,0),rect,width=self.border_size)
 
@@ -56,24 +51,50 @@ class CodeBlock(pygame.sprite.Sprite):
         self.circle_x = size.x / 2
         pygame.draw.circle(self.image,self.background_color,(self.circle_x ,self.visible_size.y - self.circle_overlap),self.circle_radius)
         pygame.draw.circle(self.image, (0,0,0), (self.circle_x ,self.visible_size.y - self.circle_overlap) ,self.circle_radius, width=self.border_size)
+
         #rect for covering the circlelines inside the rect
         rect.update((0,0),(self.circle_radius * 2, self.circle_radius+self.circle_overlap))
         rect.centerx = self.circle_x
         rect.bottom = self.visible_size.y - self.border_size
         pygame.draw.rect(self.image, self.background_color, rect)
 
-    def connect(self, code_block):
-        """Connect the given block with self"""
-        if self.next_block: # found the right place to connect
-            self.next_block.connect(code_block)
-        else:
+    def append(self, code_block):
+        """append the given block"""
+        if self.next_block: 
+            self.next_block.append(code_block)
+        else: # found the right place to append
             self.next_block = code_block
-            self.adjust_blocks()
-            
+            self.adjust_blocks() 
+          
+    def get_last_invisible_rect(self):  
+        """returns the invisible rect of the last element(bottom)"""
+        if self.next_block:
+            return self.next_block.get_last_invisible_rect()
+        else:
+            invisible_size = (self.visible_size.x, (self.visible_size.y/0.85)*0.15)
+            invisible_position = self.position + (0,self.visible_size.y)
+            invisible_rect = pygame.rect.Rect(invisible_position, invisible_size)
+            return invisible_rect
+
+    def try_to_connect(self, block):
+        """checks if the two blocks can connect, connect if possible 
+        and return the one that is beneath the other"""
+        own_invisible_rect = self.get_last_invisible_rect()
+        other_invisible_rect = block.get_last_invisible_rect()
+        print(own_invisible_rect.size, self.rect.size,self.size)
+        if own_invisible_rect.colliderect(block.rect):
+            self.append(block)
+            return block
+        elif other_invisible_rect.colliderect(self.rect):
+            block.append(self)
+            return self
+
 
     def adjust_blocks(self):
         """adjust the next block to the right position"""
-        self.next_block.position = self.position + (0,self.visible_size.y - 1)
+        if self.next_block:
+            self.next_block.position = self.position + (0,self.visible_size.y - 1)
+            self.next_block.adjust_blocks()
 
     def mouse_button_up(self):
         self.in_focus = False
@@ -91,6 +112,10 @@ class CodeBlock(pygame.sprite.Sprite):
                 if collider == self.next_block:
                     self.next_block = None
                 return collider
+    def move(self, movement : pygame.Vector2):
+        self.position += movement
+        if self.next_block:
+            self.next_block.move(movement)
 
     def update(self):
         self.rect.topleft = self.position
