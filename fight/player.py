@@ -1,139 +1,134 @@
 import pygame
 from pygame.locals import *
+from fight.bullet import Bullet
 import fight.interpreter.interpreter as interpreter
+import fight.livecontroller as livecontroller
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self,initial_sequence_string : str, sequence_string : str):
         super().__init__()
+
         self.image = pygame.image.load("fight/image/player.png")
-        self.image = pygame.transform.scale(self.image,(75,75))
+        self.size = (70,70)
+        self.image = pygame.transform.scale(self.image,self.size)
         self.rect = self.image.get_rect()
-        self.rect.topleft = (0,0)
-        self.ready = True
-        self.destination = self.rect.topleft
-        self.speed = 20
-        self.case_position = (0,0)
-        self.case_speed = 2 #cases per move
-        self.cases_to_move = (0,0)
-        code = """
-        .move($x_direction,0)
-        ?(.onX(0) | .onX(15)){
-            $x_direction = $x_direction * -1
-            .move(0, $y_direction)
-            ?(.onY(0) | .onY(8)){
-                $y_direction = $y_direction * -1
-            }
-        }
-        """
-        self.interpreter = interpreter.Interpreter("$y_direction=1 $x_direction=2",code,self)
+        self.rect.center = (100, 337)
 
-    def draw(self, screen):
+        self.speed = 5
+        self.shoot_delay = 1000 #min delay between the single shoots in ms
+
+        self.position = pygame.Vector2(self.rect.topleft)
+        self.destination = pygame.Vector2(self.rect.topleft)
+        self.movement = pygame.Vector2((0,0))
+
+        self.live_controller = livecontroller.LiveController(100,self.size[1])
+        self.interpreter = interpreter.Interpreter(initial_sequence_string,sequence_string,self)
+        self.bullet_group = pygame.sprite.Group()
+        self.elapsed_time = 0
+
+    def draw(self, screen : pygame.Surface):
         screen.blit(self.image, self.rect)
+        self.bullet_group.draw(screen)
+        self.live_controller.draw(screen, self.position)
 
-    def update(self):
-        x_distance = self.destination[0] - self.rect.left
-        y_distance = self.destination[1] - self.rect.top
-        if abs(x_distance) < self.speed and x_distance != 0: # near enought
-            self.rect.left = self.destination[0]
-        elif x_distance < 0: # go to the left
-            self.rect.left -= self.speed
-        elif x_distance > 0:
-            self.rect.left += self.speed
-        elif abs(y_distance) < self.speed and y_distance != 0: # near enought
-            self.rect.top = self.destination[1]
-        elif y_distance < 0: # go up
-            self.rect.top -= self.speed
-        elif y_distance > 0:
-            self.rect.top += self.speed
-        else:
-            self.ready = True
+    def update(self,elapsed_time):
+        if self.elapsed_time <= self.shoot_delay:
+            self.elapsed_time += elapsed_time
 
-    def next_step(self):
-        self.ready = False
-        self.interpreter.interpret()
+        self.interpreter.interpret()#interpret sequence
+        self.bullet_group.update(elapsed_time)
+        #move towards destination
+        if(self.position != self.destination):
+            if abs((self.destination - self.position).length()) < self.speed:
+                self.position = self.destination.copy()
+                self.movement = pygame.Vector2(0,0)
+            else:
+                
+                movement = self.movement * (elapsed_time/33.333)
+                self.position += movement
 
-    def goto(self,x_case, y_case):#overwrite every movement
-
-        #can only move in given window(16x9 cases)
-        if x_case < 0:
-            x_case = 0
-        elif x_case > 15:
-            x_case = 15
-        if y_case < 0:
-            y_case = 0
-        elif y_case > 8:
-            y_case = 8
-
-        self.cases_to_move = (x_case - self.case_position[0], y_case - self.case_position[1])
-
-        if self.cases_to_move != (0,0): #set movement for the cases
+        #update center to position
+        self.rect.topleft = (self.position.x, self.position.y)
             
-            #only move case_speed cases per move
-            case_distance = list(self.cases_to_move)
-            while abs(case_distance[0]) + abs(case_distance[1]) > self.case_speed:
-                if abs(case_distance[0]) > abs(case_distance[1]):
-                    if case_distance[0] < 0:
-                        case_distance[0] += 1
-                    else:
-                        case_distance[0] -= 1
-                else:
-                    if case_distance[1] < 0:
-                        case_distance[1] += 1
-                    else:
-                        case_distance[1] -= 1
-
-            self.cases_to_move = (self.cases_to_move[0] - case_distance[0], self.cases_to_move[1] - case_distance[1])#set new cases_to_move
-            x_case = case_distance[0] + self.case_position[0] 
-            y_case = case_distance[1] + self.case_position[1]
-
-            self.case_position = (x_case, y_case)
-            
-            x = x_case * 75
-            y = y_case * 75
-            self.destination = (x, y)
-
-    def move(self,x_case, y_case):
-        self.goto(self.case_position[0] + x_case, self.case_position[1] + y_case)
-            
-    def call_method(self, name, parameters):
+    def call_method(self, name : str, parameters : tuple):
         if name == "goto":
             if len(parameters) == 2:
-                x_c, y_c = parameters
+                x, y = parameters
             else:#if parameter is a tupel
-                x_c, y_c = parameters[0]
-            
-            self.goto(x_c, y_c)
-            
+                x, y = parameters[0]
+            self.goto(x,y)
         elif name == "move":
             if len(parameters) == 2:
-                x_c, y_c = parameters
+                x, y = parameters
             else:#if parameter is a tupel
-                x_c, y_c = parameters[0]
-            self.move(x_c, y_c)
+                x, y = parameters[0]
+            self.goto(self.position.x + x, self.position.y + y)
         elif name == "getX":
-            return self.case_position[0]
+            return self.rect.left
         elif name == "getY":
-            return self.case_position[1]
-        elif name == "destRea":#is destination reached
-            if self.cases_to_move == (0,0):
-                return True
-            else: 
-                return False
+            return self.rect.top
+        elif name == "destinationReached":#is destination reached
+            return self.position == self.destination
         elif name == "onPos":#checks if is on Position
             if len(parameters) == 2:
-                x_c, y_c = parameters
+                x, y = parameters
             else:#if parameter is a tupel
-                x_c, y_c = parameters[0]
-            return (x_c, y_c) == self.case_position
+                x, y = parameters[0]
+            return (x, y) == self.rect.topleft
         elif name == "onX":
-            return parameters[0] == self.case_position[0]
+            return parameters[0] == self.rect.left
         elif name == "onY":
-            return parameters[0] == self.case_position[1]
+            return parameters[0] == self.rect.top
+        elif name == "onBorder":
+            
+            if self.position.x >= 1200 - self.size[0] or self.position.x <= 0 or \
+                 self.position.y >= 675 - self.size[1] or self.position.y <= 0:
+                return True
+            else:
+                return False
+        elif name == "onLeftBorder":
+            return self.position.x <= 0
+        elif name == "onRightBorder":
+            return self.position.x >= 1200 - self.size[0]
+        elif name == "onTopBorder":
+            return self.position.y <= 0
+        elif name == "onBottomBorder":
+            return self.position.y >= 675 - self.size[1]
+        elif name == "getRandom":
+            minimum = parameters[0]
+            maximum = parameters[1]
+
         elif name == "print":
             if len(parameters) > 0:
                 print(parameters)
             else: 
                 print("Test")
+
+    def goto(self,x,y):
+    
+        if x < 0 :
+            x = 0
+        elif x > 1200 - self.size[0]:
+            x = 1200 - self.size[0]
+
+        if y < 0 :
+            y = 0
+        elif y > 675 - self.size[1]:
+            y = 675 - self.size[1]
+
+        
+
+        self.destination.update(x,y)
+        self.movement = self.destination - self.position
+        
+        if self.movement.length() != 0: 
+            self.movement.scale_to_length(self.speed)
+
+    def shoot(self, direction : pygame.Vector2):
+        position_center = self.position + (pygame.Vector2(self.size)/2)
+        self.bullet_group.add(Bullet(position_center ,direction))
+        
+        
 
 
 
