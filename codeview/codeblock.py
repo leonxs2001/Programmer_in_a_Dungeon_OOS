@@ -3,10 +3,12 @@ import pygame
 INVISIBLE_COLOR = (255,0,0)
 class CodeBlock(pygame.sprite.Sprite):
     
+    
     def __init__(self, background_color = (130,130,130)):
         super().__init__()
-        self.background_color = background_color
         self.size = pygame.Vector2(300,80)
+        self.scale_factor = 1
+        self.background_color = background_color
         self.position = pygame.Vector2(10,10)
         self.in_focus = False
         self.position_in_image = pygame.Vector2(0,0)
@@ -14,7 +16,8 @@ class CodeBlock(pygame.sprite.Sprite):
         self.build_image(self.size)
 
     def update_scale_factor(self, scalefactor):
-        last_scale_factor = self.rect.size[0] / self.size.x
+        last_scale_factor = self.scale_factor
+        self.scale_factor = scalefactor
 
         self.build_image(self.size * scalefactor)
 
@@ -34,6 +37,8 @@ class CodeBlock(pygame.sprite.Sprite):
         self.image.set_colorkey(INVISIBLE_COLOR)#set the Color invisble
 
         self.border_size = 2
+        if self.border_size == 0:
+            self.border_size = 1
         #draw the normal rect with border
         self.visible_size = size - pygame.Vector2(0,0.15*size.y)
 
@@ -45,8 +50,8 @@ class CodeBlock(pygame.sprite.Sprite):
         pygame.draw.rect(self.image,(0,0,0),rect,width=self.border_size)
 
         #draw the bottom circle width border
-        factor = size.x/300
-        self.circle_overlap = 10 * factor
+        
+        self.circle_overlap = 10 * self.scale_factor
         self.circle_radius = (size.y - self.visible_size.y) + self.circle_overlap
         self.circle_x = size.x / 2
         pygame.draw.circle(self.image,self.background_color,(self.circle_x ,self.visible_size.y - self.circle_overlap),self.circle_radius)
@@ -81,11 +86,10 @@ class CodeBlock(pygame.sprite.Sprite):
         and return the one that is beneath the other"""
         own_invisible_rect = self.get_last_invisible_rect()
         other_invisible_rect = block.get_last_invisible_rect()
-        print(own_invisible_rect.size, self.rect.size,self.size)
-        if own_invisible_rect.colliderect(block.rect):
+        if block.id != "start" and own_invisible_rect.colliderect(block.rect):
             self.append(block)
             return block
-        elif other_invisible_rect.colliderect(self.rect):
+        elif self.id != "start" and other_invisible_rect.colliderect(self.rect):
             block.append(self)
             return self
 
@@ -93,7 +97,8 @@ class CodeBlock(pygame.sprite.Sprite):
     def adjust_blocks(self):
         """adjust the next block to the right position"""
         if self.next_block:
-            self.next_block.position = self.position + (0,self.visible_size.y - 1)
+            half_size_difference_x = (self.next_block.visible_size.x - self.visible_size.x)/2
+            self.next_block.position = self.position + (-half_size_difference_x,self.visible_size.y - 1)
             self.next_block.adjust_blocks()
 
     def mouse_button_up(self):
