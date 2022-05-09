@@ -8,12 +8,12 @@ from level import Level
 class CodeView(Level):
     def __init__(self):
         super().__init__()
-        self.image = pygame.Surface((20,20))
-        self.image.fill((255,0,0))
-        self.rect = self.image.get_rect()
+
         self.scale_factor = 1
-        self.last_mouse_position = pygame.Vector2(0,0)
+
         self.is_mouse_button_down = False
+        self.last_mouse_position = pygame.Vector2(0,0)
+
         start = StartBlock((255,130,0))
         bla = MethodBlock()
         bla.append(MethodBlock())
@@ -23,64 +23,82 @@ class CodeView(Level):
         start.append(MethodBlock())
         start.append(MethodBlock())
         start.append(bla)
+        #list of (start)blocks.
         self.code_block_list = [start, MethodBlock(parameters=("x","y"))]
         
     def give_event(self, event):
         if event.type == MOUSEBUTTONDOWN:
+            #save, that mousebutton is pressed and the current mouse position
             self.is_mouse_button_down = True
             self.last_mouse_position = pygame.mouse.get_pos()  
-            #check collison with blocks 
+
+            #check mosuecollison with blocks 
             new_blocks = []
             for code_block in self.code_block_list:
+                #get colliding block or a None
                 collider = code_block.get_collider(self.last_mouse_position)
                 if collider:
+                    #add colliding block to blocklist(first save in another list to avoid an endless loop) if its not the focused block
                     if collider != code_block:
                         new_blocks.append(collider)
                     break    
             self.code_block_list += new_blocks
 
         elif event.type == MOUSEBUTTONUP:
-            #check for new connections
+            #check for new possible connections
             for code_block1 in self.code_block_list:
                 if code_block1.in_focus:
                     for code_block2 in self.code_block_list:
                         if code_block1 != code_block2:
+                            #try to connect the focused block with every else
                             appended_block = code_block1.try_to_connect(code_block2)
+                            #remove the blcok from block list if existing
                             if appended_block:
                                 self.code_block_list.remove(appended_block)
+            #reset the information
             self.is_mouse_button_down = False
+            #telle every block, that mouse button 
             for code_block in self.code_block_list:
                 code_block.mouse_button_up()
 
         elif event.type == MOUSEWHEEL:
+            #update scalefactor in borders from 0.4 to 3.5 
             self.scale_factor += event.y/10
             if self.scale_factor < 0.4:
                 self.scale_factor = 0.4
             elif self.scale_factor > 3.5:
                 self.scale_factor = 3.5
+            #give new scalefactor to the blocks
             for code_block in self.code_block_list:
                 code_block.update_scale_factor(self.scale_factor)
 
     def update(self):
+        #proccess the viewmovement if mousebutton is pressed
         if self.is_mouse_button_down:
+            #calculate mousemovement from the last update to now
             mouse_position = pygame.Vector2(pygame.mouse.get_pos())
             movement = mouse_position - self.last_mouse_position
             self.last_mouse_position = mouse_position
+            
+            #move the block in focus or notice, that the mouse is not on a block
             is_on_code_block = False
             for code_block in self.code_block_list:
                 if code_block.in_focus:
                     is_on_code_block = True
                     code_block.move(movement)
                     break
-
+            
+            #move every block if the mouse is not on a block
             if not is_on_code_block:
                 for code_block in self.code_block_list:
                     code_block.move(movement)
 
+        #update every block
         for code_block in self.code_block_list:
             code_block.update()
 
     def draw(self, screen):
+        #draw background
         screen.fill((255,255,255))
         for code_block in self.code_block_list:
             code_block.draw(screen)
