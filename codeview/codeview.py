@@ -53,7 +53,7 @@ class CodeView(Level):
                             #try to connect the focused block with every else
                             appended_block = code_block1.try_to_connect(code_block2)
                             #remove the blcok from block list if existing
-                            if appended_block:
+                            if appended_block and appended_block in self.code_block_list:
                                 self.code_block_list.remove(appended_block)
             #reset the information
             self.is_mouse_button_down = False

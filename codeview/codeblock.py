@@ -9,7 +9,7 @@ class CodeBlock(pygame.sprite.Sprite):
         super().__init__()
         self.background_color = background_color
 
-        self.size = pygame.Vector2(300,80)
+        self.size = self.get_original_size()
         self.scale_factor = 1
         self.position = pygame.Vector2(10,10)
 
@@ -19,6 +19,9 @@ class CodeBlock(pygame.sprite.Sprite):
         self.next_block = None
         #first build of the image with the start size.
         self.build_image(self.size)
+
+    def get_original_size(self):
+        return pygame.Vector2(300,80)
 
     def update_scale_factor(self, scalefactor):
         last_scale_factor = self.scale_factor
@@ -33,12 +36,12 @@ class CodeBlock(pygame.sprite.Sprite):
         distance *= scalefactor
         self.position = center_of_scrollment + distance
 
-        #pass on the new scalefactor to the nex block in the list
+        #pass on the new scalefactor to the next block in the list
         if self.next_block:
             self.next_block.update_scale_factor(scalefactor)
             self.adjust_blocks()
 
-    def build_image(self, size):
+    def build_image(self, size):# rename to build ????????????????????????????????????????????????????
         """creates the self.image Surface for the block"""
 
         self.image = pygame.Surface(size)
@@ -110,12 +113,16 @@ class CodeBlock(pygame.sprite.Sprite):
             block.append(self)
             return self
 
+    def adjust_to_parent(self, parent):
+        """Adjust self to the given parent block"""
+        half_size_difference_x = (self.visible_size.x - parent.visible_size.x)/2
+        self.position = parent.position + (-half_size_difference_x,parent.visible_size.y - 1)
 
     def adjust_blocks(self):
         """Adjust the next block(if existing) to the right position beneath self."""
         if self.next_block:
-            half_size_difference_x = (self.next_block.visible_size.x - self.visible_size.x)/2
-            self.next_block.position = self.position + (-half_size_difference_x,self.visible_size.y - 1)
+            #tell the next block to adjust to self
+            self.next_block.adjust_to_parent(self)
             self.next_block.adjust_blocks()
 
     def mouse_button_up(self):
