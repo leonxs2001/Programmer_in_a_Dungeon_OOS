@@ -19,8 +19,8 @@ class Bullet(pygame.sprite.Sprite):
         movement = self.movement * (33.33 / elapsed_time)
         self.position += movement
 
-        if self.position.x + self.size[0] < 0 or self.position.x - self.size[0] > 1200 or\
-            self.position.y + self.size[1] < 0 or self.position.y - self.size[1] > 675:
+        if self.position.x + self.size[0] < 0 or self.position.x - self.size[0] > 1280 or\
+            self.position.y + self.size[1] < 0 or self.position.y - self.size[1] > 720:
             self.kill()
 
 

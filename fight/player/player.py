@@ -13,7 +13,7 @@ class Player:
         self.size = (70,70)
         self.image = pygame.transform.scale(self.image,self.size)
         self.rect = self.image.get_rect()
-        self.rect.center = (100, 337)
+        self.rect.center = (100, 360)
 
         self.speed = 5
 
@@ -26,7 +26,7 @@ class Player:
 
         if isOpponent:
             self.image = pygame.transform.rotate(self.image, 180)
-            self.rect.center = (1100, 337)
+            self.rect.center = (1180, 360)
             self.position = pygame.Vector2(self.rect.topleft)
     
     def setOpponent(self,opponent):
@@ -38,7 +38,6 @@ class Player:
         self.life_controller.draw(screen, self.position)
 
     def update(self,elapsed_time):
-
         self.interpreter.interpret()#interpret sequence
 
         #move towards destination
@@ -144,19 +143,19 @@ class Player:
         elif name == "onY":
             return parameters[0] == self.rect.top
         elif name == "onBorder":
-            if self.position.x >= 1200 - self.size[0] or self.position.x <= 0 or \
-                 self.position.y >= 675 - self.size[1] or self.position.y <= 0:
+            if self.position.x >= 1280 - self.size[0] or self.position.x <= 0 or \
+                 self.position.y >= 720 - self.size[1] or self.position.y <= 0:
                 return True
             else:  
                 return False
         elif name == "onLeftBorder":
             return self.position.x <= 0
         elif name == "onRightBorder":
-            return self.position.x >= 1200 - self.size[0]
+            return self.position.x >= 1280 - self.size[0]
         elif name == "onTopBorder":
             return self.position.y <= 0
         elif name == "onBottomBorder":
-            return self.position.y >= 675 - self.size[1]
+            return self.position.y >= 720 - self.size[1]
         elif name == "print":
             if len(parameters) > 0:
                 print(parameters)
@@ -164,16 +163,6 @@ class Player:
                 print("Test")
 
     def goto(self,x,y):
-    
-        if x < 0 :
-            x = 0
-        elif x > 1200 - self.size[0]:
-            x = 1200 - self.size[0]
-
-        if y < 0 :
-            y = 0
-        elif y > 675 - self.size[1]:
-            y = 675 - self.size[1]    
 
         self.destination.update(x,y)
         self.movement = self.destination - self.position
@@ -185,6 +174,17 @@ class Player:
                 self.destination = self.position + self.movement
             else:
                 self.movement.scale_to_length(self.speed)
+
+            if self.destination.x < 0 :
+                self.destination.x = 0
+            elif self.destination.x > 1280 - self.size[0]:
+                self.destination.x = 1280 - self.size[0]
+
+            if self.destination.y < 0 :
+                self.destination.y = 0
+            elif self.destination.y > 720 - self.size[1]:
+                self.destination.y = 720 - self.size[1]    
+        print(self.destination)
         
         
 

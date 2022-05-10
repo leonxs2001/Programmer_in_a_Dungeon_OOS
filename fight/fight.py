@@ -22,14 +22,13 @@ class Fight(Level):
         """
         opponentcode = """
         .move($y,0)
-        .print(.getOpTimeToNextAttack())
         """
         self.player = ShootingPlayer("$var=-1",playercode, False)
-        self.opponent = TouchingPlayer("$y=-10",opponentcode, True)
+        self.opponent = TouchingPlayer("$y=10",opponentcode, True)
         self.player.opponent = self.opponent
         self.opponent.opponent = self.player
         self.bg = pygame.image.load("fight/image/bg.png")
-        self.bg = pygame.transform.scale(self.bg, (1200, 675))
+        self.bg = pygame.transform.scale(self.bg, (1280, 720))
         self.menu = Menu()
         self.last_time = pygame.time.get_ticks()
         
