@@ -10,7 +10,7 @@ from overworld.overworld import OverWorld
 from level import Level 
 pygame.init()
 # Display
-size = (1200, 675)
+size = (1280, 720)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Labi")
 
