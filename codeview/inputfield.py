@@ -2,7 +2,7 @@ import pygame
 
 class InputField:
     def __init__(self, left_center):
-        self.size = pygame.Vector2(70,25)
+        self.size = pygame.Vector2(70,30)
         self.build(self.size)
         self.left_center = left_center
         self.scale_factor = 1

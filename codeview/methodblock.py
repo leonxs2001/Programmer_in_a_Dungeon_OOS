@@ -55,7 +55,7 @@ class MethodBlock(CodeBlock):
 
                 next_start_x += parameter_graphical_length
     def adjust_to_parent(self, parent):
-        #track the current position adjust to parent and give the movement to the Inputfields
+        #track the current position adjust to parent and give the movement to the inputfields
         position = self.position
         super().adjust_to_parent(parent)
         movement = self.position - position
