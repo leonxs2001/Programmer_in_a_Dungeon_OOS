@@ -3,20 +3,25 @@ from codeview.inputfield import InputField
 from codeview.codeblock import *
 class MethodBlock(CodeBlock):
     id = "method"
-    def __init__(self, name="print", parameters = ()):
+    def __init__(self, name="print", representation = "print", parameters = ()):
         self.name = name
+        self.representation = representation
         self.parameters = parameters
         self.input_fields = []
         super().__init__()
 
     def get_original_size(self):
         size = super().get_original_size()
+
+        #calculate new size with the number of parameters
         size += ((size.x * len(self.parameters)) / 2, 0)
         return size
 
-    def build_image(self, size):
-        super().build_image(size)
+    def build_image(self):
+        super().build_image()
 
+        size = self.get_original_size() * self.scale_factor
+        
         #add/draw the top circle with border(makes this block connectable on both sides)
         pygame.draw.circle(self.image, INVISIBLE_COLOR, (self.circle_x ,-self.circle_overlap), self.circle_radius)
         pygame.draw.circle(self.image, (0,0,0), (self.circle_x ,-self.circle_overlap), self.circle_radius, width = 2)

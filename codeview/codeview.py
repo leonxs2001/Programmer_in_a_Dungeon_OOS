@@ -1,6 +1,7 @@
 from tabnanny import check
 import pygame
 from pygame.locals import *
+from codeview.valueblock import ValueBlock
 from codeview.codeblock import CodeBlock
 from codeview.startblock import StartBlock
 from codeview.methodblock import MethodBlock
@@ -23,8 +24,12 @@ class CodeView(Level):
         start.append(MethodBlock())
         start.append(MethodBlock())
         start.append(bla)
+
+        vb = ValueBlock(parameters=("A1",), name="A")
+        vb.append(ValueBlock(parameters=("B1",), name="B"))
         #list of (start)blocks.
-        self.code_block_list = [start, MethodBlock(parameters=("x","y"))]
+        #, MethodBlock(parameters=("x","y"))
+        self.code_block_list = [start, MethodBlock(parameters=("x","y")), vb]
         
     def give_event(self, event):
         if event.type == MOUSEBUTTONDOWN:
@@ -48,13 +53,15 @@ class CodeView(Level):
             #check for new possible connections
             for code_block1 in self.code_block_list:
                 if code_block1.in_focus:
-                    for code_block2 in self.code_block_list:
-                        if code_block1 != code_block2:
-                            #try to connect the focused block with every else
-                            appended_block = code_block1.try_to_connect(code_block2)
-                            #remove the blcok from block list if existing
-                            if appended_block and appended_block in self.code_block_list:
-                                self.code_block_list.remove(appended_block)
+                    if isinstance(code_block1, CodeBlock):
+                        for code_block2 in self.code_block_list:
+                            if code_block1 != code_block2:
+                                if isinstance(code_block2, CodeBlock):
+                                    #try to connect the focused block with every else
+                                    appended_block = code_block1.try_to_connect(code_block2)
+                                    #remove the blcok from block list if existing
+                                    if appended_block and appended_block in self.code_block_list:
+                                        self.code_block_list.remove(appended_block)
             #reset the information
             self.is_mouse_button_down = False
             #telle every block, that mouse button 

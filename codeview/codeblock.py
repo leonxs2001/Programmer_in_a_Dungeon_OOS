@@ -1,49 +1,29 @@
-from pydoc import visiblename
 import pygame
+from codeview.block import Block
 #set constant for the inivisible color(done bycolorkey later)
 INVISIBLE_COLOR = (255,1,1)
 
-class CodeBlock(pygame.sprite.Sprite):
+class CodeBlock(Block):
     id = "classic"
     def __init__(self, background_color = (130,130,130)):
-        super().__init__()
-        self.background_color = background_color
-
-        self.size = self.get_original_size()
-        self.scale_factor = 1
-        self.position = pygame.Vector2(10,10)
-
-        self.in_focus = False
-
+        super().__init__(background_color)
         #the nex block in the list(under self)
         self.next_block = None
-        #first build of the image with the start size.
-        self.build_image(self.size)
 
     def get_original_size(self):
         return pygame.Vector2(300,80)
 
     def update_scale_factor(self, scalefactor):
-        last_scale_factor = self.scale_factor
-        self.scale_factor = scalefactor
-
-        #rebuild the image with the new scalefactor and size
-        self.build_image(self.size * scalefactor)
-
-        #get the current mouseposition for moving the images in the right way(center of movemet is the mouseposition).
-        center_of_scrollment = pygame.mouse.get_pos()
-        distance = (self.position - center_of_scrollment) / last_scale_factor
-        distance *= scalefactor
-        self.position = center_of_scrollment + distance
+        super().update_scale_factor(scalefactor)
 
         #pass on the new scalefactor to the next block in the list
         if self.next_block:
             self.next_block.update_scale_factor(scalefactor)
             self.adjust_blocks()
 
-    def build_image(self, size):# rename to build ????????????????????????????????????????????????????
+    def build_image(self):
         """creates the self.image Surface for the block"""
-
+        size = self.get_original_size() * self.scale_factor
         self.image = pygame.Surface(size)
         self.rect = self.image.get_rect()
 
@@ -78,7 +58,7 @@ class CodeBlock(pygame.sprite.Sprite):
         pygame.draw.rect(self.image, self.background_color, rect)
 
     def append(self, code_block):
-        """Append the given block"""
+        """Append the given codeblock"""
         if self.next_block: #if this block already has one next_block pass it on to it
             self.next_block.append(code_block)
         else: # found the right place to append
@@ -126,13 +106,12 @@ class CodeBlock(pygame.sprite.Sprite):
             self.next_block.adjust_blocks()
 
     def mouse_button_up(self):
-        #reset the focus
-        self.in_focus = False
+        super().mouse_button_up()
         if self.next_block :#if this block has one next_block pass it on to it
             self.next_block.mouse_button_up()
 
     def get_collider(self, mouse_position : pygame.Vector2):
-        """check own and child block collision with given (mouse-)position"""
+        """Check own and child block collision with given (mouse-)position"""
         if self.rect.collidepoint(mouse_position):
             self.in_focus = True
             return self
@@ -145,16 +124,16 @@ class CodeBlock(pygame.sprite.Sprite):
                 return collider
 
     def move(self, movement : pygame.Vector2):
-        self.position += movement
+        super().move(movement)
         if self.next_block:#if this block has one next_block pass it on to it
             self.next_block.move(movement)
 
     def update(self):
-        self.rect.topleft = self.position
+        super().update()
         if self.next_block:#if this block has one next_block pass it on to it
             self.next_block.update()
 
-    def draw(self, screen):
-        screen.blit(self.image, self.rect)
+    def draw(self, screen : pygame.Surface):
+        super().draw(screen)
         if self.next_block:#if this block has one next_block pass it on to it
             self.next_block.draw(screen)
