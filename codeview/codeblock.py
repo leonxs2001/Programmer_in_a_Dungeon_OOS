@@ -80,18 +80,20 @@ class CodeBlock(Block):
     def try_to_connect(self, block):
         """Checks if the two blocks can connect. Connect them if possible 
         and return the one that is beneath the other."""
-        #get the last invisible rects from self and the given block
-        own_invisible_rect = self.get_last_invisible_rect()
-        other_invisible_rect = block.get_last_invisible_rect()
+        #only try to connect if the given block is a codeblock too
+        if isinstance(block, CodeBlock):
+            #get the last invisible rects from self and the given block
+            own_invisible_rect = self.get_last_invisible_rect()
+            other_invisible_rect = block.get_last_invisible_rect()
 
-        #if the blocks(and its appendix) collide with visible part on invisble part connect them,
-        #the start block should not be appended on another block(is everytime the start)
-        if block.id != "start" and own_invisible_rect.colliderect(block.rect):
-            self.append(block)
-            return block
-        elif self.id != "start" and other_invisible_rect.colliderect(self.rect):
-            block.append(self)
-            return self
+            #if the blocks(and its appendix) collide with visible part on invisble part connect them,
+            #the start block should not be appended on another block(is everytime the start)
+            if block.id != "start" and own_invisible_rect.colliderect(block.rect):
+                self.append(block)
+                return block
+            elif self.id != "start" and other_invisible_rect.colliderect(self.rect):
+                block.append(self)
+                return self
 
     def adjust_to_parent(self, parent):
         """Adjust self to the given parent block"""

@@ -24,12 +24,10 @@ class CodeView(Level):
         start.append(MethodBlock())
         start.append(MethodBlock())
         start.append(bla)
-
-        vb = ValueBlock(parameters=("A1",), name="A")
-        vb.append(ValueBlock(parameters=("B1",), name="B"))
+        
         #list of (start)blocks.
         #, MethodBlock(parameters=("x","y"))
-        self.code_block_list = [start, MethodBlock(parameters=("x","y")), vb]
+        self.code_block_list = [start, ValueBlock(parameters=("A1", "A2","A3"), name="A"), ValueBlock(parameters=("B1","B2"), name="B"),ValueBlock(parameters=("C1","C2"), name="C"),ValueBlock(parameters=("D1","D2"), name="D")]
         
     def give_event(self, event):
         if event.type == MOUSEBUTTONDOWN:
@@ -37,7 +35,7 @@ class CodeView(Level):
             self.is_mouse_button_down = True
             self.last_mouse_position = pygame.mouse.get_pos()  
 
-            #check mosuecollison with blocks 
+            #check mousecollison with blocks 
             new_blocks = []
             for code_block in self.code_block_list:
                 #get colliding block or a None
@@ -53,18 +51,17 @@ class CodeView(Level):
             #check for new possible connections
             for code_block1 in self.code_block_list:
                 if code_block1.in_focus:
-                    if isinstance(code_block1, CodeBlock):
-                        for code_block2 in self.code_block_list:
-                            if code_block1 != code_block2:
-                                if isinstance(code_block2, CodeBlock):
-                                    #try to connect the focused block with every else
-                                    appended_block = code_block1.try_to_connect(code_block2)
-                                    #remove the blcok from block list if existing
-                                    if appended_block and appended_block in self.code_block_list:
-                                        self.code_block_list.remove(appended_block)
+                    for code_block2 in self.code_block_list:
+                        if code_block1 != code_block2:
+                            #try to connect the focused block with every else
+                            appended_block = code_block2.try_to_connect(code_block1)
+                            #remove the block from block list if existing
+                            if appended_block and appended_block in self.code_block_list:
+                                self.code_block_list.remove(appended_block)
+                                break#only connect two blocks with each other
             #reset the information
             self.is_mouse_button_down = False
-            #telle every block, that mouse button 
+            #tell every block, that mouse button 
             for code_block in self.code_block_list:
                 code_block.mouse_button_up()
 
@@ -80,6 +77,7 @@ class CodeView(Level):
                 code_block.update_scale_factor(self.scale_factor)
 
     def update(self):
+        #print("New Line -------------------------------")
         #proccess the viewmovement if mousebutton is pressed
         if self.is_mouse_button_down:
             #calculate mousemovement from the last update to now

@@ -72,6 +72,9 @@ class MethodBlock(CodeBlock):
         for input_field in self.input_fields:
             input_field.update_scale_factor(scalefactor)
 
+    def try_to_connect(self, block):
+        #todo --> connect also with ValueBlocks !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        return super().try_to_connect(block)
     def move(self, movement: pygame.Vector2):
         super().move(movement)
         for input_field in self.input_fields:

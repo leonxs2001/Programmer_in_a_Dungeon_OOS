@@ -1,3 +1,4 @@
+from turtle import update
 import pygame
 
 class InputField:
@@ -8,7 +9,6 @@ class InputField:
         self.build()
         self.left_center = left_center
         
-
     def build(self):
         if not self.value:
             size = InputField.empty_size * self.scale_factor
@@ -16,6 +16,12 @@ class InputField:
             self.image.fill((255,255,255))
             self.rect = self.image.get_rect()
             pygame.draw.rect(self.image, (0,0,0), pygame.rect.Rect((0,0), size), width=2)
+    
+    def rebuild(self):
+        if self.value:
+            self.value.rebuild()
+        else:
+            self.build()
 
     def get_size(self):
         """Return size with scalefactor"""
@@ -24,24 +30,41 @@ class InputField:
         else:
             return InputField.empty_size * self.scale_factor
 
+    def get_collider(self, mouseposition: pygame.Vector2):
+        """Returns the colliding part in the inputfield"""
+        if self.value:
+            return self.value.get_collider(mouseposition)
+
+    def try_to_connect(self, block):
+        if self.value:
+            return self.value.try_to_connect(block)
+        else:
+            if self.rect.colliderect(block.rect):
+                self.append(block)
+                return block
+
     def update_scale_factor(self, scalefactor): 
         last_scale_factor = self.scale_factor
         self.scale_factor = scalefactor
 
-        if self.value:
-            self.value.update_scale_factor(scalefactor)
-
-        if not self.value: #only build if is empty
-            self.build()
-
+        #get the current mouseposition for moving the images in the right way(center of movemet is the mouseposition).
         center_of_scrollment = pygame.mouse.get_pos()
         distance = (self.left_center - center_of_scrollment) / last_scale_factor
         distance *= scalefactor
         self.left_center = center_of_scrollment + distance
 
+        if self.value:
+            self.value.update_scale_factor(scalefactor)
+
+        #build self
+        self.build()
+
     def adjust_block_to_input_field(self):
         if self.value:
             self.value.adjust_to_input_field(self)
+
+    def __str__(self):
+        return f"{self.value}"
 
     def append(self, value_block):
         self.value = value_block
