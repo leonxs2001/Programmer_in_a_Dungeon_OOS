@@ -30,11 +30,13 @@ class ValueBlock(Block):
         name_text_rect = name_text.get_rect()
         name_text_rect.centery = self.size.y / 2
         name_text_rect.left = ValueBlock.distance_x * self.scale_factor
+
+        #calculate the start for the parameter(length of the name text + the space bewteen)
+        next_start_x = ValueBlock.distance_x * self.scale_factor * 2
+        next_start_x += name_text.get_size()[0]
+        
         #create parameter visualisation
         if len(self.parameters) > 0:
-            #calculate the start for the parameter(length of the name text + the space bewteen)
-            next_start_x = ValueBlock.distance_x * self.scale_factor * 2
-            next_start_x += name_text.get_size()[0]
 
             i = 0
             for parameter in self.parameters :
@@ -95,7 +97,6 @@ class ValueBlock(Block):
                 collider = input_field.get_collider(mouse_position)
                 if collider == input_field.value:
                     input_field.value = None
-                    input_field.rebuild()
                 if collider:
                     self.rebuild()
                     collider.rebuild()

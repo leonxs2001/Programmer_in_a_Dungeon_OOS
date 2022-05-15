@@ -92,12 +92,12 @@ class MethodBlock(CodeBlock):
         for input_field in self.input_fields:
             input_field.rebuild()
         self.build()
-        #self.adjust_to_parent()
+        self.adjust_to_parent()
 
-    def adjust_to_parent(self, parent):
+    def adjust_to_parent(self):
         #track the current position adjust to parent and give the movement to the inputfields
         position = self.position
-        super().adjust_to_parent(parent)
+        super().adjust_to_parent()
         movement = self.position - position
         for input_field in self.input_fields:
             input_field.move(movement)
@@ -127,8 +127,8 @@ class MethodBlock(CodeBlock):
                 if collider == input_field.value:
                     input_field.value = None
                     input_field.rebuild()
-                    self.rebuild()
                 collider.rebuild()
+                self.rebuild()
                 return collider
 
         return super().get_collider(mouse_position)
