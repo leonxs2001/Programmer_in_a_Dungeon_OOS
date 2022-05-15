@@ -20,12 +20,12 @@ class CodeBlock(Block):
             self.next_block.update_scale_factor(scalefactor)
             self.adjust_blocks()
 
-    def get_original_size(self):
-        return CodeBlock.size.copy()
+    def get_size(self):
+        return CodeBlock.size.copy() * self.scale_factor
 
     def build(self):
         """creates the self.image Surface for the block"""
-        size = self.get_original_size() * self.scale_factor
+        size = self.get_size()
         self.image = pygame.Surface(size)
         self.rect = self.image.get_rect()
 

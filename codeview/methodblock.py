@@ -12,8 +12,8 @@ class MethodBlock(CodeBlock):
         self.input_fields = []
         super().__init__()
 
-    def get_original_size(self):
-        return self.size
+    def get_size(self):
+        return self.size 
 
     def build(self):
 
