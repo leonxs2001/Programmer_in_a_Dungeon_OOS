@@ -1,6 +1,3 @@
-#!/usr/bin/python
-# -*- encoding utf-8 -*-
-
 #Import and Initialize
 import pygame
 from pygame.locals import *
@@ -10,7 +7,7 @@ from level import Level
 
 pygame.init()
 # Display
-size = (1200, 675)
+size = (1280,720)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Labi")
 
@@ -35,21 +32,20 @@ while keep_going:
         else:
             if Level.state == 0:
                 overworld.give_event(event)
-                pass
+                
             elif Level.state == 1:
                 fight_scene.give_event(event)  
 
     #update
     if Level.state == 0:
         overworld.update()
-        pass
+        
     elif Level.state == 1:
         fight_scene.update()
 
     # Redisplay
     if Level.state == 0:
-        overworld.update()
-        pass
+        overworld.draw(screen)
     elif Level.state == 1:
         fight_scene.draw(screen)
     pygame.display.flip()
