@@ -5,13 +5,11 @@ INVISIBLE_COLOR = (255,1,1)
 
 class CodeBlock(Block):
     id = "classic"
+    size = pygame.Vector2(300,80)
     def __init__(self, background_color = (130,130,130)):
         super().__init__(background_color)
         #the nex block in the list(under self)
         self.next_block = None
-
-    def get_original_size(self):
-        return pygame.Vector2(300,80)
 
     def update_scale_factor(self, scalefactor):
         super().update_scale_factor(scalefactor)
@@ -23,7 +21,7 @@ class CodeBlock(Block):
 
     def build_image(self):
         """creates the self.image Surface for the block"""
-        size = self.get_original_size() * self.scale_factor
+        size = CodeBlock.size * self.scale_factor
         self.image = pygame.Surface(size)
         self.rect = self.image.get_rect()
 
@@ -94,6 +92,8 @@ class CodeBlock(Block):
             elif self.id != "start" and other_invisible_rect.colliderect(self.rect):
                 block.append(self)
                 return self
+        elif self.next_block:
+            return self.next_block.try_to_connect(block)
 
     def adjust_to_parent(self, parent):
         """Adjust self to the given parent block"""
@@ -123,7 +123,8 @@ class CodeBlock(Block):
                 collider = self.next_block.get_collider(mouse_position)
                 if collider == self.next_block:
                     self.next_block = None
-                return collider
+                if collider:
+                    return collider
 
     def move(self, movement : pygame.Vector2):
         super().move(movement)

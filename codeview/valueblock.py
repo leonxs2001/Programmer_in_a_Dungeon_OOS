@@ -106,9 +106,9 @@ class ValueBlock(Block):
             return self
 
     def try_to_connect(self, block):
-        
+
         #only connect if the given block is a value block
-        if isinstance(block, ValueBlock):
+        if isinstance(block, ValueBlock) and block != self:
             for input_field in self.input_fields:
                 appended = input_field.try_to_connect(block)
                 if appended:

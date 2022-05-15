@@ -1,4 +1,5 @@
 import pygame
+from codeview.valueblock import ValueBlock
 from codeview.inputfield import InputField
 from codeview.codeblock import *
 class MethodBlock(CodeBlock):
@@ -11,7 +12,7 @@ class MethodBlock(CodeBlock):
         super().__init__()
 
     def get_original_size(self):
-        size = super().get_original_size()
+        size = CodeBlock.size
 
         #calculate new size with the number of parameters
         size += ((size.x * len(self.parameters)) / 2, 0)
@@ -73,8 +74,30 @@ class MethodBlock(CodeBlock):
             input_field.update_scale_factor(scalefactor)
 
     def try_to_connect(self, block):
-        #todo --> connect also with ValueBlocks !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        #only connect with the input fild if the given block is a value block
+        if isinstance(block, ValueBlock):
+            for input_field in self.input_fields:
+                appended = input_field.try_to_connect(block)
+                if appended:
+                    return appended
+
         return super().try_to_connect(block)
+
+    def get_collider(self, mouse_position: pygame.Vector2):
+        #go through the inputfields and check if they colliding with the mouse
+        for input_field in self.input_fields:
+            #delete the selected block frm line and return it for adding into the blockview blocklist
+            collider = input_field.get_collider(mouse_position)
+            if collider:
+                print(collider)
+                if collider == input_field.value:
+                    input_field.value = None
+                    input_field.rebuild()
+                collider.rebuild()
+                return collider
+
+        return super().get_collider(mouse_position)
+
     def move(self, movement: pygame.Vector2):
         super().move(movement)
         for input_field in self.input_fields:

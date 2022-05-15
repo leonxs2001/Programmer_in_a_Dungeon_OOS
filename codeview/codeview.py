@@ -26,8 +26,8 @@ class CodeView(Level):
         start.append(bla)
         
         #list of (start)blocks.
-        #, MethodBlock(parameters=("x","y"))
-        self.code_block_list = [start, ValueBlock(parameters=("A1", "A2","A3"), name="A"), ValueBlock(parameters=("B1","B2"), name="B"),ValueBlock(parameters=("C1","C2"), name="C"),ValueBlock(parameters=("D1","D2"), name="D")]
+        #MethodBlock(parameters=("x","y"))
+        self.code_block_list = [start,MethodBlock(parameters=("x","y")), ValueBlock(parameters=("A1", "A2","A3"), name="A"), ]
         
     def give_event(self, event):
         if event.type == MOUSEBUTTONDOWN:
@@ -77,7 +77,7 @@ class CodeView(Level):
                 code_block.update_scale_factor(self.scale_factor)
 
     def update(self):
-        #print("New Line -------------------------------")
+        print(self.code_block_list)
         #proccess the viewmovement if mousebutton is pressed
         if self.is_mouse_button_down:
             #calculate mousemovement from the last update to now
