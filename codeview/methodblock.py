@@ -18,8 +18,8 @@ class MethodBlock(CodeBlock):
         size += ((size.x * len(self.parameters)) / 2, 0)
         return size
 
-    def build_image(self):
-        super().build_image()
+    def build(self):
+        super().build()
 
         size = self.get_original_size() * self.scale_factor
         
@@ -60,6 +60,13 @@ class MethodBlock(CodeBlock):
                     self.input_fields.append(InputField(position))
 
                 next_start_x += parameter_graphical_length
+                
+    def rebuild(self):
+        """Rebuild self and all input_fields"""
+        for input_field in self.input_fields:
+            input_field.rebuild()
+        self.build()
+
     def adjust_to_parent(self, parent):
         #track the current position adjust to parent and give the movement to the inputfields
         position = self.position
@@ -69,9 +76,9 @@ class MethodBlock(CodeBlock):
             input_field.move(movement)
             
     def update_scale_factor(self, scalefactor):
-        super().update_scale_factor(scalefactor)
         for input_field in self.input_fields:
             input_field.update_scale_factor(scalefactor)
+        super().update_scale_factor(scalefactor)     
 
     def try_to_connect(self, block):
         #only connect with the input fild if the given block is a value block

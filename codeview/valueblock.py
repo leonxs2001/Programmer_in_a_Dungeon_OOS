@@ -18,7 +18,7 @@ class ValueBlock(Block):
     def get_size(self):
         return self.size
 
-    def build_image(self):
+    def build(self):
         
         next_start_x = 0
         self.size = pygame.Vector2(0, ValueBlock.size_y * self.scale_factor)
@@ -86,7 +86,7 @@ class ValueBlock(Block):
         """Rebuild self and all input_fields"""
         for input_field in self.input_fields:
             input_field.rebuild()
-        self.build_image()
+        self.build()
 
     def get_collider(self, mouse_position: pygame.Vector2):
         #go through the inputfields and check if they colliding with the mouse

@@ -77,7 +77,6 @@ class CodeView(Level):
                 code_block.update_scale_factor(self.scale_factor)
 
     def update(self):
-        print(self.code_block_list)
         #proccess the viewmovement if mousebutton is pressed
         if self.is_mouse_button_down:
             #calculate mousemovement from the last update to now

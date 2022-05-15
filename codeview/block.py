@@ -8,7 +8,7 @@ class Block:
 
         self.in_focus = False
 
-        self.build_image()
+        self.build()
 
     def update_scale_factor(self, scalefactor):
         last_scale_factor = self.scale_factor
@@ -21,9 +21,9 @@ class Block:
         self.position = center_of_scrollment + distance
 
         #rebuild the image with the new scalefactor and size
-        self.build_image()
+        self.build()
 
-    def build_image(self):
+    def build(self):
         """Overwrite and create the self.image Surface for the block."""
         self.image = pygame.Surface((10,10))
         self.rect = self.image.get_rect()
