@@ -11,7 +11,6 @@ class CodeBlock(Block):
         super().__init__(background_color)
         #the nex block in the list(under self)
         self.next_block = None
-        self.parent_block = None
 
     def update_scale_factor(self, scalefactor):
         super().update_scale_factor(scalefactor)
@@ -101,12 +100,6 @@ class CodeBlock(Block):
         elif self.next_block:#the block also can be another kind of block
             return self.next_block.try_to_connect(block)
 
-    def adjust_to_parent(self):
-        """Adjust self to the given parent block"""
-        if self.parent_block:
-            half_size_difference_x = (self.visible_size.x - self.parent_block.visible_size.x)/2
-            self.position = self.parent_block.position + (-half_size_difference_x, self.parent_block.visible_size.y - 1)
-
     def adjust_blocks(self):
         """Adjust the next block(if existing) to the right position beneath self."""
         if self.next_block:
@@ -129,10 +122,13 @@ class CodeBlock(Block):
                 #delete the selected block frm line and return it for adding into the blockview blocklist
                 collider = self.next_block.get_collider(mouse_position)
                 if collider == self.next_block:
-                    self.next_block.parent_block = None
-                    self.next_block = None
+                    self.clear_next_block()
                 if collider:
                     return collider
+
+    def clear_next_block(self):
+        """Set the Next block and its parent Block to None"""
+        self.next_block = None
 
     def move(self, movement : pygame.Vector2):
         super().move(movement)

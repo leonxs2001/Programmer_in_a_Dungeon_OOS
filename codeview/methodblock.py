@@ -1,8 +1,10 @@
 import pygame
+from codeview.twosidedblock import TwoSidedBlock
 from codeview.valueblock import ValueBlock
 from codeview.inputfield import InputField
 from codeview.codeblock import *
-class MethodBlock(CodeBlock):
+
+class MethodBlock(TwoSidedBlock):
     id = "method"
     distance_x = 7
     def __init__(self, name="print", representation = "print", parameters = ()):
@@ -76,9 +78,6 @@ class MethodBlock(CodeBlock):
 
         #create background surface
         super().build()
-        #add/draw the top circle with border(makes this block connectable on both sides)
-        pygame.draw.circle(self.image, INVISIBLE_COLOR, (self.circle_x ,-self.circle_overlap), self.circle_radius)
-        pygame.draw.circle(self.image, (0,0,0), (self.circle_x ,-self.circle_overlap), self.circle_radius, width = 2)
 
         #blit the name(now we have the SUrface to blit on))
         self.image.blit(name_text, name_text_rect)
