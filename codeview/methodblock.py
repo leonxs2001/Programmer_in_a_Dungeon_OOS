@@ -20,7 +20,7 @@ class MethodBlock(TwoSidedBlock):
     def build(self):
 
         next_start_x = 0
-        self.size = pygame.Vector2(0, CodeBlock.visible_size_y * self.scale_factor)
+        self.size = pygame.Vector2(0, CodeBlock.size.y * self.scale_factor )
         texts = []
 
         #create methodname visualisation
@@ -92,6 +92,7 @@ class MethodBlock(TwoSidedBlock):
             input_field.rebuild()
         self.build()
         self.adjust_to_parent()
+        self.adjust_blocks()
 
     def adjust_to_parent(self):
         #track the current position adjust to parent and give the movement to the inputfields

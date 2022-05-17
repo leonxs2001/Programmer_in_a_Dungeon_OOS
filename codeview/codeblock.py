@@ -2,7 +2,6 @@ import pygame
 from codeview.block import Block
 #set constant for the inivisible color(done bycolorkey later)
 INVISIBLE_COLOR = (255,1,1)
-
 class CodeBlock(Block):
     id = "classic"
     size = pygame.Vector2(300,80)
@@ -79,6 +78,9 @@ class CodeBlock(Block):
             invisible_position = self.position + (0,self.visible_size.y)
             invisible_rect = pygame.rect.Rect(invisible_position, invisible_size)
             return invisible_rect
+            
+    def get_connection_point_bottom(self, child):
+        return self.position + (self.get_size().x / 2, CodeBlock.visible_size_y * self.scale_factor)
 
     def try_to_connect(self, block):
         """Checks if the two blocks can connect. Connect them if possible 
@@ -106,6 +108,7 @@ class CodeBlock(Block):
             #tell the next block to adjust to self
             self.next_block.adjust_to_parent()
             self.next_block.adjust_blocks()
+            
 
     def mouse_button_up(self):
         super().mouse_button_up()

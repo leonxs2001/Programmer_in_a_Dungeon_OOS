@@ -1,10 +1,11 @@
 import pygame
 class Block:
     """Abstract Class"""
+    start_position = pygame.Vector2(10,10)
     def __init__(self, background_color = (130,130,130)):
         self.background_color = background_color
         self.scale_factor = 1
-        self.position = pygame.Vector2(10,10)
+        self.position = self.start_position.copy()
 
         self.in_focus = False
 

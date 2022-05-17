@@ -1,3 +1,5 @@
+from shutil import move
+from pygame import Vector2
 from codeview.codeblock import *
 class TwoSidedBlock(CodeBlock):
     def __init__(self):
@@ -10,11 +12,14 @@ class TwoSidedBlock(CodeBlock):
         pygame.draw.circle(self.image, INVISIBLE_COLOR, (self.circle_x ,-self.circle_overlap), self.circle_radius)
         pygame.draw.circle(self.image, (0,0,0), (self.circle_x ,-self.circle_overlap), self.circle_radius, width = 2)
 
+    def get_connection_point_top(self):
+        return self.position + (self.get_size().x / 2, 0)
+
     def adjust_to_parent(self):
         """Adjust self to the given parent block"""
         if self.parent_block:
-            half_size_difference_x = (self.visible_size.x - self.parent_block.visible_size.x)/2
-            self.position = self.parent_block.position + (-half_size_difference_x, self.parent_block.visible_size.y - 1)
+            movement = self.parent_block.get_connection_point_bottom(self) - self.get_connection_point_top()
+            self.move(movement)
 
     def clear_next_block(self):
         self.next_block.parent_block = None
