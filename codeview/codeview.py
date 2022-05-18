@@ -38,16 +38,16 @@ class CodeView(Level):
                 self.last_mouse_position = pygame.mouse.get_pos()  
 
                 #check mousecollison with blocks 
-                new_blocks = []
+
                 for code_block in self.code_block_list:
                     #get colliding block or a None
                     collider = code_block.get_collider(self.last_mouse_position)
                     if collider:
                         #add colliding block to blocklist(first save in another list to avoid an endless loop) if its not the focused block
-                        if collider != code_block:
-                            new_blocks.append(collider)
-                        break    
-                self.code_block_list += new_blocks
+                        if collider == code_block:
+                            self.code_block_list.remove(collider)#remove the element, for putting it later to the end
+                        self.code_block_list.append(collider)
+                        break
 
         elif event.type == MOUSEBUTTONUP:
             if not pygame.mouse.get_pressed()[0]:
