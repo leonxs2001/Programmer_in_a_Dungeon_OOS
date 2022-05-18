@@ -1,5 +1,3 @@
-from shutil import move
-from pygame import Vector2
 from codeview.codeblock import *
 class TwoSidedBlock(CodeBlock):
     def __init__(self):

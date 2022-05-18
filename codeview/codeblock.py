@@ -4,12 +4,16 @@ from codeview.block import Block
 INVISIBLE_COLOR = (255,1,1)
 class CodeBlock(Block):
     id = "classic"
+    next_value = 0
     size = pygame.Vector2(300,80)
     visible_size_y = 68
+    invisible_size_y = 12
     def __init__(self, background_color = (130,130,130)):
         super().__init__(background_color)
         #the nex block in the list(under self)
         self.next_block = None
+        self.id_value = CodeBlock.next_value
+        CodeBlock.next_value += 1
 
     def update_scale_factor(self, scalefactor):
         super().update_scale_factor(scalefactor)
@@ -21,6 +25,13 @@ class CodeBlock(Block):
 
     def get_size(self):
         return CodeBlock.size.copy() * self.scale_factor
+
+    def get_chain_size_y(self):
+        """returns the size of all blocks together"""
+        if self.next_block:
+            return self.get_size().y + self.next_block.get_chain_size_y()
+        else:
+            return self.get_size().y
 
     def build(self):
         """creates the self.image Surface for the block"""
@@ -74,10 +85,20 @@ class CodeBlock(Block):
             return self.next_block.get_last_invisible_rect()
         else:
             #create the invisible rect from visible size(its 85%)
-            invisible_size = (self.visible_size.x, (self.visible_size.y/0.85)*0.15)
+            invisible_size = (self.visible_size.x, CodeBlock.invisible_size_y * self.scale_factor)
             invisible_position = self.position + (0,self.visible_size.y)
             invisible_rect = pygame.rect.Rect(invisible_position, invisible_size)
             return invisible_rect
+    def get_max_chain_width(self):
+        """Returns the maximum width of the chain"""
+        value1 = self.get_size().x
+        value2 = 0
+        if self.next_block:
+            value2 = self.next_block.get_max_chain_width()
+        if value1 > value2:
+            return value1
+        else:
+            return value2
             
     def get_connection_point_bottom(self, child):
         return self.position + (self.get_size().x / 2, CodeBlock.visible_size_y * self.scale_factor)
@@ -108,7 +129,6 @@ class CodeBlock(Block):
             #tell the next block to adjust to self
             self.next_block.adjust_to_parent()
             self.next_block.adjust_blocks()
-            
 
     def mouse_button_up(self):
         super().mouse_button_up()
@@ -134,6 +154,8 @@ class CodeBlock(Block):
         self.next_block = None
 
     def move(self, movement : pygame.Vector2):
+        if self.next_block == self:
+            exit(f"Kacke {self.id_value}")
         super().move(movement)
         if self.next_block:#if this block has one next_block pass it on to it
             self.next_block.move(movement)
