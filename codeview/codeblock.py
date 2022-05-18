@@ -29,9 +29,9 @@ class CodeBlock(Block):
     def get_chain_size_y(self):
         """returns the size of all blocks together"""
         if self.next_block:
-            return self.get_size().y + self.next_block.get_chain_size_y()
+            return CodeBlock.visible_size_y * self.scale_factor + self.next_block.get_chain_size_y()
         else:
-            return self.get_size().y
+            return CodeBlock.visible_size_y * self.scale_factor
 
     def build(self):
         """creates the self.image Surface for the block"""
@@ -120,7 +120,7 @@ class CodeBlock(Block):
             elif self.id != "start" and other_invisible_rect.colliderect(self.rect):
                 block.append(self)
                 return self
-        elif self.next_block:#the block also can be another kind of block
+        if self.next_block:#the block also can be another kind of block
             return self.next_block.try_to_connect(block)
 
     def adjust_blocks(self):

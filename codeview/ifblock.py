@@ -33,7 +33,6 @@ class IfBlock(TwoSidedBlock):
         min_size_x = CodeBlock.size.x * self.scale_factor
         if self.if_true_block:
             min_size_x = self.if_true_block.get_max_chain_width()
-            print(min_size_x)
 
         if self.size.x < min_size_x:#width should be min CodeBlock.size.x
             self.size.x = min_size_x
@@ -50,6 +49,7 @@ class IfBlock(TwoSidedBlock):
         self.size = pygame.Vector2(self.size.x + border_width, min_y)
         if self.if_true_block:# add y size of the elements
             self.size.y += self.if_true_block.get_chain_size_y()
+            #print(min_y, self.size.y, self.if_true_block.get_chain_size_y())
         self.image = pygame.transform.scale(self.image, self.size)
         self.image.fill(INVISIBLE_COLOR)
         self.rect = self.image.get_rect()
@@ -74,10 +74,16 @@ class IfBlock(TwoSidedBlock):
 
         #delete the resulting borders
         pygame.draw.rect(self.image, self.background_color, pygame.rect.Rect((border_width - 2, 2 + rect.top), (4, CodeBlock.visible_size_y * self.scale_factor - 4)))
-            
     def get_size(self):
-        return self.size
+        return self.size.copy()
 
+    def get_chain_size_y(self):
+        """returns the size of all blocks together"""
+        own_size_y = self.size - CodeBlock.invisible_size_y * self.scale_factor
+        if self.next_block:
+            return own_size_y + self.next_block.get_chain_size_y()
+        else:
+            return own_size_y
     def get_connection_point_top(self):
         border_width = IfBlock.border_width * self.scale_factor
         new_width = self.get_size().x - border_width
@@ -122,16 +128,24 @@ class IfBlock(TwoSidedBlock):
     def update_scale_factor(self, scalefactor):
         self.input_field.update_scale_factor(scalefactor)
         if self.if_true_block:
-            self.if_true_block.update_scale_factor(scalefactor)   
+            self.if_true_block.update_scale_factor(scalefactor)  
         super().update_scale_factor(scalefactor)   
+        if self.if_true_block:
+            self.if_true_block.adjust_to_parent()
 
     def try_to_connect(self, block):
-        #only connect with the input fild if the given block is a value block
+        #only connect with the input field or the condition block if the given block is a value block
         if isinstance(block, ValueBlock):
+            print("ja")
             appended = self.input_field.try_to_connect(block)
             if appended:
                 self.rebuild()
                 return appended
+            if self.if_true_block:
+                appended = self.if_true_block.try_to_connect(block)
+                if appended:
+                    self.rebuild()
+                    return appended
 
         #connect with the condition blockpart
         if isinstance(block, TwoSidedBlock):
@@ -186,6 +200,7 @@ class IfBlock(TwoSidedBlock):
             self.if_true_block.move(movement)
 
     def update(self):
+        #print(self.if_true_block, self.parent_block, self.next_block)
         super().update()
         self.input_field.update()
         if self.if_true_block:

@@ -32,39 +32,41 @@ class CodeView(Level):
         
     def give_event(self, event):
         if event.type == MOUSEBUTTONDOWN:
-            #save, that mousebutton is pressed and the current mouse position
-            self.is_mouse_button_down = True
-            self.last_mouse_position = pygame.mouse.get_pos()  
+            if pygame.mouse.get_pressed()[0]:
+                #save, that mousebutton is pressed and the current mouse position
+                self.is_mouse_button_down = True
+                self.last_mouse_position = pygame.mouse.get_pos()  
 
-            #check mousecollison with blocks 
-            new_blocks = []
-            for code_block in self.code_block_list:
-                #get colliding block or a None
-                collider = code_block.get_collider(self.last_mouse_position)
-                if collider:
-                    #add colliding block to blocklist(first save in another list to avoid an endless loop) if its not the focused block
-                    if collider != code_block:
-                        new_blocks.append(collider)
-                    break    
-            self.code_block_list += new_blocks
+                #check mousecollison with blocks 
+                new_blocks = []
+                for code_block in self.code_block_list:
+                    #get colliding block or a None
+                    collider = code_block.get_collider(self.last_mouse_position)
+                    if collider:
+                        #add colliding block to blocklist(first save in another list to avoid an endless loop) if its not the focused block
+                        if collider != code_block:
+                            new_blocks.append(collider)
+                        break    
+                self.code_block_list += new_blocks
 
         elif event.type == MOUSEBUTTONUP:
-            #check for new possible connections
-            for code_block1 in self.code_block_list:
-                if code_block1.in_focus:
-                    for code_block2 in self.code_block_list:
-                        if code_block1 != code_block2:
-                            #try to connect the focused block with every else
-                            appended_block = code_block2.try_to_connect(code_block1)
-                            #remove the block from block list if existing
-                            if appended_block and appended_block in self.code_block_list:
-                                self.code_block_list.remove(appended_block)
-                                break#only connect two blocks with each other
-            #reset the information
-            self.is_mouse_button_down = False
-            #tell every block, that mouse button 
-            for code_block in self.code_block_list:
-                code_block.mouse_button_up()
+            if not pygame.mouse.get_pressed()[0]:
+                #check for new possible connections
+                for code_block1 in self.code_block_list:
+                    if code_block1.in_focus:
+                        for code_block2 in self.code_block_list:
+                            if code_block1 != code_block2:
+                                #try to connect the focused block with every else
+                                appended_block = code_block2.try_to_connect(code_block1)
+                                #remove the block from block list if existing
+                                if appended_block and appended_block in self.code_block_list:
+                                    self.code_block_list.remove(appended_block)
+                                    break#only connect two blocks with each other
+                #reset the information
+                self.is_mouse_button_down = False
+                #tell every block, that mouse button 
+                for code_block in self.code_block_list:
+                    code_block.mouse_button_up()
 
         elif event.type == MOUSEWHEEL:
             #update scalefactor in borders from 0.4 to 3.5 
