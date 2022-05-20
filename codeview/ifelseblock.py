@@ -103,7 +103,8 @@ class IfElseBlock(IfBlock):
                 last_invisible_rect = self.if_false_block.get_last_invisible_rect()
                 #if the blocks(and its appendix) collide with visible part on invisble part connect them,
                 #the start block should not be appended on another block(is everytime the start)
-                if block.id != "start" and last_invisible_rect.colliderect(block.rect):
+                from codeview.startblock import StartBlock
+                if not isinstance(block, StartBlock) and last_invisible_rect.colliderect(block.rect):
                     self.if_false_block.append(block) 
                     self.rebuild()
                     return block

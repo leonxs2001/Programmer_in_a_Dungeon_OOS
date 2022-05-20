@@ -1,6 +1,8 @@
 from tabnanny import check
 import pygame
 from pygame.locals import *
+from codeview.operationblock import OperationBlock
+from codeview.variableblock import VariableBlock
 from codeview.ifelseblock import IfElseBlock
 from codeview.valueblock import ValueBlock
 from codeview.ifblock import IfBlock
@@ -29,7 +31,7 @@ class CodeView(Level):
         
         #list of (start)blocks.
         #MethodBlock(parameters=("x","y"))
-        self.code_block_list = [start,MethodBlock(parameters=("x","y")), ValueBlock(parameters=("A1", "A2"), name="A"),ValueBlock(parameters=("B1", "B2"), name="B"),ValueBlock(name = "lajsdflkjasdhlkj", parameters=()), IfBlock(), IfElseBlock() ]
+        self.code_block_list = [start,MethodBlock(parameters=("x","y")), ValueBlock(parameters=("A1", "A2"), name="A"),ValueBlock(parameters=("B1", "B2"), name="B"),ValueBlock(name = "lajsdflkjasdhlkj", parameters=()), IfBlock(), IfElseBlock(), OperationBlock(), VariableBlock("test") ]
         
     def give_event(self, event):
         if event.type == MOUSEBUTTONDOWN:

@@ -25,8 +25,8 @@ class ValueBlock(Block):
         texts = []
 
         #create methodname visualisation
-        font = pygame.font.Font(None, int(25 * self.scale_factor))
-        name_text = font.render(self.name ,True, (0,0,0))
+        
+        name_text = self.render_text(self.name)
         name_text_rect = name_text.get_rect()
         name_text_rect.centery = self.size.y / 2
         name_text_rect.left = ValueBlock.distance_x * self.scale_factor
@@ -41,7 +41,7 @@ class ValueBlock(Block):
             i = 0
             for parameter in self.parameters :
                 #create and save the current textimage with the parametername and its rect 
-                text = font.render(parameter+":",True, (0,0,0))
+                text = self.render_text(parameter)
                 text_rect = text.get_rect()
                 text_rect.centery = self.size.y / 2
                 text_rect.left = next_start_x
@@ -83,6 +83,10 @@ class ValueBlock(Block):
         #blit the texts with the rect(both in a tuper)
         for text in texts:
             self.image.blit(text[0], text[1])
+
+    def render_text(self, text):
+        font = pygame.font.Font(None, int(25 * self.scale_factor))
+        return font.render(text + ":" ,True, (0,0,0)) 
 
     def rebuild(self):
         """Rebuild self and all input_fields"""
