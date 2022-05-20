@@ -3,8 +3,6 @@ from codeview.block import Block
 #set constant for the inivisible color(done bycolorkey later)
 INVISIBLE_COLOR = (255,1,1)
 class CodeBlock(Block):
-    id = "classic"
-    next_value = 0
     size = pygame.Vector2(300,80)
     visible_size_y = 68
     invisible_size_y = 12
@@ -12,8 +10,6 @@ class CodeBlock(Block):
         super().__init__(background_color)
         #the nex block in the list(under self)
         self.next_block = None
-        self.id_value = CodeBlock.next_value
-        CodeBlock.next_value += 1
 
     def update_scale_factor(self, scalefactor):
         super().update_scale_factor(scalefactor)
@@ -64,7 +60,7 @@ class CodeBlock(Block):
         pygame.draw.circle(self.image, (0,0,0), (self.circle_x ,self.visible_size.y - self.circle_overlap), self.circle_radius, width = 2)
 
         #rect for covering the circlelines inside the rect
-        rect =pygame.rect.Rect((0,0),(self.circle_radius * 2, self.circle_radius+self.circle_overlap))
+        rect =pygame.rect.Rect((0,0),(self.circle_radius * 2, self.circle_radius + self.circle_overlap))
         rect.centerx = self.circle_x
         rect.bottom = self.visible_size.y - 2
         pygame.draw.rect(self.image, self.background_color, rect)
@@ -89,6 +85,7 @@ class CodeBlock(Block):
             invisible_position = self.position + (0,self.visible_size.y)
             invisible_rect = pygame.rect.Rect(invisible_position, invisible_size)
             return invisible_rect
+
     def get_max_chain_width(self):
         """Returns the maximum width of the chain"""
         value1 = self.get_size().x
@@ -106,8 +103,11 @@ class CodeBlock(Block):
     def try_to_connect(self, block):
         """Checks if the two blocks can connect. Connect them if possible 
         and return the one that is beneath the other."""
-        #only try to connect if the given block is a codeblock too
         
+        if self.next_block:#the block also can be another kind of block
+            return self.next_block.try_to_connect(block)
+            
+        #only try to connect if the given block is a codeblock too
         if isinstance(block, CodeBlock):
             #get the last invisible rects from self and the given block
             own_invisible_rect = self.get_last_invisible_rect()
@@ -115,14 +115,13 @@ class CodeBlock(Block):
 
             #if the blocks(and its appendix) collide with visible part on invisble part connect them,
             #the start block should not be appended on another block(is everytime the start)
-            if block.id != "start" and own_invisible_rect.colliderect(block.rect):
+            from codeview.startblock import StartBlock
+            if not isinstance(block, StartBlock) and own_invisible_rect.colliderect(block.rect):
                 self.append(block)
                 return block
-            elif self.id != "start" and other_invisible_rect.colliderect(self.rect):
+            elif not isinstance(block, StartBlock) and block.parent_block and other_invisible_rect.colliderect(self.rect):
                 block.append(self)
                 return self
-        if self.next_block:#the block also can be another kind of block
-            return self.next_block.try_to_connect(block)
 
     def adjust_blocks(self):
         """Adjust the next block(if existing) to the right position beneath self."""
@@ -155,8 +154,6 @@ class CodeBlock(Block):
         self.next_block = None
 
     def move(self, movement : pygame.Vector2):
-        if self.next_block == self:
-            exit(f"Kacke {self.id_value}")
         super().move(movement)
         if self.next_block:#if this block has one next_block pass it on to it
             self.next_block.move(movement)

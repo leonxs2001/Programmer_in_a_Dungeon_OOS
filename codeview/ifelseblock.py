@@ -89,7 +89,7 @@ class IfElseBlock(IfBlock):
                 #create the Rect for Collision
                 pos = pygame.Vector2(IfBlock.border_width * self.scale_factor, CodeBlock.visible_size_y * self.scale_factor * 3)
                 if self.if_true_block:
-                    pos.y += self.if_true_block.get_chain_size_y
+                    pos.y += self.if_true_block.get_chain_size_y()
                 pos += self.position
                 size_rect = (self.get_size().x - IfBlock.border_width * self.scale_factor, CodeBlock.invisible_size_y * self.scale_factor)
 

@@ -5,7 +5,6 @@ from codeview.inputfield import InputField
 from codeview.codeblock import *
 
 class MethodBlock(TwoSidedBlock):
-    id = "method"
     distance_x = 7
     def __init__(self, name="print", representation = "print", parameters = ()):
         self.name = name
