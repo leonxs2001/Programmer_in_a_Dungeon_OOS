@@ -110,6 +110,7 @@ class MethodBlock(TwoSidedBlock):
     def try_to_connect(self, block):
         #only connect with the input fild if the given block is a value block
         if isinstance(block, ValueBlock):
+            
             for input_field in self.input_fields:
                 appended = input_field.try_to_connect(block)
                 if appended:

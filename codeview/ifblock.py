@@ -12,7 +12,11 @@ class IfBlock(TwoSidedBlock):
         self.if_true_block = None
 
         super().__init__()
+
     def build(self):
+        #create at first a normal Codeblock with the right size
+        #blit it later on the Surface
+
         border_width = IfBlock.border_width * self.scale_factor
         #create the Visualisation of the classic block(if text with inputfield)
         self.size = pygame.Vector2(0, CodeBlock.size.y * self.scale_factor)
@@ -30,27 +34,28 @@ class IfBlock(TwoSidedBlock):
         self.input_field.left_center = pygame.Vector2(self.size.x + border_width, center_y) + self.position#reset the position of the input field
         self.size.x += self.input_field.get_size().x + distance
 
-        min_size_x = CodeBlock.size.x * self.scale_factor
-        if self.if_true_block:
-            min_size_x = self.if_true_block.get_max_chain_width()
+        min_size_x = self.get_min_width()
 
         if self.size.x < min_size_x:#width should be min CodeBlock.size.x
             self.size.x = min_size_x
 
         super().build()
 
-        self.image.blit(if_text, if_text_rect)
+        self.code_block_image  = self.image.copy()
         image = self.image #copy image from normal build
+        image.blit(if_text, if_text_rect)
         rect = image.get_rect()
 
-        #create Surface
+        #create Surface values
         overlap = self.circle_radius - self.circle_overlap#overlapping circle(height)
         min_y = CodeBlock.visible_size_y * self.scale_factor * 3 + overlap
         self.size = pygame.Vector2(self.size.x + border_width, min_y)
         if self.if_true_block:# add y size of the elements
             self.size.y += self.if_true_block.get_chain_size_y()
-            #print(min_y, self.size.y, self.if_true_block.get_chain_size_y())
-        self.image = pygame.transform.scale(self.image, self.size)
+        
+        #recreate the Surface and its colorkey
+        self.image = pygame.Surface(self.size)
+        self.image.set_colorkey(INVISIBLE_COLOR)
         self.image.fill(INVISIBLE_COLOR)
         self.rect = self.image.get_rect()
 
@@ -64,32 +69,40 @@ class IfBlock(TwoSidedBlock):
         pygame.draw.rect(self.image, (0,0,0), border_rect, width=2)
 
         #delete the resulting borders
-        pygame.draw.rect(self.image, self.background_color, pygame.rect.Rect((border_width - 2, 2), (4, CodeBlock.visible_size_y * self.scale_factor - 4)))
+        pygame.draw.rect(self.image, self.background_color, pygame.rect.Rect((border_width - 4, 2), (8, CodeBlock.visible_size_y * self.scale_factor - 4)))
 
         #draw the closing block
-        pygame.draw.rect(image, self.background_color, pygame.rect.Rect((2,2), self.visible_size - (4,4)))
-        pygame.draw.line(image, (0,0,0), (0,0), (self.visible_size.x, 0), width=2)
         rect.top = self.size.y - self.visible_size_y * self.scale_factor - overlap
-        self.image.blit(image,rect)
+        self.image.blit(self.code_block_image, rect)
 
         #delete the resulting borders
         pygame.draw.rect(self.image, self.background_color, pygame.rect.Rect((border_width - 2, 2 + rect.top), (4, CodeBlock.visible_size_y * self.scale_factor - 4)))
+    
     def get_size(self):
         return self.size.copy()
 
+    def get_min_width(self):
+        """Returns the minimum width of the conditionblock"""
+        min_size_x = CodeBlock.size.x * self.scale_factor
+        if self.if_true_block:
+            min_size_x = self.if_true_block.get_max_chain_width()
+        return min_size_x
+
     def get_chain_size_y(self):
         """returns the size of all blocks together"""
-        own_size_y = self.size - CodeBlock.invisible_size_y * self.scale_factor
+        own_size_y = self.size.y - CodeBlock.invisible_size_y * self.scale_factor #is not the size of the Surface(invisble part on the end)
         if self.next_block:
             return own_size_y + self.next_block.get_chain_size_y()
         else:
             return own_size_y
+
     def get_connection_point_top(self):
         border_width = IfBlock.border_width * self.scale_factor
         new_width = self.get_size().x - border_width
         return pygame.Vector2(new_width / 2 + border_width, 0) + self.position
 
     def get_connection_point_bottom(self, child):
+        """Returns the connection point dependent on which child is given"""
         if child == self.next_block:
             return self.get_connection_point_top() + (0, self.size.y - CodeBlock.invisible_size_y * self.scale_factor )
         else:
@@ -102,7 +115,7 @@ class IfBlock(TwoSidedBlock):
         if self.next_block: #if this block has one next_block pass it on to it
             return self.next_block.get_last_invisible_rect()
         else:
-            #create the invisible rect from visible size(its 85%)
+            #create the invisible rect 
             invisible_size = pygame.Vector2(self.get_size().x, CodeBlock.invisible_size_y * self.scale_factor)
             invisible_position = self.position + (0, self.size.y - invisible_size.y)
             invisible_rect = pygame.rect.Rect(invisible_position, invisible_size)
@@ -136,7 +149,6 @@ class IfBlock(TwoSidedBlock):
     def try_to_connect(self, block):
         #only connect with the input field or the condition block if the given block is a value block
         if isinstance(block, ValueBlock):
-            print("ja")
             appended = self.input_field.try_to_connect(block)
             if appended:
                 self.rebuild()
@@ -149,13 +161,13 @@ class IfBlock(TwoSidedBlock):
 
         #connect with the condition blockpart
         if isinstance(block, TwoSidedBlock):
-            #create the Rect for Collision
-            pos = (IfBlock.border_width * self.scale_factor, CodeBlock.visible_size_y * self.scale_factor)
-            pos += self.position
-            size_rect = (self.get_size().x - IfBlock.border_width * self.scale_factor, CodeBlock.invisible_size_y * self.scale_factor)
-
-            conditional_invisble_rect = pygame.rect.Rect(pos, size_rect)
             if not self.if_true_block:
+                #create the Rect for Collision
+                pos = (IfBlock.border_width * self.scale_factor, CodeBlock.visible_size_y * self.scale_factor)
+                pos += self.position
+                size_rect = (self.get_size().x - IfBlock.border_width * self.scale_factor, CodeBlock.invisible_size_y * self.scale_factor)
+
+                conditional_invisble_rect = pygame.rect.Rect(pos, size_rect)
                 if conditional_invisble_rect.colliderect(block.rect):
                     self.if_true_block = block
                     self.if_true_block.parent_block = self
@@ -169,6 +181,7 @@ class IfBlock(TwoSidedBlock):
                     self.if_true_block.append(block) 
                     self.rebuild()
                     return block
+        
         return super().try_to_connect(block)
 
     def get_collider(self, mouse_position: pygame.Vector2):
@@ -200,7 +213,6 @@ class IfBlock(TwoSidedBlock):
             self.if_true_block.move(movement)
 
     def update(self):
-        #print(self.if_true_block, self.parent_block, self.next_block)
         super().update()
         self.input_field.update()
         if self.if_true_block:

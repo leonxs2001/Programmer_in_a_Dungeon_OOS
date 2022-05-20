@@ -1,6 +1,7 @@
 from tabnanny import check
 import pygame
 from pygame.locals import *
+from codeview.ifelseblock import IfElseBlock
 from codeview.valueblock import ValueBlock
 from codeview.ifblock import IfBlock
 from codeview.startblock import StartBlock
@@ -28,7 +29,7 @@ class CodeView(Level):
         
         #list of (start)blocks.
         #MethodBlock(parameters=("x","y"))
-        self.code_block_list = [start,MethodBlock(parameters=("x","y")), ValueBlock(parameters=("A1", "A2"), name="A"),ValueBlock(parameters=("B1", "B2"), name="B"),ValueBlock(name = "lajsdflkjasdhlkj", parameters=()), IfBlock() ]
+        self.code_block_list = [start,MethodBlock(parameters=("x","y")), ValueBlock(parameters=("A1", "A2"), name="A"),ValueBlock(parameters=("B1", "B2"), name="B"),ValueBlock(name = "lajsdflkjasdhlkj", parameters=()), IfBlock(), IfElseBlock() ]
         
     def give_event(self, event):
         if event.type == MOUSEBUTTONDOWN:
@@ -39,7 +40,7 @@ class CodeView(Level):
 
                 #check mousecollison with blocks 
 
-                for code_block in self.code_block_list:
+                for code_block in self.code_block_list[::-1]:#backwards because we want to grab the one we see
                     #get colliding block or a None
                     collider = code_block.get_collider(self.last_mouse_position)
                     if collider:
@@ -54,7 +55,7 @@ class CodeView(Level):
                 #check for new possible connections
                 for code_block1 in self.code_block_list:
                     if code_block1.in_focus:
-                        for code_block2 in self.code_block_list:
+                        for code_block2 in self.code_block_list[::-1]:#backwards because the last one is the one we see
                             if code_block1 != code_block2:
                                 #try to connect the focused block with every else
                                 appended_block = code_block2.try_to_connect(code_block1)

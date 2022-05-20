@@ -107,6 +107,7 @@ class CodeBlock(Block):
         """Checks if the two blocks can connect. Connect them if possible 
         and return the one that is beneath the other."""
         #only try to connect if the given block is a codeblock too
+        
         if isinstance(block, CodeBlock):
             #get the last invisible rects from self and the given block
             own_invisible_rect = self.get_last_invisible_rect()
