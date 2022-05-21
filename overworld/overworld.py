@@ -4,7 +4,7 @@ from level import Level
 import pygame
 from overworld.config import asset
 from overworld.maprenderer import MapRenderer
-#from overworld.entity import Entity
+from overworld.entity import Entity
 
 class OverWorld(Level,Map):
     def __init__(self):
@@ -23,7 +23,7 @@ class OverWorld(Level,Map):
         render_map = self.preProcessLevel()
         
         self.maprenderer = MapRenderer(asset,render_map)
-        #self.entity = Entity.__init__(self,)
+        self.entity = Entity(asset, render_map)
         
         """Entities, Assign Variables etc"""
     def update(self):
@@ -32,6 +32,7 @@ class OverWorld(Level,Map):
     def draw(self, screen):
         screen.fill((255,255,255))
         self.maprenderer.draw(screen)
+        self.entity.draw(screen)
         #self.entity.draw(screen)
 
         """Draw everything important on the screen."""

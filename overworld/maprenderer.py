@@ -8,7 +8,7 @@ class MapRenderer(pygame.sprite.Sprite):
             self.done_map = done_map
             self.uni_size = (40,40)
             self.outer_wall = pygame.transform.scale(pygame.image.load(assets['outer_wall']),self.uni_size)
-            self.ground = pygame.transform.scale(pygame.image.load(assets['gorund']),self.uni_size)
+            self.ground = pygame.transform.scale(pygame.image.load(assets['ground']),self.uni_size)
             self.wall = pygame.transform.scale(pygame.image.load(assets['wall']),self.uni_size)
             #print(self.wall.get_rect().size,self.ground.get_rect().size,self.player.get_rect().size)
             print(self.done_map)
@@ -30,4 +30,5 @@ class MapRenderer(pygame.sprite.Sprite):
                     screen.blit(self.ground,(self.done_map[x][y])[1])
                 else:
                     screen.blit(self.ground,(self.done_map[x][y])[1])
-                
+
+        
