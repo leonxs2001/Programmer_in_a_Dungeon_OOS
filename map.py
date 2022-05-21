@@ -26,8 +26,16 @@ class Map():
                     loc_arr[x][y] = ('wall',tup)
                 elif self.arr[x][y] == 'x':
                     loc_arr[x][y] = ('outer_wall',tup)
-                elif self.arr[x][y] == 's':
+                elif self.arr[x][y] == 'p':
                     loc_arr[x][y] = ('player',tup)
+                elif self.arr[x][y] == 'm':
+                    loc_arr[x][y] = ('melee_e',tup)
+                elif self.arr[x][y] == 's':
+                    loc_arr[x][y] = ('shooting_e',tup)
+                elif self.arr[x][y] == 'M':
+                    loc_arr[x][y] = ('big_melee_e',tup)
+                elif self.arr[x][y] == 'S':
+                    loc_arr[x][y] = ('big_shooting_e',tup)
                 elif self.arr[x][y] == 'z':
                     loc_arr[x][y] = ('end',tup)
         return loc_arr
@@ -46,7 +54,7 @@ class Map():
 
         for x in range(18):
             for y in range(32):
-                if self.arr[x][y] == 's':
+                if self.arr[x][y] == 'p':
                     if self.start is not None:
                         return Exception("too many start points")
                     self.start = (x, y)
