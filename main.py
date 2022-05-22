@@ -7,7 +7,7 @@ from level import Level
 
 pygame.init()
 # Display
-size = (1280,720)
+size = (1280,720) #Understandable
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Labi")
 
