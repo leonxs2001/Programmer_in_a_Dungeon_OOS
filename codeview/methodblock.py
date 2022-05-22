@@ -12,6 +12,8 @@ class MethodBlock(TwoSidedBlock):
         self.parameters = parameters
         self.input_fields = []
         super().__init__()
+        if len(self.parameters) == 2:
+            self.input_fields[0].id = "sp"
 
     def get_size(self):
         return self.size 

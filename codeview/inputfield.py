@@ -6,8 +6,8 @@ class InputField:
     empty_size = pygame.Vector2(70,30)
     distance_x = 7
     def __init__(self, left_center = pygame.Vector2(0,0)):
-        self.id = "lahm"
         self.value = "1"
+        self.id = ""
         self.scale_factor = 1
         self.left_center = left_center
         self.in_focus = False
@@ -33,6 +33,8 @@ class InputField:
             self.image = pygame.Surface(self.size)
             self.image.fill((255,255,255))
             self.rect = self.image.get_rect()
+            self.rect.left = self.left_center.x
+            self.rect.centery = self.left_center.y
             pygame.draw.rect(self.image, (0,0,0), pygame.rect.Rect((0,0), self.size), width=2)
 
             self.image.blit(text, text_rect)
@@ -129,6 +131,7 @@ class InputField:
                 if self.value == "":#reset the value to 1 if its empty
                     self.value = "1"
                     self.rebuild()
+                    
         if isinstance(self.value, Block):
             self.value.update()
 
