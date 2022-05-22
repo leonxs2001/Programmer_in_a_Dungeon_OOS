@@ -93,9 +93,9 @@ class ValueBlock(Block):
             input_field.rebuild()
         self.build()
 
-    def give_keyboard_event(self, event):
+    def give_keyboard_down_event(self, event):
         for input_field in self.input_fields:#give it to the Input fields
-            input_field.give_keyboard_event(event)
+            input_field.give_keyboard_down_event(event)
 
     def get_collider(self, mouse_position: pygame.Vector2):
         #go through the inputfields and check if they colliding with the mouse

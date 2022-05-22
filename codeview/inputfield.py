@@ -42,7 +42,9 @@ class InputField:
             self.cursor_rect.centery = self.left_center.y
 
     def give_keyboard_down_event(self, event):
-        if self.in_focus and not isinstance(self.value, Block):
+        if isinstance(self.value, Block):#give it to the valueblock if existing
+            self.value.give_keyboard_down_event(event)
+        elif self.in_focus:
             if event.key == pygame.K_BACKSPACE:#delete last letter
                 self.value = self.value[:-1]
                 self.rebuild()
@@ -72,6 +74,7 @@ class InputField:
         else:
             if self.rect.collidepoint(mouseposition):
                 self.in_focus = True
+                return self
 
     def try_to_connect(self, block):
         if isinstance(self.value, Block):

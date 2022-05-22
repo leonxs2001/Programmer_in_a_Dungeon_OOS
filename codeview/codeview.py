@@ -1,6 +1,7 @@
 from tabnanny import check
 import pygame
 from pygame.locals import *
+from codeview.block import Block
 from codeview.operationblock import OperationBlock
 from codeview.variableblock import VariableBlock
 from codeview.ifelseblock import IfElseBlock
@@ -45,7 +46,7 @@ class CodeView(Level):
                 for code_block in self.code_block_list[::-1]:#backwards because we want to grab the one we see
                     #get colliding block or a None
                     collider = code_block.get_collider(self.last_mouse_position)
-                    if collider:
+                    if collider and isinstance(collider, Block):
                         #add colliding block to blocklist(first save in another list to avoid an endless loop) if its not the focused block
                         if collider == code_block:
                             self.code_block_list.remove(collider)#remove the element, for putting it later to the end

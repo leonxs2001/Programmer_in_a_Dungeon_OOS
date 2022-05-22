@@ -2,7 +2,6 @@ import pygame
 from codeview.codeblock import *
 from codeview.ifblock import IfBlock
 from codeview.valueblock import ValueBlock
-from codeview.twosidedblock import TwoSidedBlock
 class IfElseBlock(IfBlock):
     def __init__(self):
         self.if_false_block = None
@@ -112,6 +111,7 @@ class IfElseBlock(IfBlock):
             size_rect = (self.get_size().x - IfBlock.border_width * self.scale_factor, CodeBlock.invisible_size_y * self.scale_factor)
 
             conditional_invisble_rect = pygame.rect.Rect(pos, size_rect)
+                
             if conditional_invisble_rect.colliderect(block.rect):
                 self.if_false_block = block
                 self.if_false_block.parent_block = self
