@@ -6,6 +6,7 @@ class InputField:
     empty_size = pygame.Vector2(70,30)
     distance_x = 7
     def __init__(self, left_center = pygame.Vector2(0,0)):
+        self.id = "lahm"
         self.value = "1"
         self.scale_factor = 1
         self.left_center = left_center
@@ -126,11 +127,8 @@ class InputField:
             if pygame.mouse.get_pressed()[0] and not self.rect.collidepoint(pygame.mouse.get_pos()):
                 self.in_focus = False 
                 if self.value == "":#reset the value to 1 if its empty
-                    self.value == "1"
+                    self.value = "1"
                     self.rebuild()
-            else:
-                pass#do writing stuff here
-        
         if isinstance(self.value, Block):
             self.value.update()
 
@@ -139,7 +137,7 @@ class InputField:
             self.value.draw(screen)
         else:
             screen.blit(self.image, self.rect)
-            if self.in_focus:
+            if self.in_focus:#draw the blinking cursor
                 self.cursor_counter += 1
                 if self.cursor_counter % 40 < 25:
                     pygame.draw.rect(screen, (0,0,0),self.cursor_rect)

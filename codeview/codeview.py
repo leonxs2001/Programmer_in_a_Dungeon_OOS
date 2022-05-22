@@ -31,8 +31,8 @@ class CodeView(Level):
         start.append(bla)
         
         #list of (start)blocks.
-        #MethodBlock(parameters=("x","y"))
-        self.code_block_list = [start,MethodBlock(parameters=("x","y")), ValueBlock(parameters=("A1", "A2"), name="A"),ValueBlock(parameters=("B1", "B2"), name="B"),ValueBlock(name = "lajsdflkjasdhlkj", parameters=()), IfBlock(), IfElseBlock(), OperationBlock(), VariableBlock("test") ]
+        #ValueBlock(parameters=("B1", "B2"), name="B"), IfBlock(),  OperationBlock(), VariableBlock("test")
+        self.code_block_list = [start,MethodBlock(parameters=("x","y")), ValueBlock(parameters=("A1", "A2"), name="A"),ValueBlock(name = "lajsdflkjasdhlkj", parameters=()), IfElseBlock() ]
         
     def give_event(self, event):
         if event.type == MOUSEBUTTONDOWN:
