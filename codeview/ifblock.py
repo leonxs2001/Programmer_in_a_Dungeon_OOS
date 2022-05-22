@@ -22,7 +22,8 @@ class IfBlock(TwoSidedBlock):
         #create the Visualisation of the classic block(if text with inputfield)
         self.size = pygame.Vector2(0, CodeBlock.size.y * self.scale_factor)
         distance = IfBlock.distance_x * self.scale_factor
-        #create methodname visualisation
+
+        #create if-text visualisation
         font = pygame.font.Font(None, int(30 * self.scale_factor))
         if_text = font.render("If" ,True, (0,0,0))
         if_text_rect = if_text.get_rect()

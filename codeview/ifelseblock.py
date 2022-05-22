@@ -47,6 +47,17 @@ class IfElseBlock(IfBlock):
         #delete the resulting borders
         rect = pygame.rect.Rect((border_width - 4, self.image.get_size()[1] - rect.height + 2), (8, CodeBlock.visible_size_y * self.scale_factor - 4))
         pygame.draw.rect(self.image, self.background_color, rect)
+
+        #create else-text visualisation
+        font = pygame.font.Font(None, int(30 * self.scale_factor))
+        else_text = font.render("Else" ,True, (0,0,0))
+        else_text_rect = else_text.get_rect()
+        else_text_rect.centery = (CodeBlock.visible_size_y * 2.5) *self.scale_factor
+        if self.if_true_block:
+            else_text_rect.centery += self.if_true_block.get_chain_size_y()
+        else_text_rect.left = self.distance_x * self.scale_factor + border_width
+        self.image.blit(else_text, else_text_rect)
+
     def get_min_width(self):
         top_width = super().get_min_width()
         bottom_width = 0
@@ -106,6 +117,7 @@ class IfElseBlock(IfBlock):
                     return appended
         
         return super().try_to_connect(block)
+
     def give_keyboard_down_event(self, event):
         super().give_keyboard_down_event(event)
         if self.if_false_block:
