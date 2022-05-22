@@ -40,14 +40,15 @@ class InputField:
             cursor_pos_x += self.left_center.x
             self.cursor_rect = pygame.rect.Rect((cursor_pos_x, 0), (distance/2, text.get_height()))
             self.cursor_rect.centery = self.left_center.y
+
     def give_keyboard_down_event(self, event):
         if self.in_focus and not isinstance(self.value, Block):
             if event.key == pygame.K_BACKSPACE:#delete last letter
                 self.value = self.value[:-1]
                 self.rebuild()
-            else:#add char if it is numeric to value
+            else:#add char if it is numeric or a comma(in the right place) to value
                 char = event.unicode
-                if char.isnumeric():
+                if char.isnumeric() or (char == "." and "." not in self.value and len(self.value) > 0):
                     self.value += char
                     self.rebuild()
         
@@ -121,7 +122,7 @@ class InputField:
         if self.in_focus:
             if pygame.mouse.get_pressed()[0] and not self.rect.collidepoint(pygame.mouse.get_pos()):
                 self.in_focus = False 
-                if self.value == "":
+                if self.value == "":#reset the value to 1 if its empty
                     self.value == "1"
                     self.rebuild()
             else:

@@ -70,7 +70,8 @@ class CodeView(Level):
                 #tell every block, that mouse button 
                 for code_block in self.code_block_list:
                     code_block.mouse_button_up()
-        elif event.type == KEYDOWN:
+
+        elif event.type == KEYDOWN:#give the key down event to the blocks
             for code_block in self.code_block_list:
                 code_block.give_keyboard_down_event(event)
         elif event.type == MOUSEWHEEL:
