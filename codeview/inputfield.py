@@ -8,6 +8,7 @@ class InputField:
         self.scale_factor = 1
         self.build()
         self.left_center = left_center
+        in_focus = False
         
     def build(self):
         if not self.value:
@@ -34,6 +35,8 @@ class InputField:
         """Returns the colliding part in the inputfield"""
         if self.value:
             return self.value.get_collider(mouseposition)
+        else:
+            in_focus = True#?????
 
     def try_to_connect(self, block):
         if self.value:
