@@ -5,6 +5,7 @@ import pygame
 from overworld.config import asset
 from overworld.maprenderer import MapRenderer
 from overworld.entity import Entity
+from overworld.monster import Mon
 
 class OverWorld(Level,Map):
     def __init__(self):
@@ -24,6 +25,7 @@ class OverWorld(Level,Map):
         
         self.maprenderer = MapRenderer(asset,render_map)
         self.entity = Entity(asset, render_map)
+        self.monster = Mon(asset, render_map)
         
         """Entities, Assign Variables etc"""
     def update(self):
@@ -33,10 +35,12 @@ class OverWorld(Level,Map):
         screen.fill((255,255,255))
         self.maprenderer.draw(screen)
         self.entity.draw(screen)
+        self.monster.draw(screen)
         #self.entity.draw(screen)
 
         """Draw everything important on the screen."""
     def give_event(self,event):
         """Get the Events and handle them"""
-        pass
+        if event.type == pygame.KEYDOWN:
+            self.entity.move(event, self.maprenderer.walls)
 
