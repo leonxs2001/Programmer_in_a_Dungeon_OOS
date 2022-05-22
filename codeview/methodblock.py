@@ -128,7 +128,7 @@ class MethodBlock(TwoSidedBlock):
             collider = input_field.get_collider(mouse_position)
             if collider:
                 if collider == input_field.value:
-                    input_field.value = None
+                    input_field.value = 1
                     input_field.rebuild()
                 collider.rebuild()
                 self.rebuild()

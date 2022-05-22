@@ -12,6 +12,7 @@ class IfBlock(TwoSidedBlock):
         self.if_true_block = None
 
         super().__init__()
+        
 
     def build(self):
         #create at first a normal Codeblock with the right size
@@ -30,9 +31,10 @@ class IfBlock(TwoSidedBlock):
         if_text_rect.left = distance
 
         self.size.x = distance * 2 + if_text.get_width()
-  
+        
         self.input_field.left_center = pygame.Vector2(self.size.x + border_width, center_y) + self.position#reset the position of the input field
         self.size.x += self.input_field.get_size().x + distance
+        self.input_field.rebuild()#rebuild the inputfield(cursor movement)
 
         min_size_x = self.get_min_width()
 
@@ -174,14 +176,10 @@ class IfBlock(TwoSidedBlock):
                     self.rebuild()
                     return block
             else:#ask the next block in the condition 
-                last_invisible_rect = self.if_true_block.get_last_invisible_rect()
-                #if the blocks(and its appendix) collide with visible part on invisble part connect them,
-                #the start block should not be appended on another block(is everytime the start)
-                from codeview.startblock import StartBlock
-                if not isinstance(block, StartBlock) and last_invisible_rect.colliderect(block.rect):
-                    self.if_true_block.append(block) 
+                appended = self.if_true_block.try_to_connect(block)
+                if appended:
                     self.rebuild()
-                    return block
+                    return appended
         
         return super().try_to_connect(block)
 
@@ -190,7 +188,7 @@ class IfBlock(TwoSidedBlock):
         collider = self.input_field.get_collider(mouse_position)
         if collider:
             if collider == self.input_field.value:
-                self.input_field.value = None
+                self.input_field.value = 1
                 self.input_field.rebuild()
             collider.rebuild()
             self.rebuild()

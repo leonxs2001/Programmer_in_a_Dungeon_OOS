@@ -5,7 +5,6 @@ from codeview.inputfield import InputField
 class ValueBlock(Block):
     size_y = 30
     distance_x = 7
-    id = "value"
     def __init__(self, name = "+", representation = "+", parameters = ("Zahl1", "Zahl2")):
         background_color = (random.randint(100, 200), random.randint(100, 200), random.randint(100, 200))
         
@@ -97,14 +96,15 @@ class ValueBlock(Block):
     def get_collider(self, mouse_position: pygame.Vector2):
         #go through the inputfields and check if they colliding with the mouse
         for input_field in self.input_fields:
-                #delete the selected block frm line and return it for adding into the blockview blocklist
-                collider = input_field.get_collider(mouse_position)
+            #delete the selected block frm line and return it for adding into the blockview blocklist
+            collider = input_field.get_collider(mouse_position)
+
+            if collider:
                 if collider == input_field.value:
-                    input_field.value = None
-                if collider:
-                    self.rebuild()
-                    collider.rebuild()
-                    return collider
+                    input_field.value = 1
+                self.rebuild()
+                collider.rebuild()
+                return collider
 
         if self.rect.collidepoint(mouse_position):
             self.in_focus = True
