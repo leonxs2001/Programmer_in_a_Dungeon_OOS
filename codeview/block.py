@@ -10,6 +10,8 @@ class Block:
         self.in_focus = False
 
         self.build()
+    def give_keyboard_down_event(self, event):
+        """For processing the Keyboaed input"""
 
     def update_scale_factor(self, scalefactor):
         last_scale_factor = self.scale_factor

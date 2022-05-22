@@ -106,7 +106,10 @@ class IfElseBlock(IfBlock):
                     return appended
         
         return super().try_to_connect(block)
-        
+    def give_keyboard_down_event(self, event):
+        super().give_keyboard_down_event(event)
+        if self.if_false_block:
+            self.if_false_block.give_keyboard_down_event(event)
     def get_collider(self, mouse_position: pygame.Vector2):
         if self.if_false_block:#check collision with blocks in condition false part
                 collider = self.if_false_block.get_collider(mouse_position)

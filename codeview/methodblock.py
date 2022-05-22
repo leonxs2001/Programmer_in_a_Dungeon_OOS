@@ -92,6 +92,11 @@ class MethodBlock(TwoSidedBlock):
         self.adjust_to_parent()
         self.adjust_blocks()
 
+    def give_keyboard_down_event(self, event):
+        super().give_keyboard_down_event(event)
+        for input_field in self.input_fields:#give it to the Input fields
+            input_field.give_keyboard_down_event(event)
+
     def render_text(self, text):
         font = pygame.font.Font(None, int(25 * self.scale_factor))
         return font.render(text + ":" ,True, (0,0,0)) 
@@ -128,7 +133,7 @@ class MethodBlock(TwoSidedBlock):
             collider = input_field.get_collider(mouse_position)
             if collider:
                 if collider == input_field.value:
-                    input_field.value = 1
+                    input_field.value = "1"
                     input_field.rebuild()
                 collider.rebuild()
                 self.rebuild()

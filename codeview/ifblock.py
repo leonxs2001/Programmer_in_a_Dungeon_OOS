@@ -148,6 +148,12 @@ class IfBlock(TwoSidedBlock):
         if self.if_true_block:
             self.if_true_block.adjust_to_parent()
 
+    def give_keyboard_down_event(self, event):
+        super().give_keyboard_down_event(event)
+        self.input_field.give_keyboard_down_event(event)
+        if self.if_true_block:
+            self.if_true_block.give_keyboard_down_event(event)
+
     def try_to_connect(self, block):
         #only connect with the input field or the condition block if the given block is a value block
         if isinstance(block, ValueBlock):
@@ -188,7 +194,7 @@ class IfBlock(TwoSidedBlock):
         collider = self.input_field.get_collider(mouse_position)
         if collider:
             if collider == self.input_field.value:
-                self.input_field.value = 1
+                self.input_field.value = "1"
                 self.input_field.rebuild()
             collider.rebuild()
             self.rebuild()

@@ -6,7 +6,7 @@ class InputField:
     empty_size = pygame.Vector2(70,30)
     distance_x = 7
     def __init__(self, left_center = pygame.Vector2(0,0)):
-        self.value = 1
+        self.value = "1"
         self.scale_factor = 1
         self.left_center = left_center
         self.in_focus = False
@@ -20,7 +20,7 @@ class InputField:
             min_length = self.size.x
             distance = InputField.distance_x * self.scale_factor
             font = pygame.font.Font(None, int(25 * self.scale_factor))
-            text = font.render(str(self.value),True, (0,0,0))
+            text = font.render(self.value,True, (0,0,0))
             text_rect = text.get_rect()
             text_rect.centery = self.size.y / 2
             text_rect.left = distance
@@ -40,7 +40,17 @@ class InputField:
             cursor_pos_x += self.left_center.x
             self.cursor_rect = pygame.rect.Rect((cursor_pos_x, 0), (distance/2, text.get_height()))
             self.cursor_rect.centery = self.left_center.y
-    
+    def give_keyboard_down_event(self, event):
+        if self.in_focus and not isinstance(self.value, Block):
+            if event.key == pygame.K_BACKSPACE:#delete last letter
+                self.value = self.value[:-1]
+                self.rebuild()
+            else:#add char if it is numeric to value
+                char = event.unicode
+                if char.isnumeric():
+                    self.value += char
+                    self.rebuild()
+        
     def rebuild(self):
         if isinstance(self.value, Block):
             self.value.rebuild()
@@ -111,6 +121,9 @@ class InputField:
         if self.in_focus:
             if pygame.mouse.get_pressed()[0] and not self.rect.collidepoint(pygame.mouse.get_pos()):
                 self.in_focus = False 
+                if self.value == "":
+                    self.value == "1"
+                    self.rebuild()
             else:
                 pass#do writing stuff here
         

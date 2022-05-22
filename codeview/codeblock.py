@@ -22,6 +22,10 @@ class CodeBlock(Block):
     def get_size(self):
         return CodeBlock.size.copy() * self.scale_factor
 
+    def give_keyboard_down_event(self, event):
+        if self.next_block:#give it to the next block
+            self.next_block.give_keyboard_down_event(event)
+
     def get_chain_size_y(self):
         """returns the size of all blocks together"""
         if self.next_block:
