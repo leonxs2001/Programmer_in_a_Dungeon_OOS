@@ -93,35 +93,43 @@ class IfElseBlock(IfBlock):
                 if appended:
                     self.rebuild()
                     return appended
-
-        #connect with the condition false blockpart
-        if isinstance(block, TwoSidedBlock):
-            if not self.if_false_block:
-                #create the Rect for Collision
-                pos = pygame.Vector2(IfBlock.border_width * self.scale_factor, CodeBlock.visible_size_y * self.scale_factor * 3)
-                if self.if_true_block:
-                    pos.y += self.if_true_block.get_chain_size_y()
-                pos += self.position
-                size_rect = (self.get_size().x - IfBlock.border_width * self.scale_factor, CodeBlock.invisible_size_y * self.scale_factor)
-
-                conditional_invisble_rect = pygame.rect.Rect(pos, size_rect)
-                if conditional_invisble_rect.colliderect(block.rect):
-                    self.if_false_block = block
-                    self.if_false_block.parent_block = self
-                    self.rebuild()
-                    return block
-            else:#ask the next block in the condition 
-                appended = self.if_false_block.try_to_connect(block)
-                if appended:
-                    self.rebuild()
-                    return appended
         
         return super().try_to_connect(block)
+
+    def try_to_connect_inside(self, block):
+        """Trys to connect with the inside"""
+        appended = super().try_to_connect_inside(block)
+        if appended:
+            return appended
+        
+        #connect with the condition false blockpart
+        if not self.if_false_block:
+            #create the Rect for Collision
+            pos = pygame.Vector2(IfBlock.border_width * self.scale_factor, CodeBlock.visible_size_y * self.scale_factor * 3)
+            if self.if_true_block:
+                pos.y += self.if_true_block.get_chain_size_y()
+            pos += self.position
+            size_rect = (self.get_size().x - IfBlock.border_width * self.scale_factor, CodeBlock.invisible_size_y * self.scale_factor)
+
+            conditional_invisble_rect = pygame.rect.Rect(pos, size_rect)
+            if conditional_invisble_rect.colliderect(block.rect):
+                self.if_false_block = block
+                self.if_false_block.parent_block = self
+                self.rebuild()
+                return block
+        else:#ask the next block in the condition 
+            appended = self.if_false_block.try_to_connect(block)
+            if appended:
+                self.rebuild()
+                return appended
+
+        
 
     def give_keyboard_down_event(self, event):
         super().give_keyboard_down_event(event)
         if self.if_false_block:
             self.if_false_block.give_keyboard_down_event(event)
+
     def get_collider(self, mouse_position: pygame.Vector2):
         if self.if_false_block:#check collision with blocks in condition false part
                 collider = self.if_false_block.get_collider(mouse_position)

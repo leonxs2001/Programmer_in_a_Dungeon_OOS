@@ -170,25 +170,31 @@ class IfBlock(TwoSidedBlock):
 
         #connect with the condition blockpart
         if isinstance(block, TwoSidedBlock):
-            if not self.if_true_block:
-                #create the Rect for Collision
-                pos = (IfBlock.border_width * self.scale_factor, CodeBlock.visible_size_y * self.scale_factor)
-                pos += self.position
-                size_rect = (self.get_size().x - IfBlock.border_width * self.scale_factor, CodeBlock.invisible_size_y * self.scale_factor)
+            appended = self.try_to_connect_inside(block)
+            if appended:
+                return appended
 
-                conditional_invisble_rect = pygame.rect.Rect(pos, size_rect)
-                if conditional_invisble_rect.colliderect(block.rect):
-                    self.if_true_block = block
-                    self.if_true_block.parent_block = self
-                    self.rebuild()
-                    return block
-            else:#ask the next block in the condition 
-                appended = self.if_true_block.try_to_connect(block)
-                if appended:
-                    self.rebuild()
-                    return appended
-        
         return super().try_to_connect(block)
+
+    def try_to_connect_inside(self, block):
+        """Trys to connect with the inside"""
+        if not self.if_true_block:
+            #create the Rect for Collision
+            pos = (IfBlock.border_width * self.scale_factor, CodeBlock.visible_size_y * self.scale_factor)
+            pos += self.position
+            size_rect = (self.get_size().x - IfBlock.border_width * self.scale_factor, CodeBlock.invisible_size_y * self.scale_factor)
+
+            conditional_invisble_rect = pygame.rect.Rect(pos, size_rect)
+            if conditional_invisble_rect.colliderect(block.rect):
+                self.if_true_block = block                    
+                self.if_true_block.parent_block = self
+                self.rebuild()
+                return block
+        else:#ask the next block in the condition 
+            appended = self.if_true_block.try_to_connect(block)
+            if appended:
+                self.rebuild()
+                return appended
 
     def get_collider(self, mouse_position: pygame.Vector2):
         #check the collision with the input field
