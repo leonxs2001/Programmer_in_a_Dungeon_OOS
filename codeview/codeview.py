@@ -1,6 +1,7 @@
 from tabnanny import check
 import pygame
 from pygame.locals import *
+from codeview.selector import Selector
 from codeview.block import Block
 from codeview.operationblock import OperationBlock
 from codeview.variableblock import VariableBlock
@@ -13,7 +14,7 @@ from level import Level
 class CodeView(Level):
     def __init__(self):
         super().__init__()
-
+        self.selector = Selector()
         self.scale_factor = 1
 
         self.is_mouse_button_down = False
@@ -32,26 +33,27 @@ class CodeView(Level):
         
         #list of (start)blocks.
         #ValueBlock(parameters=("B1", "B2"), name="B"), IfBlock(),  OperationBlock(), VariableBlock("test")
-        self.code_block_list = [start,MethodBlock(parameters=("x","y")), ValueBlock(parameters=("A1", "A2"), name="A"),ValueBlock(name = "lajsdflkjasdhlkj", parameters=()), IfElseBlock() ]
+        self.code_block_list = [start,MethodBlock(parameters=("x","y")), ValueBlock(parameters=("A1", "A2"), name="A"),ValueBlock(name = "lajsdflkjasdhlkj", parameters=()), IfElseBlock(), OperationBlock("not", number_of_operators=1) ]
         
     def give_event(self, event):
         if event.type == MOUSEBUTTONDOWN:
             if pygame.mouse.get_pressed()[0]:
-                #save, that mousebutton is pressed and the current mouse position
-                self.is_mouse_button_down = True
-                self.last_mouse_position = pygame.mouse.get_pos()  
+                if not self.selector.check_collision(pygame.Vector2(pygame.mouse.get_pos())):
+                    #save, that mousebutton is pressed and the current mouse position
+                    self.is_mouse_button_down = True
+                    self.last_mouse_position = pygame.mouse.get_pos()  
 
-                #check mousecollison with blocks 
+                    #check mousecollison with blocks 
 
-                for code_block in self.code_block_list[::-1]:#backwards because we want to grab the one we see
-                    #get colliding block or a None
-                    collider = code_block.get_collider(self.last_mouse_position)
-                    if collider and isinstance(collider, Block):
-                        #add colliding block to blocklist(first save in another list to avoid an endless loop) if its not the focused block
-                        if collider == code_block:
-                            self.code_block_list.remove(collider)#remove the element, for putting it later to the end
-                        self.code_block_list.append(collider)
-                        break
+                    for code_block in self.code_block_list[::-1]:#backwards because we want to grab the one we see
+                        #get colliding block or a None
+                        collider = code_block.get_collider(self.last_mouse_position)
+                        if collider and isinstance(collider, Block):
+                            #add colliding block to blocklist(first save in another list to avoid an endless loop) if its not the focused block
+                            if collider == code_block:
+                                self.code_block_list.remove(collider)#remove the element, for putting it later to the end
+                            self.code_block_list.append(collider)
+                            break
 
         elif event.type == MOUSEBUTTONUP:
             if not pygame.mouse.get_pressed()[0]:
@@ -116,3 +118,4 @@ class CodeView(Level):
         screen.fill((255,255,255))
         for code_block in self.code_block_list:
             code_block.draw(screen)
+        self.selector.draw(screen)
