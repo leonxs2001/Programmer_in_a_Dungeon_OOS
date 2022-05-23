@@ -1,5 +1,6 @@
 import pygame
 from pygame.locals import *
+from codeview.deletemenu import DeleteMenu
 from codeview.selector import Selector
 from codeview.block import Block
 from codeview.startblock import *
@@ -12,6 +13,7 @@ class CodeView(Level):
 
         self.is_mouse_button_down = False
         self.last_mouse_position = pygame.Vector2(0,0)
+        self.delete_menu = DeleteMenu()
 
         self.code_block_list = [StartBlock(), InitializationBlock()]
         
@@ -50,9 +52,14 @@ class CodeView(Level):
 
         elif event.type == MOUSEBUTTONUP:
             if not pygame.mouse.get_pressed()[0]:
-                #check for new possible connections
+                
+                #check for new possible connections and deletion
                 for code_block1 in self.code_block_list:
                     if code_block1.in_focus:
+                        if self.delete_menu.is_mouse_on_play():#try do delete the block in focus
+                            if not (isinstance(code_block1, StartBlock) or isinstance(code_block1, InitializationBlock)):
+                                self.code_block_list.remove(code_block1)
+                                break
                         for code_block2 in self.code_block_list[::-1]:#backwards because the last one is the one we see
                             if code_block1 != code_block2:
                                 #try to connect the focused block with every else
@@ -107,9 +114,13 @@ class CodeView(Level):
         for code_block in self.code_block_list:
             code_block.update()
 
+        self.delete_menu.update()
+
     def draw(self, screen):
         #draw background
         screen.fill((255,255,255))
         for code_block in self.code_block_list:
             code_block.draw(screen)
         self.selector.draw(screen)
+
+        self.delete_menu.draw(screen)
