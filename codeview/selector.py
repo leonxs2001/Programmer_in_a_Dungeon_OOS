@@ -3,7 +3,7 @@ import pygame
 from codeview.blockcreation import block_dict
 class Selector:
     arrow_size = pygame.Vector2(20,40)
-    background_color = (200,200,200)
+    background_color = (220,220,220)
     def __init__(self):
         self.open = False
         self.build()
@@ -63,7 +63,7 @@ class Selector:
         if self.arrow_image_rect.collidepoint(mouse_position):
             self.open = not self.open
             if self.open:
-                self.arrow_image_rect.left = 400
+                self.arrow_image_rect.left = 400 -1
                 self.drawn_arrow_image = pygame.transform.rotate(self.arrow_image, 180)
             else:
                self.arrow_image_rect.left = 0

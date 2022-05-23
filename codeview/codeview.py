@@ -1,15 +1,8 @@
-from asyncio import selector_events
 import pygame
 from pygame.locals import *
 from codeview.selector import Selector
 from codeview.block import Block
-from codeview.operationblock import OperationBlock
-from codeview.variableblock import VariableBlock
-from codeview.ifelseblock import IfElseBlock
-from codeview.valueblock import ValueBlock
-from codeview.ifblock import IfBlock
-from codeview.startblock import StartBlock
-from codeview.methodblock import MethodBlock
+from codeview.startblock import *
 from level import Level
 class CodeView(Level):
     def __init__(self):
@@ -20,20 +13,7 @@ class CodeView(Level):
         self.is_mouse_button_down = False
         self.last_mouse_position = pygame.Vector2(0,0)
 
-        start = StartBlock((255,130,0))
-        bla = MethodBlock()
-        bla.append(MethodBlock())
-        start.position = pygame.Vector2(600,400)
-        start.append(MethodBlock())
-        start.append(MethodBlock())
-        start.append(MethodBlock())
-        start.append(MethodBlock())
-        start.append(MethodBlock(parameters=("number",), name="count"))
-        start.append(bla)
-        
-        #list of (start)blocks.
-        #ValueBlock(parameters=("B1", "B2"), name="B"), IfBlock(),  OperationBlock(), VariableBlock("test")
-        self.code_block_list = [start, ]
+        self.code_block_list = [StartBlock(), InitializationBlock()]
         
     def give_event(self, event):
         if event.type == MOUSEBUTTONDOWN:

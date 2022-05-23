@@ -88,7 +88,7 @@ class IfBlock(TwoSidedBlock):
         self.image.blit(self.code_block_image, rect)
 
         #delete the resulting borders
-        pygame.draw.rect(self.image, self.background_color, pygame.rect.Rect((border_width - 2, 2 + rect.top), (4, CodeBlock.visible_size_y * self.scale_factor - 4)))
+        pygame.draw.rect(self.image, self.background_color, pygame.rect.Rect((border_width - 4, 2 + rect.top), (8, CodeBlock.visible_size_y * self.scale_factor - 4)))
     
     def get_size(self):
         return self.size.copy()
