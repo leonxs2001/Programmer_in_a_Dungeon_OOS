@@ -1,19 +1,20 @@
-import random
-import copy
 import pygame
-from codeview.block import Block
-from codeview.inputfield import InputField
-class ValueBlock(Block):
-    size_y = 30
+import copy
+from codeview.block.twosidedblock import TwoSidedBlock
+from codeview.block.valueblock import ValueBlock
+from codeview.block.inputfield import InputField
+from codeview.block.codeblock import *
+
+class MethodBlock(TwoSidedBlock):
     distance_x = 7
-    def __init__(self, name = "+", representation = "+", parameters = ("Zahl1", "Zahl2")):
-        background_color = (random.randint(100, 200), random.randint(100, 200), random.randint(100, 200))
-        
+    def __init__(self, name="print", representation = "print", parameters = ()):
         self.name = name
         self.representation = representation
         self.parameters = parameters
         self.input_fields = []
-        super().__init__(background_color)
+        super().__init__()
+        if len(self.parameters) == 2:
+            self.input_fields[0].id = "sp"
 
     def __copy__(self):
         #overwrite the copy method
@@ -27,27 +28,24 @@ class ValueBlock(Block):
         return result
 
     def get_size(self):
-        return self.size
-    
+        return self.size 
+
     def build(self):
-        
+
         next_start_x = 0
-        self.size = pygame.Vector2(0, ValueBlock.size_y * self.scale_factor)
+        self.size = pygame.Vector2(0, CodeBlock.size.y * self.scale_factor )
         texts = []
 
         #create methodname visualisation
-        
         name_text = self.render_text(self.name)
         name_text_rect = name_text.get_rect()
         name_text_rect.centery = self.size.y / 2
-        name_text_rect.left = ValueBlock.distance_x * self.scale_factor
-
-        #calculate the start for the parameter(length of the name text + the space bewteen)
-        next_start_x = ValueBlock.distance_x * self.scale_factor * 2
-        next_start_x += name_text.get_size()[0]
-        
+        name_text_rect.left = MethodBlock.distance_x * self.scale_factor
         #create parameter visualisation
         if len(self.parameters) > 0:
+            #calculate the start for the parameter(length of the name text + the space bewteen)
+            next_start_x = MethodBlock.distance_x * self.scale_factor * 2
+            next_start_x += name_text.get_size()[0]
 
             i = 0
             for parameter in self.parameters :
@@ -57,7 +55,7 @@ class ValueBlock(Block):
                 text_rect.centery = self.size.y / 2
                 text_rect.left = next_start_x
                 texts.append((text.copy(), text_rect.copy()))#can blit if the backgroundsurface exist
-                next_start_x += text.get_width() + ValueBlock.distance_x * self.scale_factor
+                next_start_x += text.get_width() + MethodBlock.distance_x * self.scale_factor
 
                 #calculate the position for the current inputfield and create it
                 center_y = self.size.y / 2 
@@ -76,17 +74,22 @@ class ValueBlock(Block):
                     #if the input fields already exist add theire width
                     next_start_x += self.input_fields[i].get_size().x
                 #add the space between text and inputfield
-                next_start_x += ValueBlock.distance_x * self.scale_factor
-                i+=1   
+                next_start_x += MethodBlock.distance_x * self.scale_factor
+                i += 1   
 
         #set the width of the whole Surface to the Endposition
         self.size.x = next_start_x
 
+        #scale the Methodblock to normal Codeblock size if it is to small
+        distance = CodeBlock.size.x * self.scale_factor - self.size.x
+        if distance > 0:
+            self.size.x += distance
+            for i, input_field in enumerate(self.input_fields):
+                texts[i][1].left += distance
+                input_field.move(pygame.Vector2(distance,0))
+
         #create background surface
-        self.image = pygame.Surface(self.size)
-        self.image.fill(self.background_color)
-        pygame.draw.rect(self.image, (0,0,0), pygame.rect.Rect((0,0), self.size), width=2)
-        self.rect = self.image.get_rect()
+        super().build()
 
         #blit the name(now we have the SUrface to blit on))
         self.image.blit(name_text, name_text_rect)
@@ -94,67 +97,63 @@ class ValueBlock(Block):
         #blit the texts with the rect(both in a tuper)
         for text in texts:
             self.image.blit(text[0], text[1])
-
-    def render_text(self, text):
-        font = pygame.font.Font(None, int(25 * self.scale_factor))
-        return font.render(text + ":" ,True, (0,0,0)) 
-
+                
     def rebuild(self):
         """Rebuild self and all input_fields"""
         for input_field in self.input_fields:
             input_field.rebuild()
         self.build()
+        self.adjust_to_parent()
+        self.adjust_blocks()
 
     def give_keyboard_down_event(self, event):
+        super().give_keyboard_down_event(event)
         for input_field in self.input_fields:#give it to the Input fields
             input_field.give_keyboard_down_event(event)
 
-    def get_collider(self, mouse_position: pygame.Vector2):
-        #go through the inputfields and check if they colliding with the mouse
+    def render_text(self, text):
+        font = pygame.font.Font(None, int(25 * self.scale_factor))
+        return font.render(text + ":" ,True, (0,0,0)) 
+
+    def adjust_to_parent(self):
+        #track the current position adjust to parent and give the movement to the inputfields
+        position = self.position
+        super().adjust_to_parent()
+        movement = self.position - position
         for input_field in self.input_fields:
-            #delete the selected block frm line and return it for adding into the blockview blocklist
-            collider = input_field.get_collider(mouse_position)
-
-            if collider:
-                if collider == input_field.value:
-                    input_field.value = "1"
-                self.rebuild()
-                collider.rebuild()
-                return collider
-
-        if self.rect.collidepoint(mouse_position):
-            self.in_focus = True
-            return self
+            input_field.move(movement)
+            
+    def update_scale_factor(self, scalefactor):
+        for input_field in self.input_fields:
+            input_field.update_scale_factor(scalefactor)
+        super().update_scale_factor(scalefactor)     
 
     def try_to_connect(self, block):
-
-        #only connect if the given block is a value block
-        if isinstance(block, ValueBlock) and block != self:
+        #only connect with the input fild if the given block is a value block
+        if isinstance(block, ValueBlock):
+            
             for input_field in self.input_fields:
                 appended = input_field.try_to_connect(block)
                 if appended:
                     self.rebuild()
                     return appended
 
-    def adjust_to_input_field(self, input_field):
-        old_position = self.position
-        self.position = input_field.left_center - (0, (ValueBlock.size_y * self.scale_factor) / 2)
-        #also move the input fields to the new correct position
-        for input_field in self.input_fields:
-            input_field.move(self.position - old_position)
+        return super().try_to_connect(block)
 
-    def __str__(self):
-        res = "<"+self.name + f" Inputfields:"
-        for input in self.input_fields:
-            res+= f", {input}"
-        res+= f"; Size: {self.get_size()}"
-        res+=">"
-        return res
-
-    def update_scale_factor(self, scalefactor):
+    def get_collider(self, mouse_position: pygame.Vector2):
+        #go through the inputfields and check if they colliding with the mouse
         for input_field in self.input_fields:
-            input_field.update_scale_factor(scalefactor)
-        super().update_scale_factor(scalefactor)
+            #delete the selected block frm line and return it for adding into the blockview blocklist
+            collider = input_field.get_collider(mouse_position)
+            if collider:
+                if collider == input_field.value:
+                    input_field.value = "1"
+                    input_field.rebuild()
+                self.rebuild()
+                collider.rebuild()
+                return collider
+
+        return super().get_collider(mouse_position)
 
     def move(self, movement: pygame.Vector2):
         super().move(movement)

@@ -1,6 +1,6 @@
 from shutil import move
 import pygame
-from codeview.block import Block
+from codeview.block.block import Block
 
 class InputField:
     empty_size = pygame.Vector2(70,30)

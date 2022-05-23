@@ -1,8 +1,8 @@
-from codeview.valueblock import ValueBlock
-from codeview.ifblock import IfBlock
-from codeview.ifelseblock import IfElseBlock
-from codeview.methodblock import MethodBlock
-from codeview.operationblock import OperationBlock
+from codeview.block.valueblock import ValueBlock
+from codeview.block.ifblock import IfBlock
+from codeview.block.ifelseblock import IfElseBlock
+from codeview.block.methodblock import MethodBlock
+from codeview.block.operationblock import OperationBlock
 import pygame
 pygame.font.init()
 #Blockdict with every possible block

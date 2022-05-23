@@ -1,6 +1,5 @@
-from tracemalloc import start
 import pygame
-from codeview.codeblock import CodeBlock
+from codeview.block.codeblock import CodeBlock
 
 class StartBlock(CodeBlock):
     start_position = pygame.Vector2(770,215)

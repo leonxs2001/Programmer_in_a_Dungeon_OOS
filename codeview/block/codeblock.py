@@ -1,5 +1,5 @@
 import pygame
-from codeview.block import Block
+from codeview.block.block import Block
 #set constant for the inivisible color(done bycolorkey later)
 INVISIBLE_COLOR = (255,1,1)
 class CodeBlock(Block):
@@ -119,7 +119,7 @@ class CodeBlock(Block):
 
             #if the blocks(and its appendix) collide with visible part on invisble part connect them,
             #the start block should not be appended on another block(is everytime the start)
-            from codeview.startblock import StartBlock
+            from codeview.block.startblock import StartBlock
             if not isinstance(block, StartBlock) and own_invisible_rect.colliderect(block.rect):
                 self.append(block)
                 return block

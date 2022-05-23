@@ -1,5 +1,5 @@
 import pygame
-from codeview.methodblock import MethodBlock
+from codeview.block.methodblock import MethodBlock
 class VariableBlock(MethodBlock):
     def __init__(self, variable_name):
         super().__init__("", variable_name, parameters=(variable_name+" = ",))

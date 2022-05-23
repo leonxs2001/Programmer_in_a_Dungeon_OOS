@@ -1,4 +1,4 @@
-from codeview.codeblock import *
+from codeview.block.codeblock import *
 class TwoSidedBlock(CodeBlock):
     def __init__(self):
         self.parent_block = None

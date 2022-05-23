@@ -1,5 +1,5 @@
 import pygame
-from codeview.valueblock import ValueBlock
+from codeview.block.valueblock import ValueBlock
 class OperationBlock(ValueBlock):
     def __init__(self, operation = "+", number_of_operators = 2):
         if number_of_operators == 1:

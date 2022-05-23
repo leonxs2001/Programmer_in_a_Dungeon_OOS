@@ -1,7 +1,7 @@
 import pygame
-from codeview.codeblock import *
-from codeview.ifblock import IfBlock
-from codeview.valueblock import ValueBlock
+from codeview.block.codeblock import *
+from codeview.block.ifblock import IfBlock
+from codeview.block.valueblock import ValueBlock
 class IfElseBlock(IfBlock):
     def __init__(self):
         self.if_false_block = None

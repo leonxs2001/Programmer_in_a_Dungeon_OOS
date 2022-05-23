@@ -1,9 +1,9 @@
 import copy
 import pygame
-from codeview.inputfield import InputField
-from codeview.valueblock import ValueBlock
-from codeview.codeblock import *
-from codeview.twosidedblock import TwoSidedBlock
+from codeview.block.inputfield import InputField
+from codeview.block.valueblock import ValueBlock
+from codeview.block.codeblock import *
+from codeview.block.twosidedblock import TwoSidedBlock
 class IfBlock(TwoSidedBlock):
     start_position = pygame.Vector2(100,100)
     border_width = 30# is border the right name?????????????????????????????

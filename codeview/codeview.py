@@ -2,8 +2,8 @@ import pygame
 from pygame.locals import *
 from codeview.deletemenu import DeleteMenu
 from codeview.selector import Selector
-from codeview.block import Block
-from codeview.startblock import *
+from codeview.block.block import Block
+from codeview.block.startblock import *
 from level import Level
 class CodeView(Level):
     def __init__(self):

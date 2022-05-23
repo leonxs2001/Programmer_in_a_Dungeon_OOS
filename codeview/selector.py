@@ -1,6 +1,6 @@
 import copy
 import pygame
-from codeview.blockcreation import block_dict
+from codeview.block.blockcreation import block_dict
 class Selector:
     arrow_size = pygame.Vector2(20,40)
     background_color = (220,220,220)
