@@ -1,4 +1,4 @@
-from tabnanny import check
+from asyncio import selector_events
 import pygame
 from pygame.locals import *
 from codeview.selector import Selector
@@ -33,12 +33,25 @@ class CodeView(Level):
         
         #list of (start)blocks.
         #ValueBlock(parameters=("B1", "B2"), name="B"), IfBlock(),  OperationBlock(), VariableBlock("test")
-        self.code_block_list = [start,MethodBlock(parameters=("x","y")), ValueBlock(parameters=("A1", "A2"), name="A"),ValueBlock(name = "lajsdflkjasdhlkj", parameters=()), IfElseBlock(), OperationBlock("not", number_of_operators=1) ]
+        self.code_block_list = [start, ]
         
     def give_event(self, event):
         if event.type == MOUSEBUTTONDOWN:
             if pygame.mouse.get_pressed()[0]:
-                if not self.selector.check_collision(pygame.Vector2(pygame.mouse.get_pos())):
+                mouse_position = pygame.mouse.get_pos()
+                selector_collision = self.selector.check_collision(pygame.Vector2(mouse_position))
+                if selector_collision:
+                    if isinstance(selector_collision, Block):#add to the block list
+                        
+                        selector_collision.in_focus = True
+                        self.is_mouse_button_down = True
+                        self.last_mouse_position = mouse_position#reset last mouseposition
+                        selector_collision.update_scale_factor(self.scale_factor)
+                        pos = mouse_position - selector_collision.get_size() / 2
+                        selector_collision.move(pos - selector_collision.position)
+            
+                        self.code_block_list.append(selector_collision)
+                else:
                     #save, that mousebutton is pressed and the current mouse position
                     self.is_mouse_button_down = True
                     self.last_mouse_position = pygame.mouse.get_pos()  
@@ -78,15 +91,16 @@ class CodeView(Level):
             for code_block in self.code_block_list:
                 code_block.give_keyboard_down_event(event)
         elif event.type == MOUSEWHEEL:
-            #update scalefactor in borders from 0.4 to 3.5 
-            self.scale_factor += event.y/10
-            if self.scale_factor < 0.4:
-                self.scale_factor = 0.4
-            elif self.scale_factor > 3.5:
-                self.scale_factor = 3.5
-            #give new scalefactor to the blocks
-            for code_block in self.code_block_list:
-                code_block.update_scale_factor(self.scale_factor)
+            if not self.selector.scroll(event.y):
+                #update scalefactor in borders from 0.4 to 3.5 
+                self.scale_factor += event.y/10
+                if self.scale_factor < 0.4:
+                    self.scale_factor = 0.4
+                elif self.scale_factor > 3.5:
+                    self.scale_factor = 3.5
+                #give new scalefactor to the blocks
+                for code_block in self.code_block_list:
+                    code_block.update_scale_factor(self.scale_factor)
 
     def update(self):
         #proccess the viewmovement if mousebutton is pressed

@@ -1,4 +1,5 @@
 import random
+import copy
 import pygame
 from codeview.block import Block
 from codeview.inputfield import InputField
@@ -14,9 +15,20 @@ class ValueBlock(Block):
         self.input_fields = []
         super().__init__(background_color)
 
+    def __copy__(self):
+        #overwrite the copy method
+        cls = self.__class__
+        result = cls.__new__(cls)
+        result.__dict__.update(self.__dict__)
+        new_input_fields = []
+        for input_field in self.input_fields:
+            new_input_fields.append(copy.copy(input_field))
+        result.input_fields = new_input_fields
+        return result
+
     def get_size(self):
         return self.size
-
+    
     def build(self):
         
         next_start_x = 0
@@ -155,7 +167,6 @@ class ValueBlock(Block):
             input_field.draw(screen)
 
     def update(self):
-        #print(self)
         super().update()
         for input_field in self.input_fields:
             input_field.update()

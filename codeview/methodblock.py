@@ -1,4 +1,5 @@
 import pygame
+import copy
 from codeview.twosidedblock import TwoSidedBlock
 from codeview.valueblock import ValueBlock
 from codeview.inputfield import InputField
@@ -14,6 +15,17 @@ class MethodBlock(TwoSidedBlock):
         super().__init__()
         if len(self.parameters) == 2:
             self.input_fields[0].id = "sp"
+
+    def __copy__(self):
+        #overwrite the copy method
+        cls = self.__class__
+        result = cls.__new__(cls)
+        result.__dict__.update(self.__dict__)
+        new_input_fields = []
+        for input_field in self.input_fields:
+            new_input_fields.append(copy.copy(input_field))
+        result.input_fields = new_input_fields
+        return result
 
     def get_size(self):
         return self.size 

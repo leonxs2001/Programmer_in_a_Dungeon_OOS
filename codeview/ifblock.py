@@ -1,3 +1,4 @@
+import copy
 import pygame
 from codeview.inputfield import InputField
 from codeview.valueblock import ValueBlock
@@ -13,6 +14,14 @@ class IfBlock(TwoSidedBlock):
 
         super().__init__()
         
+    def __copy__(self):
+        #overwrite the copy method
+        cls = self.__class__
+        result = cls.__new__(cls)
+        result.__dict__.update(self.__dict__)
+        new_input_fields = []
+        result.input_field = copy.copy(self.input_field)
+        return result
 
     def build(self):
         #create at first a normal Codeblock with the right size

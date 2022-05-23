@@ -11,3 +11,5 @@ class OperationBlock(ValueBlock):
     def render_text(self, text):
         font = pygame.font.Font(None, int(25 * self.scale_factor))
         return font.render(text ,True, (0,0,0)) 
+    def update(self):
+        super().update()
