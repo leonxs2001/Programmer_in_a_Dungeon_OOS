@@ -52,10 +52,11 @@ class InputField:
                 self.value = self.value[:-1]
                 self.rebuild()
             else:#add char if it is numeric or a comma(in the right place) to value
-                char = event.unicode
-                if char.isnumeric() or (char == "." and "." not in self.value and len(self.value) > 0):
-                    self.value += char
-                    self.rebuild()
+                if len(self.value) <= 5:
+                    char = event.unicode
+                    if char.isnumeric() or (char == "." and "." not in self.value and len(self.value) > 0):
+                        self.value += char
+                        self.rebuild()
         
     def rebuild(self):
         if isinstance(self.value, Block):

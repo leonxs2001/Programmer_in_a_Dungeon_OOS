@@ -40,7 +40,7 @@ class Selector:
     def scroll(self, scrollment):
         if self.open and pygame.mouse.get_pos()[0] < 400:
             #check if the scrollment stays in the right frame
-            scrollment = scrollment * 9
+            scrollment = scrollment * 12
             first_y = self.blocks[0][1].top 
             next_first_y = first_y + scrollment
      
