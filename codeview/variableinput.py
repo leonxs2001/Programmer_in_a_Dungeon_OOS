@@ -1,10 +1,15 @@
 import pygame
 class VariableInput:
-    def __init__(self, heading) -> None:
+    def __init__(self, heading):
         self.aktiv = False
         self.value = ""
         self.size = pygame.Vector2(400,220)
 
+        self.heading = heading
+        self.build()
+        
+    def build(self):
+        print(self.size)
         #draw the frame and the text in it
         self.frame_image = pygame.Surface(self.size)
         self.frame_image.fill((220,220,220))
@@ -13,13 +18,13 @@ class VariableInput:
         self.frame_rect.center = (640, 250)
 
         font = pygame.font.Font(None, 45)
-        text = font.render(heading, True, (0,0,0))
+        text = font.render(self.heading, True, (0,0,0))
         text_rect = text.get_rect()
         text_rect.center = (200, 40)
         self.frame_image.blit(text, text_rect)
 
         #draw inputfield
-        self.input_size = self.size = pygame.Vector2(300, 40)
+        self.input_size = pygame.Vector2(300, 40)
         self.input_field = pygame.Surface(self.input_size)
         self.input_field.fill((255,255,255))
         self.input_field_rect = self.input_field.get_rect()
@@ -40,7 +45,7 @@ class VariableInput:
         self.cursor_rect.top = self.text_rect.top
 
         #draw Button
-        self.button_size = self.size = pygame.Vector2(250, 60)
+        self.button_size = pygame.Vector2(250, 60)
         self.button = pygame.Surface(self.button_size)
         self.button.fill((200,200,200))
         self.button_rect = self.button.get_rect()
@@ -76,7 +81,10 @@ class VariableInput:
         if self.button_rect.collidepoint(mouse_position):
             if self.value != "" and self.value[0].isalpha:
                 self.aktiv = False
-                return self.value 
+                value = self.value
+                self.value = ""
+                self.build()
+                return value
         else:
             self.value = ""
 

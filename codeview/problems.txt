@@ -4,4 +4,6 @@ shoot fehlt in Methods(andere ähnliche auch)
 Keine Inputfields in der Auswahl
 new variables are on the bottom
 /0
+cancle button on variableinput
+
 check in player if value is a tuple
