@@ -60,9 +60,12 @@ class Mon(pygame.sprite.Sprite):
 
 
 
-    def move(self, event, groups:List):
+    def move(self):
 
         temp = pygame.sprite.Group()
+        for treasure in self.monstergroup:
+            treasure.rect.x += 2
+
 
       
 
