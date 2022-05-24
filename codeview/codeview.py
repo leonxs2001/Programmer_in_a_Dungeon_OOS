@@ -1,5 +1,6 @@
 import pygame
 from pygame.locals import *
+from codeview.block.variableblock import VariableDefinitionBlock
 from codeview.deletemenu import DeleteMenu
 from codeview.selector import Selector
 from codeview.block.block import Block
@@ -24,9 +25,9 @@ class CodeView(Level):
                 selector_collision = self.selector.check_collision(pygame.Vector2(mouse_position))
                 if selector_collision:
                     if isinstance(selector_collision, Block):#add to the block list
-                        
-                        selector_collision.in_focus = True
-                        self.is_mouse_button_down = True
+                        if not isinstance(selector_collision, VariableDefinitionBlock):
+                            selector_collision.in_focus = True
+                            self.is_mouse_button_down = True
                         self.last_mouse_position = mouse_position#reset last mouseposition
                         selector_collision.update_scale_factor(self.scale_factor)
                         pos = mouse_position - selector_collision.get_size() / 2
@@ -77,6 +78,7 @@ class CodeView(Level):
         elif event.type == KEYDOWN:#give the key down event to the blocks
             for code_block in self.code_block_list:
                 code_block.give_keyboard_down_event(event)
+            self.selector.give_keyboard_down_event(event)
         elif event.type == MOUSEWHEEL:
             if not self.selector.scroll(event.y):
                 #update scalefactor in borders from 0.4 to 3.5 

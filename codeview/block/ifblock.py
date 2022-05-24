@@ -6,7 +6,7 @@ from codeview.block.codeblock import *
 from codeview.block.twosidedblock import TwoSidedBlock
 class IfBlock(TwoSidedBlock):
     start_position = pygame.Vector2(100,100)
-    border_width = 30# is border the right name?????????????????????????????
+    border_width = 30
     distance_x = 7
     def __init__(self):
         self.input_field = InputField()
@@ -19,7 +19,6 @@ class IfBlock(TwoSidedBlock):
         cls = self.__class__
         result = cls.__new__(cls)
         result.__dict__.update(self.__dict__)
-        new_input_fields = []
         result.input_field = copy.copy(self.input_field)
         return result
 
