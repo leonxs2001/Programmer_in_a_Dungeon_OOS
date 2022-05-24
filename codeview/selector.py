@@ -59,7 +59,7 @@ class Selector:
     def scroll(self, scrollment):
         if self.open and pygame.mouse.get_pos()[0] < 400:
             #check if the scrollment stays in the right frame
-            scrollment = scrollment * 12
+            scrollment = scrollment * 20
             first_y = self.blocks[0][1].top 
             next_first_y = first_y + scrollment
      
@@ -97,9 +97,11 @@ class Selector:
         if self.wait_for_input:
             result = self.variable_input.check_collision(mouse_position)
             if result:#got an input
-                if result not in self.variables:
-                    self.wait_for_input = False
-                    return self.create_new_variable(result)
+                if isinstance(result, str):
+                    if result not in self.variables:
+                        self.wait_for_input = False
+                        return self.create_new_variable(result)
+            self.wait_for_input = False
             return True
         else:
             if self.arrow_image_rect.collidepoint(mouse_position):

@@ -20,6 +20,7 @@ class CodeView(Level):
 
         self.code_block_list = [StartBlock(), InitializationBlock()]
         self.wait_for_input = False
+        self.wait_for_selection = False
 
         self.variable_input = VariableInput("Name your Code:")
 
@@ -33,16 +34,19 @@ class CodeView(Level):
                 if pygame.mouse.get_pressed()[0]:
                     result = self.variable_input.check_collision(pygame.mouse.get_pos())
                     if result:
-                        self.wait_for_input = False
-                        code = ""
-                        initialization_code = ""
-                    
-                        for block in self.code_block_list:
-                            if isinstance(block, StartBlock):
-                                code = block.get_code_string()
-                            elif isinstance(block, InitializationBlock):
-                                initialization_code = block.get_code_string()
-                        self.data_accessor.save_item(result, code, initialization_code)
+                        if isinstance(result, str):
+                            self.wait_for_input = False
+                            code = ""
+                            initialization_code = ""
+                        
+                            for block in self.code_block_list:
+                                if isinstance(block, StartBlock):
+                                    code = block.get_code_string()
+                                elif isinstance(block, InitializationBlock):
+                                    initialization_code = block.get_code_string()
+                            self.data_accessor.save_item(result, code, initialization_code)
+                        else:
+                            self.wait_for_input = False
                     
         else:
             if event.type == MOUSEBUTTONDOWN:
@@ -51,6 +55,8 @@ class CodeView(Level):
                     #check if we pressed save
                     if self.menu.is_mouse_on_save():
                         self.wait_for_input = True
+                    elif self.menu.is_mouse_on_load():
+                        self.wait_for_selection = True
                     else:
                         #check if we got a new Block by colliding
                         selector_collision = self.selector.check_collision(pygame.Vector2(mouse_position))

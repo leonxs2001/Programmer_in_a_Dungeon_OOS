@@ -1,4 +1,5 @@
 import pygame
+from pylint import modify_sys_path
 class VariableInput:
     def __init__(self, heading):
         self.aktiv = False
@@ -9,7 +10,6 @@ class VariableInput:
         self.build()
         
     def build(self):
-        print(self.size)
         #draw the frame and the text in it
         self.frame_image = pygame.Surface(self.size)
         self.frame_image.fill((220,220,220))
@@ -44,19 +44,34 @@ class VariableInput:
         self.cursor_rect.left = self.text_rect.right + 3
         self.cursor_rect.top = self.text_rect.top
 
-        #draw Button
-        self.button_size = pygame.Vector2(250, 60)
-        self.button = pygame.Surface(self.button_size)
-        self.button.fill((200,200,200))
-        self.button_rect = self.button.get_rect()
-        pygame.draw.rect(self.button, (0,0,0), self.button_rect, width=2)
-        self.button_rect.center = (640, 300)
+        self.button_size = pygame.Vector2(140, 60)
+        #draw confirm Button
+        self.confirm_button = pygame.Surface(self.button_size)
+        self.confirm_button.fill((200,200,200))
+        self.confirm_button_rect = self.confirm_button.get_rect()
+        pygame.draw.rect(self.confirm_button, (0,0,0), self.confirm_button_rect, width=2)
+        self.confirm_button_rect.centery = 300
+        self.confirm_button_rect.left = self.input_field_rect.left
 
         font = pygame.font.Font(None, 40)
         text = font.render("Confirm!", True, (0,0,0))
         text_rect = text.get_rect()
-        text_rect.center = (125, 30)
-        self.button.blit(text, text_rect)
+        text_rect.center = (70, 30)
+        self.confirm_button.blit(text, text_rect)
+
+        #draw cancel button
+        self.cancel_button_size = pygame.Vector2(250, 60)
+        self.cancel_button = pygame.Surface(self.button_size)
+        self.cancel_button.fill((200,200,200))
+        self.cancel_button_rect = self.cancel_button.get_rect()
+        pygame.draw.rect(self.cancel_button, (0,0,0), self.cancel_button_rect, width=2)
+        self.cancel_button_rect.centery = 300
+        self.cancel_button_rect.right = self.input_field_rect.right
+
+        text = font.render("Cancel!", True, (0,0,0))
+        text_rect = text.get_rect()
+        text_rect.center = (70, 30)
+        self.cancel_button.blit(text, text_rect)
 
     def give_keyboard_down_event(self, event):
         if self.aktiv:
@@ -78,13 +93,17 @@ class VariableInput:
         else:
             self.aktiv = False
         #check collision with the Button
-        if self.button_rect.collidepoint(mouse_position):
+        if self.confirm_button_rect.collidepoint(mouse_position):
             if self.value != "" and self.value[0].isalpha:
                 self.aktiv = False
                 value = self.value
                 self.value = ""
                 self.build()
                 return value
+        elif self.cancel_button_rect.collidepoint(mouse_position):#return true if ready
+            self.value = ""
+            self.build()
+            return True
         else:
             self.value = ""
 
@@ -96,4 +115,5 @@ class VariableInput:
             self.cursor_counter += 1
             if self.cursor_counter % 40 < 25:
                 pygame.draw.rect(screen, (0,0,0),self.cursor_rect)
-        screen.blit(self.button, self.button_rect)
+        screen.blit(self.confirm_button, self.confirm_button_rect)
+        screen.blit(self.cancel_button, self.cancel_button_rect)
