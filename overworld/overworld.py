@@ -5,7 +5,7 @@ import pygame
 from overworld.config import asset
 from overworld.maprenderer import MapRenderer
 from overworld.entity import Entity
-from overworld.monster import Mon
+from overworld.enemy import Mon
 
 class OverWorld(Level,Map):
     def __init__(self):
