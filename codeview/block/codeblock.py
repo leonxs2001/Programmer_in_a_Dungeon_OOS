@@ -119,13 +119,14 @@ class CodeBlock(Block):
 
             #if the blocks(and its appendix) collide with visible part on invisble part connect them,
             #the start block should not be appended on another block(is everytime the start)
-            from codeview.block.startblock import StartBlock
-            if not isinstance(block, StartBlock) and own_invisible_rect.colliderect(block.rect):
-                self.append(block)
-                return block
-            elif not isinstance(block, StartBlock) and block.parent_block and other_invisible_rect.colliderect(self.rect):
-                block.append(self)
-                return self
+            from codeview.block.startblock import StartBlock , InitializationBlock
+            if not (isinstance(block, StartBlock) or isinstance(block, InitializationBlock)):
+                if own_invisible_rect.colliderect(block.rect):
+                    self.append(block)
+                    return block
+                elif block.parent_block and other_invisible_rect.colliderect(self.rect):
+                    block.append(self)
+                    return self
 
     def adjust_blocks(self):
         """Adjust the next block(if existing) to the right position beneath self."""
