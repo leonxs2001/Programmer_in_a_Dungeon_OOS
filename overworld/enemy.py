@@ -1,3 +1,4 @@
+from random import random, randrange
 from typing import List, Tuple
 import pygame
 
@@ -60,11 +61,48 @@ class Mon(pygame.sprite.Sprite):
 
 
 
-    def move(self):
+    def update(self, groups:List):
 
-        temp = pygame.sprite.Group()
+
         for treasure in self.monstergroup:
-            treasure.rect.x += 2
+            
+            temp = pygame.sprite.Group()
+
+            rnd = randrange(4)
+
+            if rnd == 0:
+                    
+                temp.add(Melee_E(self.assets, self.uni_size, (treasure.rect.x-40, treasure.rect.y)))
+
+                    
+            if rnd == 1:
+                
+                temp.add(Melee_E(self.assets, self.uni_size, (treasure.rect.x+40, treasure.rect.y)))
+
+
+            if rnd == 2:
+        
+                temp.add(Melee_E(self.assets, self.uni_size, (treasure.rect.x, treasure.rect.y-40)))
+                
+            if rnd == 3:
+                
+                temp.add(Melee_E(self.assets, self.uni_size, (treasure.rect.x, treasure.rect.y+40)))
+            
+            if not(pygame.sprite.groupcollide(temp, groups, False,False)):
+
+                if rnd == 0:
+                    treasure.rect.x -= 40
+                    
+                if rnd == 1:
+                    treasure.rect.x += 40
+
+                if rnd == 2:
+                    treasure.rect.y -= 40
+                        
+                if rnd == 3:
+                    treasure.rect.y += 40
+
+
 
 
       

@@ -30,7 +30,7 @@ class OverWorld(Level,Map):
         """Entities, Assign Variables etc"""
     def update(self):
         """Update everything important"""
-        self.monster.move()
+        self.monster.update(self.maprenderer.walls)
         pass
     def draw(self, screen):
         screen.fill((255,255,255))
