@@ -169,4 +169,12 @@ class IfElseBlock(IfBlock):
         super().draw(screen)
         if self.if_false_block:
             self.if_false_block.draw(screen)
+    
+    def get_own_code_string(self):
+        result = super().get_own_code_string()
+        result += "!{"
+        if self.if_false_block:
+            result += self.if_false_block.get_code_string()
+        result += "}"
+        return result
 

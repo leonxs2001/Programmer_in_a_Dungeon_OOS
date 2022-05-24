@@ -13,3 +13,18 @@ class OperationBlock(ValueBlock):
         return font.render(text ,True, (0,0,0)) 
     def update(self):
         super().update()
+    
+    def get_code_string(self):
+        operation = self.representation
+        if operation == "and":
+            operation = "&"
+        elif operation == "or":
+            operation = "|"
+        elif operation == "not":
+            return f"!({self.input_fields[0].get_code_string()})"
+        result = "("
+        result += self.input_fields[0].get_code_string()#add first operand
+        for input_field in self.input_fields[1:]:#add ther other operand and the operator
+            result += operation + input_field.get_code_string()
+        result += ")"
+        return result

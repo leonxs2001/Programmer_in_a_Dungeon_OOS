@@ -3,3 +3,5 @@ some connections between blocks should not be possible
 shoot fehlt in Methods(andere ähnliche auch)
 Keine Inputfields in der Auswahl
 new variables are on the bottom
+/0
+check in player if value is a tuple

@@ -172,3 +172,9 @@ class CodeBlock(Block):
         super().draw(screen)
         if self.next_block:#if this block has one next_block pass it on to it
             self.next_block.draw(screen)
+
+    def get_code_string(self):
+        """returns the string representation of self"""
+        if self.next_block:
+            return self.next_block.get_code_string()
+        else: return ""

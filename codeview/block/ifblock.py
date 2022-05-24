@@ -243,4 +243,17 @@ class IfBlock(TwoSidedBlock):
         self.input_field.draw(screen)
         if self.if_true_block:
             self.if_true_block.draw(screen)
+
+    def get_own_code_string(self):
+        result = f"?({self.input_field.get_code_string()})"
+        result += "{"
+        if self.if_true_block:
+            result += self.if_true_block.get_code_string()
+        result += "}"
+        return result
+
+    def get_code_string(self):
+        result = self.get_own_code_string()
+        result += super().get_code_string()
+        return result
         

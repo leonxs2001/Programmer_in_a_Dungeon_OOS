@@ -6,7 +6,7 @@ from codeview.block.inputfield import InputField
 class ValueBlock(Block):
     size_y = 30
     distance_x = 7
-    def __init__(self, name = "+", representation = "+", parameters = ("Zahl1", "Zahl2")):
+    def __init__(self, name = "add", representation = "add", parameters = ("Zahl1", "Zahl2")):
         background_color = (random.randint(100, 200), random.randint(100, 200), random.randint(100, 200))
         
         self.name = name
@@ -170,3 +170,13 @@ class ValueBlock(Block):
         super().update()
         for input_field in self.input_fields:
             input_field.update()
+    
+    def get_code_string(self):
+        result = f".{self.representation}("
+        for input_field in self.input_fields:
+            result += input_field.get_code_string() + ","
+        if len(self.input_fields) != 0:
+            result = result[:-1]#delete last ,
+        result += ")"
+        return result
+

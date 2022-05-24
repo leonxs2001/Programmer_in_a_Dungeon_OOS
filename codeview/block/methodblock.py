@@ -169,3 +169,12 @@ class MethodBlock(TwoSidedBlock):
         super().update()
         for input_field in self.input_fields:
             input_field.update()
+    def get_code_string(self):
+        result = f".{self.representation}("
+        for input_field in self.input_fields:
+            result += input_field.get_code_string() + ","
+        if len(self.input_fields) != 0:
+            result = result[:-1]#delete last ,
+        result += ")"
+        result += super().get_code_string()
+        return result

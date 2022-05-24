@@ -54,7 +54,10 @@ class InputField:
             else:#add char if it is numeric or a comma(in the right place) to value
                 if len(self.value) <= 5:
                     char = event.unicode
-                    if char.isnumeric() or (char == "." and "." not in self.value and len(self.value) > 0):
+                    if char == "-" and len(self.value) == 0:
+                        self.value += char
+                        self.rebuild()
+                    elif char.isnumeric() or (char == "." and "." not in self.value and len(self.value) > 0):
                         self.value += char
                         self.rebuild()
         
@@ -145,3 +148,9 @@ class InputField:
                 self.cursor_counter += 1
                 if self.cursor_counter % 40 < 25:
                     pygame.draw.rect(screen, (0,0,0),self.cursor_rect)
+
+    def get_code_string(self):
+        if isinstance(self.value, Block):
+            return self.value.get_code_string()
+        else:
+            return self.value

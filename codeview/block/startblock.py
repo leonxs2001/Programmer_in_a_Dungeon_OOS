@@ -12,6 +12,9 @@ class StartBlock(CodeBlock):
         start_rect = start_text.get_rect()
         start_rect.center = self.get_size() / 2
         self.image.blit(start_text, start_rect)
+    def update(self):
+        print(self.get_code_string())
+        super().update()
 
 class InitializationBlock(CodeBlock):
     start_position = pygame.Vector2(210,215)
