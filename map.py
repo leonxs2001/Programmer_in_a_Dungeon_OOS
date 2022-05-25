@@ -1,7 +1,7 @@
 import copy
 import csv
 from typing import Tuple
-
+import pygame
 
 def isNotWall(arr, t: Tuple):
     return not (arr[t[0]][t[1]] == "#" or arr[t[0]][t[1]] == "x")

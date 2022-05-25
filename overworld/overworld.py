@@ -1,39 +1,47 @@
-from typing import List
+from map import Map
 from level import Level
-import pygame,os,random
+
+import pygame
 from overworld.config import asset
 from overworld.maprenderer import MapRenderer
 from overworld.entity import Entity
-from overworld.monster import Mon
+from overworld.enemy import Mon
 
-def get_level_list()-> List:
-    return random.sample({f.path for f in os.scandir(os.getcwd()+'/overworld/assets/levels')},5)
-
-class OverWorld(Level):
-
+class OverWorld(Level,Map):
     def __init__(self):
-        maps = get_level_list()
-        self.maprenderer = MapRenderer(asset,maps)
-        self.load_map()
-
-    def load_map(self):
-        self.entity = Entity(asset,self.maprenderer.done_map)
-        self.monster = Mon(asset, self.maprenderer.done_map)       
+        
+        Map.__init__(self,asset['level'])
+        
+        
+        # parse the csv and check if input is valid
+        # raise error if necessary  
+        err = self.parse_level_csv()
+        if err is not None:
+            raise err
+        err = self.check_level()
+        if err is not None:
+            raise err
+        render_map = self.preProcessLevel()
+        
+        self.maprenderer = MapRenderer(asset,render_map)
+        self.entity = Entity(asset, render_map)
+        self.monster = Mon(asset, render_map)
         
         """Entities, Assign Variables etc"""
     def update(self):
         """Update everything important"""
+        self.monster.update(self.maprenderer.walls)
         pass
     def draw(self, screen):
+        screen.fill((255,255,255))
         self.maprenderer.draw(screen)
         self.entity.draw(screen)
         self.monster.draw(screen)
+        #self.entity.draw(screen)
 
         """Draw everything important on the screen."""
     def give_event(self,event):
         """Get the Events and handle them"""
         if event.type == pygame.KEYDOWN:
             self.entity.move(event, self.maprenderer.walls)
-            self.maprenderer.checkend(self.entity.playergroup)
-            
-            
+

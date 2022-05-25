@@ -64,7 +64,6 @@ class Entity(pygame.sprite.Sprite):
                 self.player.rect.y += 40
 
 
-
     def draw(self, screen : pygame.Surface):
         self.playergroup.draw(screen)
         

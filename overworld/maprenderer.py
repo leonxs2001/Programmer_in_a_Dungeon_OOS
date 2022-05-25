@@ -1,5 +1,4 @@
 
-from map import Map
 from typing import List, Tuple
 import pygame
 
@@ -31,64 +30,33 @@ class End(pygame.sprite.Sprite):
 
 
 
-class MapRenderer(pygame.sprite.Sprite , Map):
+class MapRenderer(pygame.sprite.Sprite):
     
-    def __init__(self,assets,maps:List):
-            self.map_index = -1
-            self.loc_maps = maps
-            print()
-
+    def __init__(self,assets,done_map:List):
             pygame.sprite.Sprite.__init__(self)
-            self.done_map = self.get_map()
+            self.done_map = done_map
             self.uni_size = (40,40)
-            self.assets = assets
-            self.render()
-    
+            self.walls = pygame.sprite.Group()
+            self.ground = pygame.sprite.Group()
+            for x in range(len(self.done_map)):
+                for y in range(len(self.done_map[x])):
+                    if (self.done_map[x][y])[0] == 'outer_wall':
+                        temp = Outerwall(assets,self.uni_size,((self.done_map[x][y])[1]))
+                        self.walls.add(temp)
+                    elif (self.done_map[x][y])[0] == 'wall':
+                        temp = Wall(assets,self.uni_size,((self.done_map[x][y])[1]))
+                        self.walls.add(temp) 
+                    elif (self.done_map[x][y])[0] == 'ground':
+                        temp = Ground(assets,self.uni_size,((self.done_map[x][y])[1]))
+                        self.ground.add(temp) 
+                    elif (self.done_map[x][y])[0] == 'end':
+                        temp = End(assets,self.uni_size,((self.done_map[x][y])[1]))
+                        self.ground.add(temp)
+                    else:
+                        temp = Ground(assets,self.uni_size,((self.done_map[x][y])[1]))
+                        self.ground.add(temp)
 
     def draw(self, screen : pygame.Surface):
         self.walls.draw(screen)
         self.ground.draw(screen)
-        self.end.draw(screen)
-
-    def get_map(self)->List:
-        print(self.map_index)
-        self.map_index += 1
-        map = Map(self.loc_maps[self.map_index])
-        # parse the csv and check if input is valid
-        # raise error if necessary  
-        err = map.parse_level_csv()
-        if err is not None:
-            raise err
-        err = map.check_level()
-        if err is not None:
-            raise err
-        render_map = map.preProcessLevel()
-        
-        return render_map
-    
-    def checkend(self,group):
-        if (pygame.sprite.groupcollide(self.end, group, False,False)):
-            self.done_map = self.get_map()
-            self.render()
-    def render(self):
-        self.walls = pygame.sprite.Group()
-        self.ground = pygame.sprite.Group()
-        self.end = pygame.sprite.Group()
-        for x in range(len(self.done_map)):
-            for y in range(len(self.done_map[x])):
-                if (self.done_map[x][y])[0] == 'outer_wall':
-                    temp = Outerwall(self.assets,self.uni_size,((self.done_map[x][y])[1]))
-                    self.walls.add(temp)
-                elif (self.done_map[x][y])[0] == 'wall':
-                    temp = Wall(self.assets,self.uni_size,((self.done_map[x][y])[1]))
-                    self.walls.add(temp) 
-                elif (self.done_map[x][y])[0] == 'ground':
-                    temp = Ground(self.assets,self.uni_size,((self.done_map[x][y])[1]))
-                    self.ground.add(temp) 
-                elif (self.done_map[x][y])[0] == 'end':
-                    temp = End(self.assets,self.uni_size,((self.done_map[x][y])[1]))
-                    self.end.add(temp)
-                else:
-                    temp = Ground(self.assets,self.uni_size,((self.done_map[x][y])[1]))
-                    self.ground.add(temp)
                 
