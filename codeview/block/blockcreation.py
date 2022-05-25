@@ -8,16 +8,6 @@ pygame.font.init()
 #Blockdict with every possible block
 #Notation {(name, type): Block}
 block_dict = {
-    ("", "if"): IfBlock(),
-    ("", "ifelse"): IfElseBlock(),
-    ("goto", "method"): MethodBlock("goTo","goto", parameters=("x", "y")),
-    ("goto", "method"): MethodBlock("goTo","goto", parameters=("position", )),
-    ("move", "method"): MethodBlock("move","move", parameters=("x", "y")),
-    ("shoot", "method"): MethodBlock("shoot","shoot", parameters=()),
-    ("shoot", "method"): MethodBlock("shoot","shoot", parameters=("movementX", "movementY")),
-    ("shoot", "method"): MethodBlock("shoot","shoot", parameters=("movement", )),
-    ("shootTo", "method"): MethodBlock("shootTo","shootTo", parameters=("X", "Y")),
-    ("shootTo", "method"): MethodBlock("shootTo","shootTo", parameters=("position", )),
     ("+", "operation"): OperationBlock("+"),
     ("-", "operation"): OperationBlock("-"),
     ("*", "operation"): OperationBlock("*"),
@@ -59,4 +49,14 @@ block_dict = {
     ("onRightBorder", "value"): ValueBlock("onRightBorder","onRightBorder", parameters=()),
     ("onTopBorder", "value"): ValueBlock("onTopBorder","onTopBorder", parameters=()),
     ("onBottomBorder", "value"): ValueBlock("onBottomBorder","onBottomBorder", parameters=()),
+    ("", "if"): IfBlock(),
+    ("", "ifelse"): IfElseBlock(),
+    ("goto", "method"): MethodBlock("goTo","goto", parameters=("x", "y")),
+    ("goto", "method"): MethodBlock("goTo","goto", parameters=("position", )),
+    ("move", "method"): MethodBlock("move","move", parameters=("x", "y")),
+    ("shoot", "method"): MethodBlock("shoot","shoot", parameters=()),
+    ("shoot", "method"): MethodBlock("shoot","shoot", parameters=("movementX", "movementY")),
+    ("shoot", "method"): MethodBlock("shoot","shoot", parameters=("movement", )),
+    ("shootTo", "method"): MethodBlock("shootTo","shootTo", parameters=("X", "Y")),
+    ("shootTo", "method"): MethodBlock("shootTo","shootTo", parameters=("position", )),
 }

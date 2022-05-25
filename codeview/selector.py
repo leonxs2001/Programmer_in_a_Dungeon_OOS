@@ -49,7 +49,7 @@ class Selector:
         x = 10
         y = 20 + size.y
     
-        for tup in self.block_dict:
+        for tup in list(self.block_dict)[::-1]:
             block = self.block_dict[tup]
             rect = block.image.get_rect()
             rect.topleft = (x, y)
