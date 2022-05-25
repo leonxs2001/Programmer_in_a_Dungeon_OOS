@@ -11,18 +11,22 @@ class SqliteDataAccess:
             name VARCHAR(20),
             code TEXT,
             initializationcode TEXT,
-            player INTEGER DEFAULT 0
+            player INTEGER DEFAULT 1
         );
         """)#mache DEFAULT später auf 1
 
         self.connection.commit()
 
-    def save_item(self, name, code, initialization_code):
+    def save_item(self, name, code, initialization_code, opponent = False):
         self.cursor.execute(f"""SELECT COUNT(name) FROM playercode WHERE name = "{name}"; """)
         if self.cursor.fetchone()[0] == 0:
+            if opponent:
+                player = 0
+            else:
+                player = 1
             self.cursor.execute(f"""
-            INSERT INTO playercode (name, code, initializationcode) VALUES(?,?,?);
-            """, (name, code, initialization_code))
+            INSERT INTO playercode (name, code, initializationcode, player) VALUES(?,?,?,?);
+            """, (name, code, initialization_code, player))
             
             self.connection.commit()
         else:#update if the row exists
@@ -33,10 +37,15 @@ class SqliteDataAccess:
             
             self.connection.commit()
 
-    def get_all_items(self):
-        self.cursor.execute("""
-        SELECT name, id FROM playercode;
-        """)
+    def get_all_items(self,opponent = False):
+        string = """
+        SELECT name, id FROM playercode WHERE player = 
+        """
+        if opponent:
+            string += "0"
+        else:
+            string += "1"
+        self.cursor.execute(string)
         return self.cursor.fetchall()
 
     def get_item(self, id):

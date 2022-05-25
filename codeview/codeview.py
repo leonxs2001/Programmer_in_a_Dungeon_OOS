@@ -56,7 +56,7 @@ class CodeView(Level):
                 if pygame.mouse.get_pressed()[0]:
                     result = self.selection_input.check_collision(pygame.mouse.get_pos())
                     if result or result == 0:
-                        if isinstance(result, int):
+                        if str(result).isnumeric():
                             #delete old variables
                             erasable = []
                             for tup in block_dict:
@@ -70,8 +70,10 @@ class CodeView(Level):
                             initialization_code_block = get_blocks_from_string(item[1], block_dict)
                             start_block = StartBlock()
                             initialization_block = InitializationBlock()
-                            start_block.append(code_block)
-                            initialization_block.append(initialization_code_block)
+                            if code_block:
+                                start_block.append(code_block)
+                            if initialization_code_block:
+                                initialization_block.append(initialization_code_block)
                             start_block.update_scale_factor(self.scale_factor)
                             initialization_block.update_scale_factor(self.scale_factor)
                             self.code_block_list = [start_block, initialization_block]
