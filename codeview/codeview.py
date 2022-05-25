@@ -59,7 +59,7 @@ class CodeView(Level):
                         if isinstance(result, int):
                             item = self.data_accessor.get_item(result)
                             code_block = get_blocks_from_string(item[0], block_dict)
-                            initialization_code_block = get_blocks_from_string(item[0], block_dict)
+                            initialization_code_block = get_blocks_from_string(item[1], block_dict)
                             start_block = StartBlock()
                             initialization_block = InitializationBlock()
                             start_block.append(code_block)

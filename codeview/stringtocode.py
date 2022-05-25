@@ -7,7 +7,6 @@ from codeview.block.blockcreation import block_dict
 def get_blocks_from_string(string, block_dict):
     """Create visualisation from code as String"""
     sequence = parse_sequence(string)#get the code three representation
-    print(sequence, string)
     return get_blocks_from_sequence(sequence, block_dict)
 
 def get_string_from_value(value):
@@ -93,7 +92,6 @@ def get_blocks_from_sequence(sequence, block_dict):
     return block
 
 def get_block_from_expression(expression):
-    print("expression", expression)
     """Create the expression Visualisation (for opperations like +- and or etc and Methods with return value and Variables)"""
     block = None
     if expression[0] == ".":#it is a Method with return value
