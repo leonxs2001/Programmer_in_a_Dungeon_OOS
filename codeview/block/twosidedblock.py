@@ -15,6 +15,7 @@ class TwoSidedBlock(CodeBlock):
 
     def adjust_to_parent(self):
         """Adjust self to the given parent block"""
+        
         if self.parent_block:
             movement = self.parent_block.get_connection_point_bottom(self) - self.get_connection_point_top()
             self.move(movement)

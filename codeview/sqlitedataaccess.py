@@ -32,3 +32,15 @@ class SqliteDataAccess:
             """)
             
             self.connection.commit()
+
+    def get_all_items(self):
+        self.cursor.execute("""
+        SELECT name, id FROM playercode;
+        """)
+        return self.cursor.fetchall()
+
+    def get_item(self, id):
+        self.cursor.execute(f"""
+        SELECT code, initializationcode FROM playercode WHERE id = {id};
+        """)
+        return self.cursor.fetchone()

@@ -1,8 +1,7 @@
 import pygame
-from pylint import modify_sys_path
-class VariableInput:
+class TextInput:
     def __init__(self, heading):
-        self.aktiv = False
+        self.aktiv = True
         self.value = ""
         self.size = pygame.Vector2(400,220)
 
@@ -60,7 +59,6 @@ class VariableInput:
         self.confirm_button.blit(text, text_rect)
 
         #draw cancel button
-        self.cancel_button_size = pygame.Vector2(250, 60)
         self.cancel_button = pygame.Surface(self.button_size)
         self.cancel_button.fill((200,200,200))
         self.cancel_button_rect = self.cancel_button.get_rect()

@@ -20,6 +20,7 @@ class IfBlock(TwoSidedBlock):
         result = cls.__new__(cls)
         result.__dict__.update(self.__dict__)
         result.input_field = copy.copy(self.input_field)
+        result.position = self.position.copy()
         return result
 
     def build(self):

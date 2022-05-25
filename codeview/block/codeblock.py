@@ -134,6 +134,7 @@ class CodeBlock(Block):
             #tell the next block to adjust to self
             self.next_block.adjust_to_parent()
             self.next_block.adjust_blocks()
+           
 
     def mouse_button_up(self):
         super().mouse_button_up()

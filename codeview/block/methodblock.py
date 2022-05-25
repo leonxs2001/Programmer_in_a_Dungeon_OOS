@@ -25,6 +25,7 @@ class MethodBlock(TwoSidedBlock):
         for input_field in self.input_fields:
             new_input_fields.append(copy.copy(input_field))
         result.input_fields = new_input_fields
+        result.position = self.position.copy()
         return result
 
     def get_size(self):

@@ -26,7 +26,7 @@ block_dict = {
     ("^", "operation"): OperationBlock("^"),
     ("and", "operation"): OperationBlock("and"),
     ("or", "operation"): OperationBlock("or"),
-    ("not", "operation"): OperationBlock("not"),
+    ("not", "operation"): OperationBlock("not",number_of_operators=1),
     ("=", "operation"): OperationBlock("="),
     ("!=", "operation"): OperationBlock("!="),
     ("<", "operation"): OperationBlock("<"),

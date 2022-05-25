@@ -1,19 +1,19 @@
 import copy
 import pygame
 from codeview.block.variableblock import *
-from codeview.variableinput import VariableInput
-from codeview.block.blockcreation import block_dict
+from codeview.textinput import TextInput
 class Selector:
     arrow_size = pygame.Vector2(20,40)
     background_color = (220,220,220)
-    def __init__(self):
+    def __init__(self, block_dict):
+        self.block_dict = block_dict
         self.open = False
         self.build()
         self.wait_for_input = False
         self.variables = []
-
+        
     def build(self):
-        self.variable_input = VariableInput("Your Variablename:")
+        self.text_input = TextInput("Your Variablename:")
         #create the little arrow image
         self.arrow_image = pygame.Surface(Selector.arrow_size)
         self.arrow_image.fill(Selector.background_color)
@@ -49,8 +49,8 @@ class Selector:
         x = 10
         y = 20 + size.y
     
-        for tup in block_dict:
-            block = block_dict[tup]
+        for tup in self.block_dict:
+            block = self.block_dict[tup]
             rect = block.image.get_rect()
             rect.topleft = (x, y)
             y += 10 + block.image.get_height()
@@ -81,33 +81,33 @@ class Selector:
             return False
     def give_keyboard_down_event(self, event):
         if self.wait_for_input:
-            self.variable_input.give_keyboard_down_event(event)
+            self.text_input.give_keyboard_down_event(event)
 
     def create_new_variable(self, name):
         variable_definition_block = VariableDefinitionBlock(name)
         #add variable definition block to the dict
         tup = (name, "variabledefinition")
-        block_dict[tup] = variable_definition_block
+        self.block_dict[tup] = variable_definition_block
         tup = (name, "variable")
-        block_dict[tup] = VariableBlock(name)
+        self.block_dict[tup] = VariableBlock(name)
         self.build()
         
         return variable_definition_block
     def check_collision(self, mouse_position : pygame.Vector2):
         if self.wait_for_input:
-            result = self.variable_input.check_collision(mouse_position)
+            result = self.text_input.check_collision(mouse_position)
             if result:#got an input
                 if isinstance(result, str):
                     if result not in self.variables:
                         self.wait_for_input = False
                         return self.create_new_variable(result)
-            self.wait_for_input = False
+                self.wait_for_input = False
             return True
         else:
             if self.arrow_image_rect.collidepoint(mouse_position):
                 self.open = not self.open
                 if self.open:
-                    self.arrow_image_rect.left = 400 -1
+                    self.arrow_image_rect.left = 400 - 1
                     self.drawn_arrow_image = pygame.transform.rotate(self.arrow_image, 180)
                 else:
                     self.arrow_image_rect.left = 0
@@ -126,14 +126,14 @@ class Selector:
                         if block[1].collidepoint(mouse_position):
                             self.open = False
                             self.arrow_image_rect.left = 0
-                            return copy.copy(block_dict[block[2]])
+                            return copy.copy(self.block_dict[block[2]])
                         
                     return True
                 return False 
 
     def update(self):
         if self.wait_for_input:
-            self.variable_input.update()
+            self.text_input.update()
     
     def draw(self, screen):
         screen.blit(self.drawn_arrow_image, self.arrow_image_rect)
@@ -146,4 +146,4 @@ class Selector:
             for block_tupel in self.blocks:
                 screen.blit(block_tupel[0],block_tupel[1])
         if self.wait_for_input:
-            self.variable_input.draw(screen)
+            self.text_input.draw(screen)

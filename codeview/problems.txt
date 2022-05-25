@@ -2,7 +2,7 @@ write to much in inputfield
 some connections between blocks should not be possible
 shoot fehlt in Methods(andere ähnliche auch)
 Keine Inputfields in der Auswahl
-new variables are on the bottom
+new variables are on the bottom --> einfach andersrum auslesen
 /0
 cancle button on variableinput
 

@@ -1,17 +1,20 @@
 import pygame
 from pygame.locals import *
+from codeview.stringtocode import get_blocks_from_string
+from codeview.selectioninput import SelectionInput
 from codeview.sqlitedataaccess import SqliteDataAccess
-from codeview.variableinput import VariableInput
+from codeview.textinput import TextInput
 from codeview.block.variableblock import VariableDefinitionBlock
 from codeview.menu import Menu
 from codeview.selector import Selector
 from codeview.block.block import Block
 from codeview.block.startblock import *
+from codeview.block.blockcreation import block_dict
 from level import Level
 class CodeView(Level):
     def __init__(self):
         super().__init__()
-        self.selector = Selector()
+        self.selector = Selector(block_dict)
         self.scale_factor = 1
 
         self.is_mouse_button_down = False
@@ -22,17 +25,18 @@ class CodeView(Level):
         self.wait_for_input = False
         self.wait_for_selection = False
 
-        self.variable_input = VariableInput("Name your Code:")
+        self.text_input = TextInput("Name your Code:")
+        self.selection_input = SelectionInput("Choose your code:")
 
         self.data_accessor = SqliteDataAccess()
         
     def give_event(self, event):
         if self.wait_for_input:
             if event.type == KEYDOWN:
-                self.variable_input.give_keyboard_down_event(event)
+                self.text_input.give_keyboard_down_event(event)
             elif event.type == MOUSEBUTTONDOWN:
                 if pygame.mouse.get_pressed()[0]:
-                    result = self.variable_input.check_collision(pygame.mouse.get_pos())
+                    result = self.text_input.check_collision(pygame.mouse.get_pos())
                     if result:
                         if isinstance(result, str):
                             self.wait_for_input = False
@@ -47,7 +51,26 @@ class CodeView(Level):
                             self.data_accessor.save_item(result, code, initialization_code)
                         else:
                             self.wait_for_input = False
-                    
+        elif self.wait_for_selection:#wait for loading selection
+            if event.type == MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    result = self.selection_input.check_collision(pygame.mouse.get_pos())
+                    if result or result == 0:
+                        if isinstance(result, int):
+                            item = self.data_accessor.get_item(result)
+                            code_block = get_blocks_from_string(item[0], block_dict)
+                            initialization_code_block = get_blocks_from_string(item[0], block_dict)
+                            start_block = StartBlock()
+                            initialization_block = InitializationBlock()
+                            start_block.append(code_block)
+                            initialization_block.append(initialization_code_block)
+                            start_block.update_scale_factor(self.scale_factor)
+                            initialization_block.update_scale_factor(self.scale_factor)
+                            self.code_block_list = [start_block, initialization_block]
+                            self.selector.build()
+                        self.wait_for_selection = False
+            elif event.type == MOUSEWHEEL:
+                self.selection_input.scroll(event.y)
         else:
             if event.type == MOUSEBUTTONDOWN:
                 if pygame.mouse.get_pressed()[0]:
@@ -57,6 +80,7 @@ class CodeView(Level):
                         self.wait_for_input = True
                     elif self.menu.is_mouse_on_load():
                         self.wait_for_selection = True
+                        self.selection_input.load(self.data_accessor.get_all_items())#give it the names and ids
                     else:
                         #check if we got a new Block by colliding
                         selector_collision = self.selector.check_collision(pygame.Vector2(mouse_position))
@@ -116,6 +140,7 @@ class CodeView(Level):
                 for code_block in self.code_block_list:
                     code_block.give_keyboard_down_event(event)
                 self.selector.give_keyboard_down_event(event)
+
             elif event.type == MOUSEWHEEL:
                 if not self.selector.scroll(event.y):
                     #update scalefactor in borders from 0.4 to 3.5 
@@ -129,7 +154,7 @@ class CodeView(Level):
                         code_block.update_scale_factor(self.scale_factor)
 
     def update(self):
-        if not self.wait_for_input:
+        if not self.wait_for_input and not self.wait_for_selection:
             #proccess the viewmovement if mousebutton is pressed
             if self.is_mouse_button_down:
                 #calculate mousemovement from the last update to now
@@ -167,4 +192,7 @@ class CodeView(Level):
         self.menu.draw(screen)
         
         if self.wait_for_input:
-            self.variable_input.draw(screen)
+            self.text_input.draw(screen)
+
+        if self.wait_for_selection:
+            self.selection_input.draw(screen)

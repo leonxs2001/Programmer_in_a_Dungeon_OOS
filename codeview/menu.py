@@ -4,7 +4,7 @@ class Menu:
         size = pygame.Vector2(100, 75)
         #create the load Button
         self.load_btn = pygame.Surface(size)
-        self.load_btn.fill((130,130,130))
+        self.load_btn.fill((200,130,130))
         font = pygame.font.Font(None, 40)
         btn_text = font.render("Load", True, (0,0,0))
         btn_text_rect = btn_text.get_rect()
@@ -17,7 +17,7 @@ class Menu:
 
         #create the save Button
         self.save_btn = pygame.Surface(size)
-        self.save_btn.fill((130,130,130))
+        self.save_btn.fill((200,130,130))
         font = pygame.font.Font(None, 40)
         btn_text = font.render("Save", True, (0,0,0))
         btn_text_rect = btn_text.get_rect()
@@ -30,7 +30,7 @@ class Menu:
 
         #create the delete Button
         self.delete_btn = pygame.Surface(size)
-        self.delete_btn.fill((130,130,130))
+        self.delete_btn.fill((200,130,130))
         font = pygame.font.Font(None, 40)
         btn_text = font.render("Delete", True, (0,0,0))
         btn_text_rect = btn_text.get_rect()
