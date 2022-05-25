@@ -57,6 +57,14 @@ class CodeView(Level):
                     result = self.selection_input.check_collision(pygame.mouse.get_pos())
                     if result or result == 0:
                         if isinstance(result, int):
+                            #delete old variables
+                            erasable = []
+                            for tup in block_dict:
+                                if tup[1] == "variable" or tup[1] == "variabledefinition":
+                                    erasable.append(tup)
+                            for e_tup in erasable:
+                                del block_dict[e_tup]
+
                             item = self.data_accessor.get_item(result)
                             code_block = get_blocks_from_string(item[0], block_dict)
                             initialization_code_block = get_blocks_from_string(item[1], block_dict)
@@ -67,6 +75,7 @@ class CodeView(Level):
                             start_block.update_scale_factor(self.scale_factor)
                             initialization_block.update_scale_factor(self.scale_factor)
                             self.code_block_list = [start_block, initialization_block]
+                            
                             self.selector.build()
                         self.wait_for_selection = False
             elif event.type == MOUSEWHEEL:
