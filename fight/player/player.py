@@ -8,7 +8,6 @@ class Player:
     """Player is a template for special players."""
     def __init__(self,initial_sequence_string : str, sequence_string : str, isOpponent : bool):
         super().__init__()
-        self.id = "normal" # identifier for the different player types
         self.image = pygame.image.load("fight/image/player.png")
         self.size = (70,70)
         self.image = pygame.transform.scale(self.image,self.size)
@@ -52,8 +51,9 @@ class Player:
         #update center to position
         self.rect.topleft = (self.position.x, self.position.y)
 
+        from fight.player.shootingplayer import ShootingPlayer
         #check collision with opponent bullets
-        if self.opponent_player.id == "shooting":
+        if isinstance(self.opponent_player, ShootingPlayer):
             for bullet in self.opponent_player.bullet_group:
                 if self.rect.colliderect(bullet.rect):
                     self.life_controller.lifes -= bullet.damage
@@ -64,6 +64,8 @@ class Player:
         self.position -= movement
 
     def call_method(self, name : str, parameters : tuple):
+        from fight.player.shootingplayer import ShootingPlayer
+        from fight.player.touchingplayer import TouchingPlayer
         if name == "goto":
             if len(parameters) == 2:
                 x, y = parameters
@@ -106,10 +108,9 @@ class Player:
             pos = pygame.Vector2(x,y)
             return (pos - self.position).length()
         elif name == "getTimeToNextAttack":#in milliseconds
-            print(self.id)
-            if self.id == "shooting":
+            if isinstance(self, ShootingPlayer):
                 result = self.shoot_delay - self.elapsed_time
-            elif self.id == "touching":
+            elif isinstance(self, TouchingPlayer):
                 result = self.hit_delay - self.elapsed_time
 
             if result <= 0: 
@@ -117,9 +118,9 @@ class Player:
             else: 
                 return result
         elif name == "getOpTimeToNextAttack":#in milliseconds
-            if self.opponent_player.id == "shooting":
+            if isinstance(self.opponent_player, ShootingPlayer):
                 result = self.opponent_player.shoot_delay - self.opponent_player.elapsed_time
-            elif self.opponent_player.id == "touching":
+            elif isinstance(self.opponent_player, TouchingPlayer):
                 result = self.opponent_player.hit_delay - self.opponent_player.elapsed_time
 
             if result <= 0: 
@@ -184,7 +185,6 @@ class Player:
                 self.destination.y = 0
             elif self.destination.y > 720 - self.size[1]:
                 self.destination.y = 720 - self.size[1]    
-        print(self.destination)
         
         
 

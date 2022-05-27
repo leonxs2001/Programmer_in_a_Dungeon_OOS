@@ -21,7 +21,11 @@ class Fight(Level):
         .shoot()
         """
         opponentcode = """
-        .move($y,0)
+        ?(.getOpTimeToNextAttack() < 500){
+            .move(0,.getOpMovementX())
+        }!{
+            .goto(.getOpPos())
+        }
         """
         self.player = ShootingPlayer("$var=-1",playercode, False)
         self.opponent = TouchingPlayer("$y=10",opponentcode, True)
