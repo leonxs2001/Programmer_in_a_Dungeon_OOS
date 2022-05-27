@@ -14,7 +14,7 @@ size = (1280, 720)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Labi")
 
-# Enteties
+# Entities
 fight_scene = Fight()
 overworld = OverWorld()
 code_view_scene = CodeView()

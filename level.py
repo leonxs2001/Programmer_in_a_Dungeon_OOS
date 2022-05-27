@@ -11,5 +11,5 @@ class Level(pygame.sprite.Sprite):
         """Draw everything important on the screen."""
         pass
     def give_event(self,event):
-        """Get the Events and handel them"""
+        """Get the Events and handle them"""
         pass

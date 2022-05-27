@@ -1,3 +1,4 @@
+from unittest import result
 import pygame
 from codeview.block.valueblock import ValueBlock
 from codeview.block.methodblock import MethodBlock
@@ -16,4 +17,8 @@ class VariableDefinitionBlock(MethodBlock):
         return font.render(text, True, (0,0,0)) 
 
     def get_code_string(self):
-        return f"${self.representation}={self.input_fields[0].get_code_string()}"
+        result = f"${self.representation}={self.input_fields[0].get_code_string()}" 
+        if self.next_block:
+            result += self.next_block.get_code_string()
+        
+        return result
