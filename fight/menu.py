@@ -4,8 +4,8 @@ class Menu:
         self.play_btn = pygame.image.load("fight/image/play_btn.png")
         self.stop_btn = pygame.image.load("fight/image/stop_btn.png")
         self.play_btn_rect = self.play_btn.get_rect()
-        self.play_btn_rect.right = 1180
-        self.play_btn_rect.bottom = 655
+        self.play_btn_rect.right = 1260
+        self.play_btn_rect.bottom = 700
         self.wait = True
         
     def is_mouse_on_play(self):

@@ -1,2 +1,3 @@
-overworld/__pycache__/entity.cpython-310.pyc
 __pycache__
+fight/interpreter/__pycache__/parser.cpython-310.pyc
+fight/interpreter/__pycache__/interpreter.cpython-310.pyc
