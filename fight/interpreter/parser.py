@@ -95,7 +95,6 @@ def parse_sequence(sequence):
 def parse_logical_expression(logical_expression):
     """return parsed logical Expression"""
     logical_expression = delete_outside_brackets(logical_expression)
-
     #Seperate fist on |(logical or) than &(logical and) than !(logical not) than =, !=, <, <=, >, >=
     i = 0
     last_symbol = "f"#is only a filler
@@ -189,6 +188,8 @@ def parse_logical_expression(logical_expression):
         try:
             return float(logical_expression)
         except ValueError:
+            if logical_expression[0] == "$":
+                return parse_variable(logical_expression)
             return logical_expression
 
 def parse_arithmetic_expression(arithmetic_expression):
