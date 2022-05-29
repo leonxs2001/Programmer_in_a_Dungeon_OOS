@@ -49,6 +49,7 @@ class CodeView(Level):
                                 elif isinstance(block, InitializationBlock):
                                     initialization_code = block.get_code_string()
                             self.data_accessor.save_item(result, code, initialization_code)
+                            return True
                         else:
                             self.wait_for_input = False
         elif self.wait_for_selection:#wait for loading selection
