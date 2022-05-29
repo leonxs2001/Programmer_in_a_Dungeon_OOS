@@ -1,7 +1,7 @@
 import pygame 
 
 class Level(pygame.sprite.Sprite):
-    state = 1#0 is main game. 1 is fighting game tec.
+    state = 0#0 is main game. 1 is fighting game tec. 2 is code view
     def __init__(self):
         """Entities, Assign Variables etc"""
         super.__init__()
