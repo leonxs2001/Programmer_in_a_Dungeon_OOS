@@ -1,31 +1,41 @@
 import pygame
 from pygame.locals import *
-import fight.opponent as opponent
-import fight.player as player
-import fight.menu as menu
+from fight.player.shootingplayer import ShootingPlayer
+from fight.player.touchingplayer import TouchingPlayer
+from fight.menu import Menu
 from level import Level
 
 class Fight(Level):
     def __init__(self):
         #Entities
         playercode = """
-        .move($x,0)
-        ?(.onRightBorder()){
-            $x = -10
+        
+        ?(.onBorder()){
+            $var = $var * -1
+        }
+        ?(.getLifes() < 50){
+            .move(0,$var)
         }!{
-            ?(.onLeftBorder()){
-                $x = 10
-            }!{
-            
-            }  
+            .move($var,0)
+        }
+        .shoot()
+        """
+        opponentcode = """
+        ?(.getOpTimeToNextAttack() < 500){
+            .move(0,.getOpMovementX())
+        }!{
+            .goto(.getOpPos())
         }
         """
-        self.player = player.Player("$x=10",playercode)
-        self.opponent = opponent.Opponent("$x=-10",playercode)
+        self.player = ShootingPlayer("$var=-1",playercode, False)
+        self.opponent = TouchingPlayer("$y=10",opponentcode, True)
+        self.player.opponent = self.opponent
+        self.opponent.opponent = self.player
         self.bg = pygame.image.load("fight/image/bg.png")
-        self.bg = pygame.transform.scale(self.bg, (1200, 675))
-        self.menu = menu.Menu()
+        self.bg = pygame.transform.scale(self.bg, (1280, 720))
+        self.menu = Menu()
         self.last_time = pygame.time.get_ticks()
+        
     def update(self):
         #calculate elapsed time
         new_time = pygame.time.get_ticks()
@@ -36,6 +46,11 @@ class Fight(Level):
         if not self.menu.wait:
             self.player.update(elapsed_time)
             self.opponent.update(elapsed_time)
+            #check collsion between the two players
+            if self.player.rect.colliderect(self.opponent.rect):
+                self.player.process_collision(elapsed_time)
+                self.opponent.process_collision(elapsed_time)
+
         
 
     def give_event(self, event):
