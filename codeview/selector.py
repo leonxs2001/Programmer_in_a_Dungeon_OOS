@@ -12,6 +12,12 @@ class Selector:
         self.wait_for_input = False
         self.variables = []
         
+    def reset(self):
+        self.arrow_image_rect.left = 0
+        self.drawn_arrow_image = self.arrow_image.copy()
+        self.open = False
+        self.build()
+
     def build(self):
         self.text_input = TextInput("Your Variablename:")
         #create the little arrow image

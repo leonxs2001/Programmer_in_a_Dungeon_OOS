@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import *
 from codeview.stringtocode import get_blocks_from_string
-from codeview.selectioninput import SelectionInput
+from selectioninput import SelectionInput
 from codeview.sqlitedataaccess import SqliteDataAccess
 from codeview.textinput import TextInput
 from codeview.block.variableblock import VariableDefinitionBlock
@@ -29,7 +29,20 @@ class CodeView(Level):
         self.selection_input = SelectionInput("Choose your code:")
 
         self.data_accessor = SqliteDataAccess()
+
+    def reset(self):
+        #delete old variables
+        erasable = []
+        for tup in block_dict:
+            if tup[1] == "variable" or tup[1] == "variabledefinition":
+                erasable.append(tup)
+        for e_tup in erasable:
+            del block_dict[e_tup]
+            self.scale_factor = 1
         
+        self.code_block_list = [StartBlock(), InitializationBlock()]
+        self.selector.reset()
+
     def give_event(self, event):
         if self.wait_for_input:
             if event.type == KEYDOWN:

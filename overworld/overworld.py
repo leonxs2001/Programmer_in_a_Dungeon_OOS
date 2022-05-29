@@ -58,6 +58,7 @@ class OverWorld(Level):
                 self.maprenderer.checkend(self.entity.playergroup)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self.menu.is_mouse_on_code():
+                    self.code.reset()
                     self.state = 2
         elif self.state == 1:
             self.fight.give_event(event)
