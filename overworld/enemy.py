@@ -54,8 +54,6 @@ class Melee_E(pygame.sprite.Sprite):
                 self.move_points -= 1
                 print(self.move_points)
 
-
-
             return super().update(*args, **kwargs)
 
 
@@ -73,7 +71,7 @@ class Mon(pygame.sprite.Sprite):
                         self.monster = Melee_E(self.assets, self.uni_size, ((self.done_map[x][y])[1]), 40, pygame.transform.scale(pygame.image.load(assets['melee_e']),self.uni_size))
                         self.monstergroup.add(self.monster)
                     if (self.done_map[x][y])[0] == 'big_melee_e':
-                        self.monster = Melee_E(self.assets, self.uni_size, ((self.done_map[x][y])[1]), 1, pygame.transform.scale(pygame.image.load(assets['big_melee_e']),self.uni_size))
+                        self.monster = Melee_E(self.assets, self.uni_size, ((self.done_map[x][y])[1]), 20, pygame.transform.scale(pygame.image.load(assets['big_melee_e']),self.uni_size))
                         self.monstergroup.add(self.monster)
                     if (self.done_map[x][y])[0] == 'shooting_e':
                         self.monster = Melee_E(self.assets, self.uni_size, ((self.done_map[x][y])[1]), 40, pygame.transform.scale(pygame.image.load(assets['shooting_e']),self.uni_size))
