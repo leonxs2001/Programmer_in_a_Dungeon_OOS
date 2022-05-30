@@ -43,7 +43,7 @@ class Selector:
         self.add_variable_rect = self.add_variable_image.get_rect()
         pygame.draw.rect(self.add_variable_image, (0,0,0),  self.add_variable_rect, width=2)
         font = pygame.font.Font(None, 30)
-        btn_text = font.render("Create Vairable", True, (0,0,0))
+        btn_text = font.render("Create Variable", True, (0,0,0))
         btn_text_rect = btn_text.get_rect()
         btn_text_rect.center = size / 2
         self.add_variable_image.blit(btn_text, btn_text_rect)
