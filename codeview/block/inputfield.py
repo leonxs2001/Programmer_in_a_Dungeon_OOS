@@ -132,7 +132,7 @@ class InputField:
         if self.in_focus:
             if pygame.mouse.get_pressed()[0] and not self.rect.collidepoint(pygame.mouse.get_pos()):
                 self.in_focus = False 
-                if self.value == "":#reset the value to 1 if its empty
+                if self.value == "" or self.value == "-":#reset the value to 1 if its empty
                     self.value = "1"
                     self.rebuild()
                     
@@ -153,4 +153,6 @@ class InputField:
         if isinstance(self.value, Block):
             return self.value.get_code_string()
         else:
+            if self.value == "" or self.value == "-":
+                return "1"
             return self.value
