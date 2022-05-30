@@ -60,6 +60,23 @@ class Player:
                 if self.rect.colliderect(bullet.rect):
                     self.life_controller.lifes -= bullet.damage
                     bullet.kill()
+            if isinstance(self, ShootingPlayer):
+                pass#hier collision von den Bullets der beiden Shootingplayers !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        #check if player is outside the field
+        if self.rect.top < 0:
+            self.rect.top = 0
+            self.position.update(self.rect.topleft)
+        elif self.rect.bottom > 720:
+            self.rect.bottom = 720
+            self.position.update(self.rect.topleft)
+
+        if self.rect.left < 0:
+            self.rect.left = 0
+            self.position.update(self.rect.topleft)
+        elif self.rect.right > 1280:
+            self.rect.right = 1280
+            self.position.update(self.rect.topleft)
                 
     def process_collision(self, elapsed_time):
         movement = self.movement * (elapsed_time/33.333)

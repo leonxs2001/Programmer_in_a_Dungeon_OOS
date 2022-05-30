@@ -37,12 +37,12 @@ class SqliteDataAccess:
             
             self.connection.commit()
 
-    def get_all_items(self,opponent = False):
+    def get_all_items(self, opponent = False, opponent_type = "s"):
         string = """
         SELECT name, id FROM playercode WHERE player = 
         """
         if opponent:
-            string += "0"
+            string += f'0 AND name LIKE "{opponent_type}%"' 
         else:
             string += "1"
         self.cursor.execute(string)

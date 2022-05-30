@@ -1,4 +1,6 @@
+from isort import code
 import pygame
+import random
 from pygame.locals import *
 from fight.player.shootingplayer import ShootingPlayer
 from fight.player.touchingplayer import TouchingPlayer
@@ -13,8 +15,6 @@ class Fight(Level):
         #Entities
         self.wait_for_selection = True
         self.data_accessor = SqliteDataAccess()
-        self.selection_input = SelectionInput("Choose your code:")#delete later -----------------
-        self.selection_input.load(self.data_accessor.get_all_items())#delete later -----------------
         self.player = ShootingPlayer("","", False)
         self.opponent = ShootingPlayer("","", True)
         self.player.opponent = self.opponent
@@ -30,12 +30,29 @@ class Fight(Level):
         self.last_time = pygame.time.get_ticks()
 
     def reset(self, opponent_type):
+        
         self.menu.wait = True
         self.last_time = pygame.time.get_ticks()
-        self.opponent = ShootingPlayer("","", True)
+        
         self.wait_for_selection = True
         self.selection_input = SelectionInput("Choose your code:")
         self.selection_input.load(self.data_accessor.get_all_items())
+
+        op_type = opponent_type[0]
+        op_strength = opponent_type[1]#use strength later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        codes = self.data_accessor.get_all_items(True, op_type)#get all codes
+        
+        choosen_one = random.randint(0, len(codes) - 1)
+
+        item_id = codes[choosen_one][1]
+
+        item_code = self.data_accessor.get_item(item_id)
+
+        if op_type == "s":#is shooting player
+            self.opponent = ShootingPlayer(item_code[1], item_code[0], True)
+        else:#is melee
+            self.opponent = TouchingPlayer(item_code[1], item_code[0], True)
 
     def update(self):
         if not self.wait_for_selection:
@@ -52,10 +69,11 @@ class Fight(Level):
                 if self.player.rect.colliderect(self.opponent.rect):
                     self.player.process_collision(elapsed_time)
                     self.opponent.process_collision(elapsed_time)
-                    if self.player.life_controller.lifes <= 0:
-                        return False
-                    elif self.opponent.life_controller.lifes <= 0:
-                        return True
+
+                if self.player.life_controller.lifes <= 0:
+                    return False
+                elif self.opponent.life_controller.lifes <= 0:
+                    return True
 
     def give_event(self, event):
         if self.wait_for_selection:
@@ -68,7 +86,6 @@ class Fight(Level):
                         if not str(result).isnumeric():
                             result = 1
                         item = self.data_accessor.get_item(result)
-                        print(item)
                         self.player = ShootingPlayer(item[1], item[0], False)
                         self.player.opponent = self.opponent
                         self.opponent.opponent = self.player

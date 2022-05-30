@@ -15,13 +15,14 @@ def get_level_list()-> List:
 
 class OverWorld(Level):
     def __init__(self):
-        self.state = 2
+        self.state = 1
         self.fight = Fight()
         self.code = CodeView()
         self.menu = Menu()
         maps = get_level_list()
         self.maprenderer = MapRenderer(asset,maps)
         self.load_map()
+        self.fight.reset(("s", 2))
 
     def load_map(self):
         self.entity = Entity(asset,self.maprenderer.done_map)
@@ -35,11 +36,13 @@ class OverWorld(Level):
             self.menu.update()
         elif self.state == 1:
             result = self.fight.update()
+
             if result != None:
                 if result:
-                    print("gewonnen")#fill llater
+                    print("gewonnen")#fill later
                 else:
-                    print("verloren")#fill llater
+                    print("verloren")#fill later
+                self.state = 0
         elif self.state == 2:
             self.code.update()
 

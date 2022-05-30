@@ -6,6 +6,7 @@ class Bullet(pygame.sprite.Sprite):
         super().__init__()
         self.size = (12,12)
         self.image = pygame.Surface(self.size)
+        self.image.fill((255,255,255))
         self.rect = self.image.get_rect()
         speed = 15
         direction = direction.copy()
