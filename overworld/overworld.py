@@ -22,7 +22,7 @@ class OverWorld(Level):
         maps = get_level_list()
         self.maprenderer = MapRenderer(asset,maps)
         self.load_map()
-        self.fight.reset(("s", 2))
+        self.fight.reset(("m", 2))
 
     def load_map(self):
         self.entity = Entity(asset,self.maprenderer.done_map)

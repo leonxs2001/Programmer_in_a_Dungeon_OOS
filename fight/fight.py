@@ -42,17 +42,18 @@ class Fight(Level):
         op_strength = opponent_type[1]#use strength later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         codes = self.data_accessor.get_all_items(True, op_type)#get all codes
-        
         choosen_one = random.randint(0, len(codes) - 1)
-
         item_id = codes[choosen_one][1]
-
         item_code = self.data_accessor.get_item(item_id)
 
+        opponent_damage = 10
+        if op_strength > 1:
+            opponent_damage = 15
+
         if op_type == "s":#is shooting player
-            self.opponent = ShootingPlayer(item_code[1], item_code[0], True)
+            self.opponent = ShootingPlayer(item_code[1], item_code[0], True, opponent_damage)
         else:#is melee
-            self.opponent = TouchingPlayer(item_code[1], item_code[0], True)
+            self.opponent = TouchingPlayer(item_code[1], item_code[0], True, opponent_damage)
 
     def update(self):
         if not self.wait_for_selection:

@@ -7,8 +7,9 @@ from overworld.config import asset
 
 class Player:
     """Player is a template for special players."""
-    def __init__(self,initial_sequence_string : str, sequence_string : str, is_opponent : bool):
+    def __init__(self,initial_sequence_string : str, sequence_string : str, is_opponent : bool, damage = 10):
         super().__init__()
+        self.damage = damage
         self.image = self.load_image(is_opponent)
         self.size = (70,70)
         self.image = pygame.transform.scale(self.image, self.size)
