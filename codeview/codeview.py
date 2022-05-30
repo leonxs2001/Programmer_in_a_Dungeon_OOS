@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 from codeview.stringtocode import get_blocks_from_string
 from selectioninput import SelectionInput
-from codeview.sqlitedataaccess import SqliteDataAccess
+from sqlitedataaccess import SqliteDataAccess
 from codeview.textinput import TextInput
 from codeview.block.variableblock import VariableDefinitionBlock
 from codeview.menu import Menu

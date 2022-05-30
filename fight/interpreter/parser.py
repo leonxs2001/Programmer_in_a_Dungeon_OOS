@@ -25,10 +25,11 @@ def parse_sequence(sequence):
             new_start = i
             i -= 1
         elif sequence[i] == "$":#it is a varaible
+            print(sequence[i:])
             while sequence[i] != "=": # go to the =
                 i += 1
             i += 1
-            while i < len(sequence) and not (sequence[i] == "?" or (sequence[i] in "$." and sequence[i-1] not in "+-/%^*=&|!<>")):
+            while i < len(sequence) and not (sequence[i] == "?" or (sequence[i] in "$." and sequence[i-1] not in "+-/%^*=&|!<>(")):
                 i += 1
             return_tupel += (parse_variable(sequence[new_start:i]),)
             new_start = i

@@ -3,14 +3,15 @@ import pygame
 from pygame.locals import *
 from fight.interpreter.interpreter import Interpreter
 from fight.player.lifecontroller import LifeController
+from overworld.config import asset
 
 class Player:
     """Player is a template for special players."""
-    def __init__(self,initial_sequence_string : str, sequence_string : str, isOpponent : bool):
+    def __init__(self,initial_sequence_string : str, sequence_string : str, is_opponent : bool):
         super().__init__()
-        self.image = pygame.image.load("fight/image/player.png")
+        self.image = self.load_image(is_opponent)
         self.size = (70,70)
-        self.image = pygame.transform.scale(self.image,self.size)
+        self.image = pygame.transform.scale(self.image, self.size)
         self.rect = self.image.get_rect()
         self.rect.center = (100, 360)
 
@@ -23,11 +24,12 @@ class Player:
         self.life_controller = LifeController(100,self.size[1])
         self.interpreter = Interpreter(initial_sequence_string,sequence_string,self)
 
-        if isOpponent:
-            self.image = pygame.transform.rotate(self.image, 180)
+        if is_opponent:
             self.rect.center = (1180, 360)
             self.position = pygame.Vector2(self.rect.topleft)
-    
+    def load_image(self, is_opponent):
+        return pygame.image.load(asset["player"])
+        
     def setOpponent(self,opponent):
         self.opponent_player = opponent 
     opponent = property(fset=setOpponent)

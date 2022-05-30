@@ -15,7 +15,7 @@ def get_level_list()-> List:
 
 class OverWorld(Level):
     def __init__(self):
-        self.state = 0
+        self.state = 1
         self.fight = Fight()
         self.code = CodeView()
         self.menu = Menu()
@@ -34,9 +34,15 @@ class OverWorld(Level):
             self.monster.update(self.maprenderer.walls)
             self.menu.update()
         elif self.state == 1:
-            self.fight.update()
+            result = self.fight.update()
+            if result != None:
+                if result:
+                    print("gewonnen")#fill llater
+                else:
+                    print("verloren")#fill llater
         elif self.state == 2:
             self.code.update()
+
     def draw(self, screen):
         if self.state == 0:
             self.maprenderer.draw(screen)

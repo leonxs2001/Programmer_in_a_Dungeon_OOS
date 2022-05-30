@@ -1,13 +1,20 @@
 import pygame
 from fight.player.player import Player
 from fight.player.bullet import Bullet
+from overworld.config import asset
 class ShootingPlayer(Player):
-    def __init__(self,initial_sequence_string : str, sequence_string : str, isOpponent : bool):
-        super().__init__(initial_sequence_string, sequence_string, isOpponent)
+    def __init__(self,initial_sequence_string : str, sequence_string : str, is_opponent : bool):
+        super().__init__(initial_sequence_string, sequence_string, is_opponent)
         self.bullet_group = pygame.sprite.Group()
         self.shoot_delay = 2000 #min delay between the single shoots in ms
         self.elapsed_time = self.shoot_delay + 1
-        
+
+    def load_image(self, is_opponent):
+        if is_opponent:
+            return pygame.image.load(asset["shooting_e"])
+        else:
+            return super().load_image(is_opponent)
+            
     def update(self, elapsed_time):
         if self.elapsed_time <= self.shoot_delay:
             self.elapsed_time += elapsed_time
