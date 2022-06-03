@@ -98,7 +98,7 @@ class Selector:
         self.block_dict[tup] = VariabelBlock(name)
         self.build()
         
-        return variabel_definition_block
+        return copy.copy(variabel_definition_block)
 
     def check_collision(self, mouse_position : pygame.Vector2):
         if self.wait_for_input:
