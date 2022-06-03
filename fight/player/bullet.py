@@ -10,8 +10,10 @@ class Bullet(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         speed = 15
         direction = direction.copy()
-        if direction.length != 0:
+        if direction.length() != 0:
+            print(direction.length)
             direction.scale_to_length(speed)
+        
         self.movement = direction.copy()
         self.position = position.copy()
         self.damage = damage

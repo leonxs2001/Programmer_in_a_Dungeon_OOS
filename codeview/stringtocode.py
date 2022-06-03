@@ -24,7 +24,21 @@ def get_blocks_from_sequence(sequence, block_dict):
         block = None
         if sequence[0][0] == ".":#the block is a method block
             #get the block from the block dict and copy it
-            block = block_dict[(sequence[0][1], "method")]
+            method_name = sequence[0][1]
+            if method_name == "goto" or method_name == "move" or method_name == "shootTo":
+                if len(sequence[0]) == 4:
+                    method_name += "0"
+                else:
+                    method_name += "1"
+            elif method_name == "shoot":
+                if len(sequence[0]) == 2:
+                    method_name += "0"
+                elif len(sequence[0]) == 4:
+                    method_name += "1"
+                else:
+                    method_name += "2"
+
+            block = block_dict[(method_name, "method")]
             block = copy.copy(block)
             #go through the parameters, create them as a block and rebuild 
             parameters = sequence[0][2:]

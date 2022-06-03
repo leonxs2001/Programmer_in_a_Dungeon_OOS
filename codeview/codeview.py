@@ -61,7 +61,7 @@ class CodeView(Level):
                                     code = block.get_code_string()
                                 elif isinstance(block, InitializationBlock):
                                     initialization_code = block.get_code_string()
-                            self.data_accessor.save_item(result, code, initialization_code, opponent=False)
+                            self.data_accessor.save_item(result, code, initialization_code, opponent=True)
                             return True
                         else:
                             self.wait_for_input = False

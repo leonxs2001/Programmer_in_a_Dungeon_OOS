@@ -39,11 +39,13 @@ class Fight(Level):
         self.selection_input.load(self.data_accessor.get_all_items())
 
         op_type = opponent_type[0]
-        op_strength = opponent_type[1]#use strength later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        op_strength = opponent_type[1]
 
         codes = self.data_accessor.get_all_items(True, op_type)#get all codes
+        
         choosen_one = random.randint(0, len(codes) - 1)
         item_id = codes[choosen_one][1]
+        item_id = 9
         item_code = self.data_accessor.get_item(item_id)
 
         opponent_damage = 10

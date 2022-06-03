@@ -1,4 +1,4 @@
-from random import random
+import random
 import pygame
 from pygame.locals import *
 from fight.interpreter.interpreter import Interpreter
@@ -151,6 +151,10 @@ class Player:
             return self.life_controller.getLifePercentage()
         elif name == "getOpLifes":#get opponent lives in percent
             return self.opponent_player.life_controller.getLifePercentage() 
+        elif name == "getOwnMaxTimeToNextAttack":
+            return self.get_max_time_to_attack()
+        elif name == "getOpMaxTimeToNextAttack":
+            return self.opponent_player.get_max_time_to_attack()
         elif name == "destinationReached":#is destination reached
             return self.position == self.destination
         elif name == "onPos":#checks if is on Position
@@ -177,6 +181,14 @@ class Player:
             return self.position.y <= 0
         elif name == "onBottomBorder":
             return self.position.y >= 720 - self.size[1]
+        elif name == "getOwnWidth":
+            return self.size[0]
+        elif name == "getOwnHeight":
+            return self.size[1]
+        elif name == "getArenaWidth":
+            return 720
+        elif name == "getArenaHeight":
+            return 1280
         elif name == "print":
             if len(parameters) > 0:
                 print(parameters)
@@ -205,6 +217,8 @@ class Player:
                 self.destination.y = 0
             elif self.destination.y > 720 - self.size[1]:
                 self.destination.y = 720 - self.size[1]    
+    def get_max_time_to_attack(self):
+        return 0
         
         
 

@@ -23,3 +23,6 @@ class TouchingPlayer(Player):
         if self.elapsed_time > self.hit_delay:
             self.opponent_player.life_controller.lifes -= self.damage
             self.elapsed_time = 0
+
+    def get_max_time_to_attack(self):
+        return self.hit_delay

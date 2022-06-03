@@ -15,23 +15,23 @@ def get_level_list()-> List:
 
 class OverWorld(Level):
     def __init__(self):
-        self.state = 1
+        self.state = 2
         self.fight = Fight()
         self.code = CodeView()
         self.menu = Menu()
         maps = get_level_list()
         self.maprenderer = MapRenderer(asset,maps)
         self.load_map()
-        self.fight.reset(("m", 2))
+        self.fight.reset(("s", 1))#delete later !!!!!!!!!!!!!!!!!!!!!!!!!
 
     def load_map(self):
+        """Entities, Assign Variables etc"""
         self.entity = Entity(asset,self.maprenderer.done_map)
         self.monster = Mon(asset, self.maprenderer.done_map)  
         
-        """Entities, Assign Variables etc"""
     def update(self):
-        if self.state == 0:
-            """Update everything important"""
+        """Update everything important"""
+        if self.state == 0:   
             self.monster.update(self.maprenderer.walls)
             self.menu.update()
         elif self.state == 1:
@@ -47,6 +47,7 @@ class OverWorld(Level):
             self.code.update()
 
     def draw(self, screen):
+        """Draw everything important on the screen."""
         if self.state == 0:
             self.maprenderer.draw(screen)
             self.entity.draw(screen)
@@ -58,7 +59,6 @@ class OverWorld(Level):
             self.code.draw(screen)
         #self.entity.draw(screen)
 
-        """Draw everything important on the screen."""
     def give_event(self,event):
         """Get the Events and handle them"""
         if self.state == 0:

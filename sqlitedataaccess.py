@@ -30,8 +30,12 @@ class SqliteDataAccess:
             
             self.connection.commit()
         else:#update if the row exists
+            if opponent:
+                player = 0
+            else:
+                player = 1
             self.cursor.execute(f"""
-            UPDATE playercode SET code = "{code}", initializationcode = "{initialization_code}"
+            UPDATE playercode SET code = "{code}", initializationcode = "{initialization_code}", player={player}
             WHERE name = "{name}";
             """)
             
