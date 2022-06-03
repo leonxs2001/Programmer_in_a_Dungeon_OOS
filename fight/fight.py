@@ -2,6 +2,7 @@ from isort import code
 import pygame
 import random
 from pygame.locals import *
+from fight.gameoverscreen import GameOverScreen
 from fight.player.shootingplayer import ShootingPlayer
 from fight.player.touchingplayer import TouchingPlayer
 from selectioninput import SelectionInput
@@ -30,7 +31,7 @@ class Fight(Level):
         self.last_time = pygame.time.get_ticks()
         
     def reset(self, opponent_type):
-        
+        self.game_over_screen = GameOverScreen()
         self.menu.wait = True
         self.last_time = pygame.time.get_ticks()
         
@@ -47,7 +48,6 @@ class Fight(Level):
         item_id = codes[choosen_one][1]
         item_code = self.data_accessor.get_item(item_id)
 
-        self.remaining_time = 3 * 60 * 1000
         self.time_font = pygame.font.Font(None, 30)
 
         opponent_damage = 10
@@ -59,8 +59,12 @@ class Fight(Level):
         else:#is melee
             self.opponent = TouchingPlayer(item_code[1], item_code[0], True, opponent_damage)
 
+        #set remaining time to 3 minutes
+        self.remaining_time = 3 * 60 * 1000
+        self.game_over = False
+
     def update(self):
-        if not self.wait_for_selection:
+        if not self.wait_for_selection and not self.game_over:
             #calculate elapsed time
             new_time = pygame.time.get_ticks()
             elapsed_time = new_time - self.last_time
@@ -71,7 +75,8 @@ class Fight(Level):
                 self.remaining_time -= elapsed_time
 
                 if self.remaining_time <= 0:
-                    return False
+                    self.game_over = True
+                    self.game_over_screen.set_state(False)
 
                 self.player.update(elapsed_time)
                 self.opponent.update(elapsed_time)
@@ -81,36 +86,46 @@ class Fight(Level):
                     self.opponent.process_collision(elapsed_time)
 
                 if self.player.life_controller.lifes <= 0:
-                    return False
+                    self.game_over = True
+                    self.game_over_screen.set_state(False)
                 elif self.opponent.life_controller.lifes <= 0:
-                    return True
+                    self.game_over = True
+                    self.game_over_screen.set_state(True)
 
     def give_event(self, event):
-        if self.wait_for_selection:
-            if event.type == MOUSEWHEEL:
-                self.selection_input.scroll(event.y)
-            elif event.type == MOUSEBUTTONDOWN:
+        if self.game_over:
+            if event.type == MOUSEBUTTONDOWN:
                 if pygame.mouse.get_pressed()[0]:
-                    result = self.selection_input.check_collision(pygame.mouse.get_pos())
-                    if result or result == 0:
-                        if not str(result).isnumeric():
-                            result = 1
-                        item = self.data_accessor.get_item(result)
-                        self.player = ShootingPlayer(item[1], item[0], False)
-                        self.player.opponent = self.opponent
-                        self.opponent.opponent = self.player
-
-                        self.wait_for_selection = False
+                    if self.game_over_screen.check_collision(pygame.mouse.get_pos()):
+                        self.game_over = False
+                        return self.game_over_screen.state     
         else:
-            if event.type == KEYDOWN:
-                if event.key == K_RIGHT or event.key == K_SPACE:
-                    if self.player.ready:
-                        self.player.next_step()
-                elif event.key == K_RETURN:
-                    self.menu.wait = not self.menu.wait
-            elif event.type == MOUSEBUTTONDOWN:
-                if self.menu.is_mouse_on_play():
-                    self.menu.wait = not self.menu.wait
+            if self.wait_for_selection:
+                if event.type == MOUSEWHEEL:
+                    self.selection_input.scroll(event.y)
+                elif event.type == MOUSEBUTTONDOWN:
+                    if pygame.mouse.get_pressed()[0]:
+                        result = self.selection_input.check_collision(pygame.mouse.get_pos())
+                        if result or result == 0:
+                            if not str(result).isnumeric():
+                                result = 1
+                            item = self.data_accessor.get_item(result)
+                            self.player = ShootingPlayer(item[1], item[0], False)
+                            self.player.opponent = self.opponent
+                            self.opponent.opponent = self.player
+
+                            self.wait_for_selection = False
+            else:
+                if event.type == KEYDOWN:
+                    if event.key == K_RIGHT or event.key == K_SPACE:
+                        if self.player.ready:
+                            self.player.next_step()
+                    elif event.key == K_RETURN:
+                        self.menu.wait = not self.menu.wait
+                elif event.type == MOUSEBUTTONDOWN:
+                    if self.menu.is_mouse_on_play():
+                        self.menu.wait = not self.menu.wait
+
 
     def draw(self,screen):
         #Redisplay
@@ -123,6 +138,12 @@ class Fight(Level):
             self.selection_input.draw(screen)
 
         #create the new time_text and its rect and draw it
+        self.draw_time_text(screen)
+
+        if self.game_over:
+            self.game_over_screen.draw(screen)
+
+    def draw_time_text(self, screen):
         seconds = int(self.remaining_time // 1000)
         
         if seconds > 120:

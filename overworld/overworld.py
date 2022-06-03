@@ -35,14 +35,7 @@ class OverWorld(Level):
             self.monster.update(self.maprenderer.walls)
             self.menu.update()
         elif self.state == 1:
-            result = self.fight.update()
-
-            if result != None:
-                if result:
-                    print("gewonnen")#fill later
-                else:
-                    print("verloren")#fill later
-                self.state = 0
+            self.fight.update()
         elif self.state == 2:
             self.code.update()
 
@@ -70,7 +63,13 @@ class OverWorld(Level):
                     self.code.reset()
                     self.state = 2
         elif self.state == 1:
-            self.fight.give_event(event)
+            result = self.fight.give_event(event)
+            if result != None:
+                if result:
+                    print("gewonnen")#fill later
+                else:
+                    print("verloren")#fill later
+                self.state = 0
         elif self.state == 2:
             if self.code.give_event(event):
                 self.state = 0
