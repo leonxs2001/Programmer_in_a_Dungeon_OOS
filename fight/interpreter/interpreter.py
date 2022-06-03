@@ -62,85 +62,90 @@ class Interpreter:
         """
         Interprets a arithmetic expression
         """
-        if isinstance(expression, tuple):#if the expression is a tupel we have to calculate
-            if expression[0] == ".":#if the expression is a method it is important to call this
-                return self.__interpret_method(expression)
-            elif expression[0] == "$":#if the expression is a variabel it is important to use the value of the variabel
-                if expression[1] in self.variabels:
-                    return self.variabels[expression[1]]
-                else: # if the variabel does not exist return 0
-                    return 0
+        try :#it is possible, that the operation is not possible
+            if isinstance(expression, tuple):#if the expression is a tupel we have to calculate
+                if expression[0] == ".":#if the expression is a method it is important to call this
+                    return self.__interpret_method(expression)
+                elif expression[0] == "$":#if the expression is a variabel it is important to use the value of the variabel
+                    if expression[1] in self.variabels:
+                        return self.variabels[expression[1]]
+                    else: # if the variabel does not exist return 0
+                        return 0
 
-            result = self.__interpret_arithmetic_expression(expression[1])#calculate first part of the expression
-            for exp in expression[2:]:#calculate the rest of expression by its operator(from the left the to right)
-                if expression[0] == "+":
-                    result += self.__interpret_arithmetic_expression(exp)
-                elif expression[0] == "-":
-                    result -= self.__interpret_arithmetic_expression(exp)
-                elif expression[0] == "*":
-                    result *= self.__interpret_arithmetic_expression(exp)
-                elif expression[0] == "/":
-                    result /= self.__interpret_arithmetic_expression(exp)
-                elif expression[0] == "%":
-                    result %= self.__interpret_arithmetic_expression(exp)
-                elif expression[0] == "^":
-                    result **= self.__interpret_arithmetic_expression(exp)
-            return result
-        else:#if the expression is not a tupel we dont need to calculate
-            return expression
+                result = self.__interpret_arithmetic_expression(expression[1])#calculate first part of the expression
+                for exp in expression[2:]:#calculate the rest of expression by its operator(from the left the to right)
+                    if expression[0] == "+":
+                        result += self.__interpret_arithmetic_expression(exp)
+                    elif expression[0] == "-":
+                        result -= self.__interpret_arithmetic_expression(exp)
+                    elif expression[0] == "*":
+                        result *= self.__interpret_arithmetic_expression(exp)
+                    elif expression[0] == "/":
+                        result /= self.__interpret_arithmetic_expression(exp)
+                    elif expression[0] == "%":
+                        result %= self.__interpret_arithmetic_expression(exp)
+                    elif expression[0] == "^":
+                        result **= self.__interpret_arithmetic_expression(exp)
+                return result
+            else:#if the expression is not a tupel we dont need to calculate
+                return expression
+        except:#return 0 if operation is not valid
+            return 0
 
     def __interpret_logical_expression(self,expression):
         """
         Interprets a logical expression
         """
-        
-        if isinstance(expression,tuple):#if the expression is a tupel we have to calculate
-            if expression[0] == ".":#if the expression is a method it is important to call this
-                return self.__interpret_method(expression)
-            elif expression[0] == "$":#if the expression is a variabel it is important to use the value of the variabel
-                if expression[1] in self.variabels:
-                    return self.variabels[expression[1]]
-                else: # if the variabel does not exist return 0
-                    return 0
+        try :#it is possible, that the operation is not possible
+            if isinstance(expression,tuple):#if the expression is a tupel we have to calculate
+                if expression[0] == ".":#if the expression is a method it is important to call this
+                    return self.__interpret_method(expression)
+                elif expression[0] == "$":#if the expression is a variabel it is important to use the value of the variabel
+                    if expression[1] in self.variabels:
+                        return self.variabels[expression[1]]
+                    else: # if the variabel does not exist return 0
+                        return 0
 
-            #apply the correct operator
-            if expression[0] == "!":
-                return not self.__interpret_logical_expression(expression[1])
-            elif expression[0] == "&":
-                result = self.__interpret_logical_expression(expression[1])#calculate the first part of the expression
+                #apply the correct operator
+                if expression[0] == "!":
+                    return not self.__interpret_logical_expression(expression[1])
+                elif expression[0] == "&":
+                    result = self.__interpret_logical_expression(expression[1])#calculate the first part of the expression
 
-                for exp in expression[2:]:#than calculate the rest
-                    if not result:
-                        return False
-                    result = result and self.__interpret_logical_expression(exp)
+                    for exp in expression[2:]:#than calculate the rest
+                        if not result:
+                            return False
+                        result = result and self.__interpret_logical_expression(exp)
 
-                return result
+                    return result
 
-            elif expression[0] ==  "|":
-                result = self.__interpret_logical_expression(expression[1])#calculate the first part of the expression
+                elif expression[0] ==  "|":
+                    result = self.__interpret_logical_expression(expression[1])#calculate the first part of the expression
 
-                for exp in expression[2:]:#than calculate the rest
-                    if result:
-                        return True
-                    result = result or self.__interpret_logical_expression(exp)
+                    for exp in expression[2:]:#than calculate the rest
+                        if result:
+                            return True
+                        result = result or self.__interpret_logical_expression(exp)
 
-                return result
-            #In case of comparison operators like = and != we need to call the interpret expression method(you can also compare boolean)
-            #In case of comparison operators like <, >, <=, >= we only need to call the interpret arithmetic expression)
-            elif expression[0] == "=":
-                return self.__interpret_expression(expression[1]) == self.__interpret_expression(expression[2])
-            elif expression[0] == "!=":
-                return self.__interpret_expression(expression[1]) != self.__interpret_expression(expression[2])
-            elif expression[0] == "<=":
-                return self.__interpret_arithmetic_expression(expression[1]) <= self.__interpret_arithmetic_expression(expression[2])
-            elif expression[0] == ">=":
-                return self.__interpret_arithmetic_expression(expression[1]) >= self.__interpret_arithmetic_expression(expression[2])
-            elif expression[0] == "<":
-                return self.__interpret_arithmetic_expression(expression[1]) < self.__interpret_arithmetic_expression(expression[2])
-            elif expression[0] == ">":
-                return self.__interpret_arithmetic_expression(expression[1]) > self.__interpret_arithmetic_expression(expression[2])
-        else:#if the expression is not a tupel we dont need to calculate
-            return expression
+                    return result
+                #In case of comparison operators like = and != we need to call the interpret expression method(you can also compare boolean)
+                #In case of comparison operators like <, >, <=, >= we only need to call the interpret arithmetic expression)
+                elif expression[0] == "=":
+                    return self.__interpret_expression(expression[1]) == self.__interpret_expression(expression[2])
+                elif expression[0] == "!=":
+                    return self.__interpret_expression(expression[1]) != self.__interpret_expression(expression[2])
+                elif expression[0] == "<=":
+                    return self.__interpret_arithmetic_expression(expression[1]) <= self.__interpret_arithmetic_expression(expression[2])
+                elif expression[0] == ">=":
+                    return self.__interpret_arithmetic_expression(expression[1]) >= self.__interpret_arithmetic_expression(expression[2])
+                elif expression[0] == "<":
+                    return self.__interpret_arithmetic_expression(expression[1]) < self.__interpret_arithmetic_expression(expression[2])
+                elif expression[0] == ">":
+                    return self.__interpret_arithmetic_expression(expression[1]) > self.__interpret_arithmetic_expression(expression[2])
+            else:#if the expression is not a tupel we dont need to calculate
+                return expression
+        except:#return false, if is not valid
+            return False
 
     def __interpret_variabel(self,variabel):
         """

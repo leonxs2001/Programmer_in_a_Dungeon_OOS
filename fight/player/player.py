@@ -90,19 +90,31 @@ class Player:
             if len(parameters) == 2:
                 x, y = parameters
             else:#if parameter is a tupel
-                x, y = parameters[0]
+                if isinstance(parameters[0], tuple):
+                    x, y = parameters[0]
+                else:
+                    x,y = self.position.x, self.position.y
             self.goto(x,y)
         elif name == "move":
             if len(parameters) == 2:
                 x, y = parameters
             else:#if parameter is a tupel
-                x, y = parameters[0]
+                if isinstance(parameters[0], tuple):
+                    x, y = parameters[0]
+                else:
+                    x,y = self.position.x, self.position.y
+
             self.goto(self.position.x + x, self.position.y + y)
         elif name == "getRandom":
             if len(parameters) == 2:
                 min, max = parameters
             else:#if parameter is a tupel
+                if isinstance(parameters[0], tuple):
+                    min, max = parameters[0]
+                else:
+                    min,max = 1,1
                 min, max = parameters[0]
+
             return random.randint(min, max)
         elif name == "getX":
             return self.rect.left
@@ -124,8 +136,11 @@ class Player:
             if len(parameters) == 2:
                 x, y = parameters
             else:#if parameter is a tupel
-                x, y = parameters[0]
-            pos = pygame.Vector2(x,y)
+                if isinstance(parameters[0], tuple):
+                    x, y = parameters[0]
+                else:
+                    x,y = self.position.x, self.position.y
+                pos = pygame.Vector2(x,y)
             return (pos - self.position).length()
         elif name == "getTimeToNextAttack":#in milliseconds
             if isinstance(self, ShootingPlayer):

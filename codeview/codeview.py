@@ -111,7 +111,6 @@ class CodeView(Level):
                         selector_collision = self.selector.check_collision(pygame.Vector2(mouse_position))
                         if selector_collision:
                             if isinstance(selector_collision, Block):#add to the block list
-                                print("Der neue Block",selector_collision, selector_collision.next_block)
                                 if not isinstance(selector_collision, VariabelDefinitionBlock):
                                     selector_collision.in_focus = True
                                     self.is_mouse_button_down = True

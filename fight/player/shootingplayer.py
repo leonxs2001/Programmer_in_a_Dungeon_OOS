@@ -38,13 +38,19 @@ class ShootingPlayer(Player):
                 if len(parameters) == 2:
                     x, y = parameters
                 else:#if parameter is a tupel
-                    x, y = parameters[0]
+                    if isinstance(parameters[0], tuple):
+                        x, y = parameters[0]
+                    else:
+                        x,y = 1,1
                 self.shoot(pygame.Vector2(x,y))
         elif name == "shootTo":
             if len(parameters) == 2:
                 x, y = parameters
             else:#if parameter is a tupel
-                x, y = parameters[0]
+                if isinstance(parameters[0], tuple):
+                    x, y = parameters[0]
+                else:
+                    x,y = 0, 0
             direction =pygame.Vector2(x,y) - pygame.Vector2(self.rect.center)
             self.shoot(direction)
         else:
