@@ -91,7 +91,7 @@ class CodeView(Level):
                             start_block.update_scale_factor(self.scale_factor)
                             initialization_block.update_scale_factor(self.scale_factor)
                             self.code_block_list = [start_block, initialization_block]
-                            
+                            self.selector.open = False
                             self.selector.build()
                         self.wait_for_selection = False
             elif event.type == MOUSEWHEEL:

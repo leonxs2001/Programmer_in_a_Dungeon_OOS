@@ -15,7 +15,7 @@ def get_level_list()-> List:
 
 class OverWorld(Level):
     def __init__(self):
-        self.state = 2
+        self.state = 1
         self.fight = Fight()
         self.code = CodeView()
         self.menu = Menu()

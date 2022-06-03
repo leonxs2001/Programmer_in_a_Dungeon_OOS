@@ -11,7 +11,6 @@ class Bullet(pygame.sprite.Sprite):
         speed = 15
         direction = direction.copy()
         if direction.length() != 0:
-            print(direction.length)
             direction.scale_to_length(speed)
         
         self.movement = direction.copy()

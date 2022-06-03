@@ -45,7 +45,6 @@ class Fight(Level):
         
         choosen_one = random.randint(0, len(codes) - 1)
         item_id = codes[choosen_one][1]
-        item_id = 9
         item_code = self.data_accessor.get_item(item_id)
 
         opponent_damage = 10

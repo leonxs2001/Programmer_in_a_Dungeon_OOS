@@ -99,6 +99,7 @@ class Selector:
         self.build()
         
         return variabel_definition_block
+
     def check_collision(self, mouse_position : pygame.Vector2):
         if self.wait_for_input:
             result = self.text_input.check_collision(mouse_position)
