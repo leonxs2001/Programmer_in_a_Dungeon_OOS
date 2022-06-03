@@ -28,7 +28,7 @@ class Fight(Level):
         
         self.menu = Menu()
         self.last_time = pygame.time.get_ticks()
-
+        
     def reset(self, opponent_type):
         
         self.menu.wait = True
@@ -46,6 +46,9 @@ class Fight(Level):
         choosen_one = random.randint(0, len(codes) - 1)
         item_id = codes[choosen_one][1]
         item_code = self.data_accessor.get_item(item_id)
+
+        self.remaining_time = 3 * 60 * 1000
+        self.time_font = pygame.font.Font(None, 30)
 
         opponent_damage = 10
         if op_strength > 1:
@@ -65,6 +68,11 @@ class Fight(Level):
 
             self.menu.update()
             if not self.menu.wait:
+                self.remaining_time -= elapsed_time
+
+                if self.remaining_time <= 0:
+                    return False
+
                 self.player.update(elapsed_time)
                 self.opponent.update(elapsed_time)
                 #check collsion between the two players
@@ -113,5 +121,34 @@ class Fight(Level):
 
         if self.wait_for_selection:
             self.selection_input.draw(screen)
+
+        #create the new time_text and its rect and draw it
+        seconds = int(self.remaining_time // 1000)
+        
+        if seconds > 120:
+            text_color = (0,200,0)
+        elif seconds > 60:
+            text_color = (200,200,0)
+        else:
+            text_color = (200,0,0)
+
+        minutes = int(seconds // 60)
+        seconds -= 60 * minutes
+
+        seconds = str(seconds)
+        minutes = str(minutes)
+        if len(seconds) == 1:
+            seconds = "0" + seconds
+        
+        if len(minutes) == 1:
+            minutes = "0" + minutes
+
+        time_text = self.time_font.render(f"Time: {minutes}:{seconds}",True, text_color)
+        time_rect = time_text.get_rect()
+        time_rect.right = 1260
+        time_rect.top = 20
+        screen.blit(time_text, time_rect)
+        
+        
     
     
