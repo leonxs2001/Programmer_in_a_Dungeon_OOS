@@ -57,7 +57,8 @@ class OverWorld(Level):
         if self.state == 0:
             if event.type == pygame.KEYDOWN:
                 self.entity.move(event, self.maprenderer.walls)
-                self.maprenderer.checkend(self.entity.playergroup)
+                if self.maprenderer.checkend(self.entity.playergroup):
+                    self.load_map()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self.menu.is_mouse_on_code():
                     self.code.reset()
