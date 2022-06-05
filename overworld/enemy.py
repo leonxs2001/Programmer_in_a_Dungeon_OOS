@@ -1,4 +1,4 @@
-from random import random, randrange
+from random import randrange
 from typing import List, Tuple
 import pygame
 
@@ -13,7 +13,7 @@ class Melee_E(pygame.sprite.Sprite):
             self.assets = assets
             self.uni_size = (40,40)
         
-        def update(self, groups:List, assets, *args: any, **kwargs: any) -> None:
+        def update(self, groups:List, monstergroup:List, assets, *args: any, **kwargs: any) -> None:
 
             if self.move_points == 0:
                
@@ -35,7 +35,7 @@ class Melee_E(pygame.sprite.Sprite):
                 if rnd == 3:                
                     temp.add(Melee_E(assets, self.uni_size, (self.rect.x, self.rect.y+40), 40, self.image))
                 
-                if not(pygame.sprite.groupcollide(temp, groups, False,False)):
+                if not(pygame.sprite.groupcollide(temp, groups, False,False)) and not(pygame.sprite.groupcollide(temp, monstergroup, False,False)):
 
                     if rnd == 0:
                         self.rect.x -= 40
@@ -83,7 +83,7 @@ class Mon(pygame.sprite.Sprite):
 
     def update(self, groups:List):
 
-        self.monstergroup.update(groups, self.assets)
+        self.monstergroup.update(groups, self.monstergroup, self.assets)
       
 
     def draw(self, screen : pygame.Surface):
