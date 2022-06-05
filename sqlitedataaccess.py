@@ -30,19 +30,23 @@ class SqliteDataAccess:
             
             self.connection.commit()
         else:#update if the row exists
+            if opponent:
+                player = 0
+            else:
+                player = 1
             self.cursor.execute(f"""
-            UPDATE playercode SET code = "{code}", initializationcode = "{initialization_code}"
+            UPDATE playercode SET code = "{code}", initializationcode = "{initialization_code}", player={player}
             WHERE name = "{name}";
             """)
             
             self.connection.commit()
 
-    def get_all_items(self,opponent = False):
+    def get_all_items(self, opponent = False, opponent_type = "s"):
         string = """
         SELECT name, id FROM playercode WHERE player = 
         """
         if opponent:
-            string += "0"
+            string += f'0 AND name LIKE "{opponent_type}%"' 
         else:
             string += "1"
         self.cursor.execute(string)

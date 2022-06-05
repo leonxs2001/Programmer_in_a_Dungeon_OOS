@@ -4,7 +4,6 @@ from pygame.locals import *
 #from codeview.codeview import CodeView
 from fight.fight import Fight
 from overworld.overworld import OverWorld
-from level import Level 
 pygame.init()
 # Display
 size = (1280, 720)

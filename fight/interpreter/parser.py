@@ -28,9 +28,9 @@ def parse_sequence(sequence):
             while sequence[i] != "=": # go to the =
                 i += 1
             i += 1
-            while i < len(sequence) and not (sequence[i] == "?" or (sequence[i] in "$." and sequence[i-1] not in "+-/%^*=&|!<>")):
+            while i < len(sequence) and not (sequence[i] == "?" or (sequence[i] in "$." and sequence[i-1] not in "+-/%^*=&|!<>(")):
                 i += 1
-            return_tupel += (parse_variable(sequence[new_start:i]),)
+            return_tupel += (parse_variabel(sequence[new_start:i]),)
             new_start = i
             i -= 1
         elif sequence[i] == "?":
@@ -182,14 +182,14 @@ def parse_logical_expression(logical_expression):
             return parse_arithmetic_expression(logical_expression)
         elif logical_expression[0] == ".":#maybe it is a single method
             return parse_method(logical_expression)
-        elif logical_expression[0] ==" $":#is variable
-            return parse_variable(logical_expression)
+        elif logical_expression[0] ==" $":#is variabel
+            return parse_variabel(logical_expression)
     
         try:
             return float(logical_expression)
         except ValueError:
             if logical_expression[0] == "$":
-                return parse_variable(logical_expression)
+                return parse_variabel(logical_expression)
             return logical_expression
 
 def parse_arithmetic_expression(arithmetic_expression):
@@ -349,8 +349,8 @@ def parse_arithmetic_expression(arithmetic_expression):
         return return_tupel
     elif arithmetic_expression[0] == ".":#is method
         return parse_method(arithmetic_expression)
-    elif arithmetic_expression[0] == "$":#is variable
-        return parse_variable(arithmetic_expression)
+    elif arithmetic_expression[0] == "$":#is variabel
+        return parse_variabel(arithmetic_expression)
     else:
         try:
             return float(arithmetic_expression)
@@ -403,23 +403,23 @@ def parse_expression(expression):
         return parse_arithmetic_expression(expression)
 
 
-def parse_variable(variable):
-    """gets variable command with the $ and return parsed variable"""
-    variable = variable[1:]
-    variable_name = ""
-    variable_definition = "n"#filler
-    if "=" in variable:#with definition
-        variables = variable.split("=",1)
-        variable_name = variables[0]
-        variable_definition = variables[1]
-        variable_definition = parse_expression(variable_definition)
+def parse_variabel(variabel):
+    """gets variabel command with the $ and return parsed variabel"""
+    variabel = variabel[1:]
+    variabel_name = ""
+    variabel_definition = "n"#filler
+    if "=" in variabel:#with definition
+        variabels = variabel.split("=",1)
+        variabel_name = variabels[0]
+        variabel_definition = variabels[1]
+        variabel_definition = parse_expression(variabel_definition)
     else:
-        variable_name = variable
+        variabel_name = variabel
     
-    if variable_definition == "n":
-        return ("$",variable_name)
+    if variabel_definition == "n":
+        return ("$",variabel_name)
     else:
-        return ("$",variable_name,variable_definition)
+        return ("$",variabel_name,variabel_definition)
 
 def parse_method(method):
     """gets method command with . and return parsed method"""

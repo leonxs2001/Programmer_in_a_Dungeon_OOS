@@ -1,6 +1,6 @@
 import copy
 import pygame
-from codeview.block.variableblock import *
+from codeview.block.variabelblock import *
 from codeview.textinput import TextInput
 class Selector:
     arrow_size = pygame.Vector2(20,40)
@@ -10,10 +10,16 @@ class Selector:
         self.open = False
         self.build()
         self.wait_for_input = False
-        self.variables = []
-        
+        self.variabels = []
+
+    def reset(self):
+        self.arrow_image_rect.left = 0
+        self.drawn_arrow_image = self.arrow_image.copy()
+        self.open = False
+        self.build()
+
     def build(self):
-        self.text_input = TextInput("Your Variablename:")
+        self.text_input = TextInput("Your Variabelname:")
         #create the little arrow image
         self.arrow_image = pygame.Surface(Selector.arrow_size)
         self.arrow_image.fill(Selector.background_color)
@@ -30,19 +36,19 @@ class Selector:
         self.background_image.fill(Selector.background_color)
         pygame.draw.rect(self.background_image, (0,0,0), pygame.rect.Rect((0,0), (400, 720)),width=2)
 
-        #create add variable image
+        #create add variabel image
         size = pygame.Vector2(200,60)
-        self.add_variable_image = pygame.Surface(size)
-        self.add_variable_image.fill((230,230,230))
-        self.add_variable_rect = self.add_variable_image.get_rect()
-        pygame.draw.rect(self.add_variable_image, (0,0,0),  self.add_variable_rect, width=2)
+        self.add_variabel_image = pygame.Surface(size)
+        self.add_variabel_image.fill((230,230,230))
+        self.add_variabel_rect = self.add_variabel_image.get_rect()
+        pygame.draw.rect(self.add_variabel_image, (0,0,0),  self.add_variabel_rect, width=2)
         font = pygame.font.Font(None, 30)
-        btn_text = font.render("Create Vairable", True, (0,0,0))
+        btn_text = font.render("Create Variabel", True, (0,0,0))
         btn_text_rect = btn_text.get_rect()
         btn_text_rect.center = size / 2
-        self.add_variable_image.blit(btn_text, btn_text_rect)
+        self.add_variabel_image.blit(btn_text, btn_text_rect)
 
-        self.add_variable_rect.topleft = (10,10)
+        self.add_variabel_rect.topleft = (10,10)
 
         #get all possible blocks
         self.blocks = []
@@ -63,8 +69,8 @@ class Selector:
             first_y = self.blocks[0][1].top 
             next_first_y = first_y + scrollment
      
-            if next_first_y > 20 + self.add_variable_rect.height:
-                scrollment = 20 + self.add_variable_rect.height - first_y
+            if next_first_y > 20 + self.add_variabel_rect.height:
+                scrollment = 20 + self.add_variabel_rect.height - first_y
             else:
                 last_y = self.blocks[-1][1].bottom
                 next_last_y = last_y + scrollment 
@@ -75,7 +81,7 @@ class Selector:
             for block in self.blocks:
                 block[1].top += scrollment
 
-            self.add_variable_rect.top += scrollment
+            self.add_variabel_rect.top += scrollment
             return True
         else:
             return False
@@ -83,24 +89,25 @@ class Selector:
         if self.wait_for_input:
             self.text_input.give_keyboard_down_event(event)
 
-    def create_new_variable(self, name):
-        variable_definition_block = VariableDefinitionBlock(name)
-        #add variable definition block to the dict
-        tup = (name, "variabledefinition")
-        self.block_dict[tup] = variable_definition_block
-        tup = (name, "variable")
-        self.block_dict[tup] = VariableBlock(name)
+    def create_new_variabel(self, name):
+        variabel_definition_block = VariabelDefinitionBlock(name)
+        #add variabel definition block to the dict
+        tup = (name, "variabeldefinition")
+        self.block_dict[tup] = variabel_definition_block
+        tup = (name, "variabel")
+        self.block_dict[tup] = VariabelBlock(name)
         self.build()
         
-        return variable_definition_block
+        return copy.copy(variabel_definition_block)
+
     def check_collision(self, mouse_position : pygame.Vector2):
         if self.wait_for_input:
             result = self.text_input.check_collision(mouse_position)
             if result:#got an input
                 if isinstance(result, str):
-                    if result not in self.variables:
+                    if result not in self.variabels:
                         self.wait_for_input = False
-                        return self.create_new_variable(result)
+                        return self.create_new_variabel(result)
                 self.wait_for_input = False
             return True
         else:
@@ -115,8 +122,8 @@ class Selector:
                     return True
             else:
                 if self.open and mouse_position.x < 400:
-                    #check collision with create new variable button
-                    if self.add_variable_rect.collidepoint(mouse_position):
+                    #check collision with create new variabel button
+                    if self.add_variabel_rect.collidepoint(mouse_position):
                         self.open = False
                         self.arrow_image_rect.left = 0
                         self.wait_for_input = True
@@ -140,7 +147,7 @@ class Selector:
         if self.open:#only draw background if its open
             screen.blit(self.background_image, (0,0))
 
-            screen.blit(self.add_variable_image, self.add_variable_rect)
+            screen.blit(self.add_variabel_image, self.add_variabel_rect)
 
             #draw blocks
             for block_tupel in self.blocks:
