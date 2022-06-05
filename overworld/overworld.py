@@ -15,14 +15,14 @@ def get_level_list()-> List:
 
 class OverWorld(Level):
     def __init__(self):
-        self.state = 1
+        self.state = 0#1
         self.fight = Fight()
         self.code = CodeView()
         self.menu = Menu()
         maps = get_level_list()
         self.maprenderer = MapRenderer(asset,maps)
         self.load_map()
-        self.fight.reset(("m", 1))#delete later !!!!!!!!!!!!!!!!!!!!!!!!!
+        #self.fight.reset(("m", 1))#delete later !!!!!!!!!!!!!!!!!!!!!!!!!
 
     def load_map(self):
         """Entities, Assign Variables etc"""
