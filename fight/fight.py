@@ -55,14 +55,12 @@ class Fight(Level):
         if op_strength > 1:
             opponent_damage = 15
 
-        if op_type == "s":  # is shooting player
-            self.opponent = ShootingPlayer(
-                item_code[1], item_code[0], True, opponent_damage)
-        else:  # is melee
-            self.opponent = TouchingPlayer(
-                item_code[1], item_code[0], True, opponent_damage)
-
-        # set remaining time to 3 minutes
+        if op_type == "s":#is shooting player
+            self.opponent = ShootingPlayer(item_code[1], item_code[0], True, opponent_damage)
+        else:#is melee
+            self.opponent = TouchingPlayer(item_code[1], item_code[0], True, opponent_damage)
+        self.player = ShootingPlayer("","",False)
+        #set remaining time to 3 minutes
         self.remaining_time = 3 * 60 * 1000
         self.game_over = False
 
@@ -123,8 +121,7 @@ class Fight(Level):
             else:
                 if event.type == KEYDOWN:
                     if event.key == K_RIGHT or event.key == K_SPACE:
-                        if self.player.ready:
-                            self.player.next_step()
+                        self.menu.wait = not self.menu.wait
                     elif event.key == K_RETURN:
                         self.menu.wait = not self.menu.wait
                 elif event.type == MOUSEBUTTONDOWN:
