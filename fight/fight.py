@@ -110,7 +110,7 @@ class Fight(Level):
                             pygame.mouse.get_pos())
                         if result or result == 0:
                             if not str(result).isnumeric():
-                                result = 1
+                                result = 2#set to default code
                             item = self.data_accessor.get_item(result)
                             self.player = ShootingPlayer(
                                 item[1], item[0], False)
