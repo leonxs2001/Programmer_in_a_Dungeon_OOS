@@ -1,4 +1,3 @@
-
 from typing import List
 from level import Level
 import pygame,os,random
@@ -32,7 +31,12 @@ class OverWorld(Level):
     def update(self):
         """Update everything important"""
         if self.state == 0:   
-            self.monster.update(self.maprenderer.walls)
+            fight_tup = self.monster.update(self.maprenderer.walls, self.entity.playergroup)
+
+            if fight_tup != None:
+                self.fight.reset(fight_tup)
+                self.state = 1
+            
             self.menu.update()
         elif self.state == 1:
             self.fight.update()
