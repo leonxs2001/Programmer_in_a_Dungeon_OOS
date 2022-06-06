@@ -46,31 +46,6 @@ For loading a old piece of code, press the "Load"-Button and click on your choic
 </br>
 <h3>In a fight:</h3>First you have to choose your best piece of code by pressing on your choice:</br>
 ![image](https://user-images.githubusercontent.com/79515919/172148144-8f870474-0c06-4500-8ebb-76c90174896c.png)</br>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+To stop and resume the fight press the "Play"- and "Stop"-Button:</br>
+![image](https://user-images.githubusercontent.com/79515919/172149432-6d3d0e43-2167-475c-bbdc-7113295b4a95.png)</br>
+![image](https://user-images.githubusercontent.com/79515919/172149466-b147139e-4763-438f-b00c-7dc545eeb777.png)</br>
