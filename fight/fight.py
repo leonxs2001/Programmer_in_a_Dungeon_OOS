@@ -117,8 +117,7 @@ class Fight(Level):
             else:
                 if event.type == KEYDOWN:
                     if event.key == K_RIGHT or event.key == K_SPACE:
-                        if self.player.ready:
-                            self.player.next_step()
+                        self.menu.wait = not self.menu.wait
                     elif event.key == K_RETURN:
                         self.menu.wait = not self.menu.wait
                 elif event.type == MOUSEBUTTONDOWN:
