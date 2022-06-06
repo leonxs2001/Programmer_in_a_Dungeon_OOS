@@ -80,6 +80,7 @@ class OverWorld(Level):
                     self.state = 1
                 if self.maprenderer.checkend(self.entity.playergroup):
                     if self.maprenderer.map_index == 4:
+                        self.game_over.set_score(self.time)
                         self.state = 3
                     else:
                         self.maprenderer.done_map = self.maprenderer.get_map()
