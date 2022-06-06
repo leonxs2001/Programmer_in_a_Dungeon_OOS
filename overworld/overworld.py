@@ -35,18 +35,15 @@ class OverWorld(Level):
         """Update everything important"""
         if self.state == 0:   
             fight_tup = self.monster.update(self.maprenderer.walls, self.entity.playergroup)
-
             if fight_tup != None:
                 self.fight.reset(fight_tup)
                 self.state = 1
-            
             self.menu.update()
         elif self.state == 1:
             self.fight.update()
         elif self.state == 2:
             self.code.update()
         
-
     def draw(self, screen):
         """Draw everything important on the screen."""
         if self.state == 0 or self.state == 3:
@@ -66,7 +63,10 @@ class OverWorld(Level):
         """Get the Events and handle them"""
         if self.state == 0:
             if event.type == pygame.KEYDOWN:
-                self.entity.move(event, self.maprenderer.walls)
+                fight_tup = self.entity.move(event, self.maprenderer.walls, self.monster.monstergroup)
+                if fight_tup != None:
+                    self.fight.reset(fight_tup)
+                    self.state = 1
                 if self.maprenderer.checkend(self.entity.playergroup):
                     if self.maprenderer.map_index == 4:
                         self.state = 3
