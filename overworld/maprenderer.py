@@ -67,6 +67,7 @@ class MapRenderer(pygame.sprite.Sprite , Map):
     
     def checkend(self,group):
         return pygame.sprite.groupcollide(self.end, group, False,False)
+
     def render(self):
         self.walls = pygame.sprite.Group()
         self.ground = pygame.sprite.Group()

@@ -27,7 +27,7 @@ class Entity(pygame.sprite.Sprite):
     def group(self):
         return self.playergroup
 
-    def move(self, event, groups:List):
+    def move(self, event, groups:List, monstergroup:pygame.sprite.Group):
 
         temp = pygame.sprite.Group()
 
@@ -47,6 +47,14 @@ class Entity(pygame.sprite.Sprite):
             
             temp.add(Player(self.assets, self.uni_size, (self.player.rect.x, self.player.rect.y+40)))
 
+
+        for monster in monstergroup:
+
+            for tem in temp:
+
+                if pygame.Rect.colliderect(tem.rect, monster.rect):
+                    tup = monster.info()
+                    return tup
 
         if not(pygame.sprite.groupcollide(temp, groups, False,False)):
 

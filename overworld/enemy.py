@@ -16,6 +16,10 @@ class Robot(pygame.sprite.Sprite):
             self.uni_size = (40,40)
             self.type = type
             self.difficulty = difficulty
+
+        def info (self):
+            tup = (self.type, self.difficulty)
+            return tup
         
         def update(self, groups:List, hero:List, monstergroup:List, assets, *args: any, **kwargs: any) -> None:
 
