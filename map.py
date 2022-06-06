@@ -3,6 +3,7 @@ import csv
 from typing import Tuple
 import pygame
 
+
 def isNotWall(arr, t: Tuple):
     return not (arr[t[0]][t[1]] == "#" or arr[t[0]][t[1]] == "x")
 
@@ -13,7 +14,7 @@ class Map():
         self.arr = []
         self.start = None
         self.end = None
-    
+
     def preProcessLevel(self):
 
         loc_arr = copy.deepcopy(self.arr)
@@ -21,30 +22,29 @@ class Map():
             for y in range(len(loc_arr[0])):
                 tup = (y*40, x*40)
                 if loc_arr[x][y] == '':
-                    loc_arr[x][y] = ('ground',tup)
+                    loc_arr[x][y] = ('ground', tup)
                 elif loc_arr[x][y] == '#':
-                    loc_arr[x][y] = ('wall',tup)
+                    loc_arr[x][y] = ('wall', tup)
                 elif self.arr[x][y] == 'x':
-                    loc_arr[x][y] = ('outer_wall',tup)
+                    loc_arr[x][y] = ('outer_wall', tup)
                 elif self.arr[x][y] == 'p':
-                    loc_arr[x][y] = ('player',tup)
+                    loc_arr[x][y] = ('player', tup)
                 elif self.arr[x][y] == 'm':
-                    loc_arr[x][y] = ('melee_e',tup)
+                    loc_arr[x][y] = ('melee_e', tup)
                 elif self.arr[x][y] == 's':
-                    loc_arr[x][y] = ('shooting_e',tup)
+                    loc_arr[x][y] = ('shooting_e', tup)
                 elif self.arr[x][y] == 'M':
-                    loc_arr[x][y] = ('big_melee_e',tup)
+                    loc_arr[x][y] = ('big_melee_e', tup)
                 elif self.arr[x][y] == 'S':
-                    loc_arr[x][y] = ('big_shooting_e',tup)
+                    loc_arr[x][y] = ('big_shooting_e', tup)
                 elif self.arr[x][y] == 'z':
-                    loc_arr[x][y] = ('end',tup)
+                    loc_arr[x][y] = ('end', tup)
         return loc_arr
-
 
     # def __str__(self):
     #     s = '_____________\n'
     #     for x in self.arr:
-    #         for y in x: 
+    #         for y in x:
     #             s += y
     #         s += '\n'
     #     s += '_____________\n'
@@ -84,7 +84,8 @@ class Map():
                     return None
 
                 neighbours = [(-1, 0), (1, 0), (0, 1), (0, -1)]
-                element_neighbours = [(e[0] + x, e[1] + y) for x, y in neighbours]
+                element_neighbours = [(e[0] + x, e[1] + y)
+                                      for x, y in neighbours]
                 for a, b in element_neighbours:
                     try:
                         if loc_arr[a][b] != 2 and isNotWall(loc_arr, (a, b)):

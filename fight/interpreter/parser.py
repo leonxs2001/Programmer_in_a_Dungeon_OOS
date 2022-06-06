@@ -7,8 +7,8 @@ def parse_sequence(sequence):
     i = 0
     while i < len(sequence):
 
-        if sequence[i] == ".":#its a method
-            open_bracket_count =- 1
+        if sequence[i] == ".":  # its a method
+            open_bracket_count = - 1
             i += 1
             while open_bracket_count != 0:
 
@@ -24,8 +24,8 @@ def parse_sequence(sequence):
             return_tupel += (parse_method(sequence[new_start:i]),)
             new_start = i
             i -= 1
-        elif sequence[i] == "$":#it is a varaible
-            while sequence[i] != "=": # go to the =
+        elif sequence[i] == "$":  # it is a varaible
+            while sequence[i] != "=":  # go to the =
                 i += 1
             i += 1
             while i < len(sequence) and not (sequence[i] == "?" or (sequence[i] in "$." and sequence[i-1] not in "+-/%^*=&|!<>(")):
@@ -34,23 +34,24 @@ def parse_sequence(sequence):
             new_start = i
             i -= 1
         elif sequence[i] == "?":
-            condition_tupel = ("?",)#tupel for the condition
+            condition_tupel = ("?",)  # tupel for the condition
             i += 1
 
-            open_bracket_count =- 1
-            #get condition. Is in ()
+            open_bracket_count = - 1
+            # get condition. Is in ()
             while open_bracket_count != 0:
                 if sequence[i] == "(":
                     if open_bracket_count == -1:
                         open_bracket_count = 1
                     else:
                         open_bracket_count += 1
-                elif sequence[i]==")":
+                elif sequence[i] == ")":
                     open_bracket_count -= 1
                 i += 1
 
-            #add condition to condition_tupel
-            condition_tupel += (parse_logical_expression(sequence[new_start+1:i]),)
+            # add condition to condition_tupel
+            condition_tupel += (
+                parse_logical_expression(sequence[new_start+1:i]),)
 
             i += 1
             new_start = i
@@ -64,10 +65,10 @@ def parse_sequence(sequence):
                     open_bracket_count -= 1
                 i += 1
 
-            #add sequence if true
+            # add sequence if true
             condition_tupel += (parse_sequence(sequence[new_start:i-1]),)
 
-            if i< len(sequence) and sequence[i] == "!":#there is an else
+            if i < len(sequence) and sequence[i] == "!":  # there is an else
                 i += 2
                 new_start = i
 
@@ -80,7 +81,7 @@ def parse_sequence(sequence):
                         open_bracket_count -= 1
                     i += 1
 
-                #add sequence if false
+                # add sequence if false
                 condition_tupel += (parse_sequence(sequence[new_start:i-1]),)
 
             new_start = i
@@ -91,13 +92,15 @@ def parse_sequence(sequence):
         i += 1
     return return_tupel
 
-#returns parsed Logical Expression as Tupel
+# returns parsed Logical Expression as Tupel
+
+
 def parse_logical_expression(logical_expression):
     """return parsed logical Expression"""
     logical_expression = delete_outside_brackets(logical_expression)
-    #Seperate fist on |(logical or) than &(logical and) than !(logical not) than =, !=, <, <=, >, >=
+    # Seperate fist on |(logical or) than &(logical and) than !(logical not) than =, !=, <, <=, >, >=
     i = 0
-    last_symbol = "f"#is only a filler
+    last_symbol = "f"  # is only a filler
     positions = ()
     open_bracket_count = 0
     while i < len(logical_expression):
@@ -105,68 +108,82 @@ def parse_logical_expression(logical_expression):
             open_bracket_count += 1
         elif logical_expression[i] == ")":
             open_bracket_count -= 1
-        elif open_bracket_count == 0: #only look for operators if we are not in Brackets
+        elif open_bracket_count == 0:  # only look for operators if we are not in Brackets
             if logical_expression[i] == "|":
                 if last_symbol == "|":
-                    positions += (i,)#add | position to position
+                    positions += (i,)  # add | position to position
                 else:
                     last_symbol = "|"
                     positions = (i,)
             elif logical_expression[i] == "&" and last_symbol != "|":
                 if last_symbol == "&":
-                    positions += (i,)#add | position to position
+                    positions += (i,)  # add | position to position
                 else:
                     last_symbol = "&"
                     positions = (i,)
             elif logical_expression[i] == "!" and last_symbol not in "!|&":
-                if i+1!=len(logical_expression):#i+1!=len(logical_expression) is only to prohibit errors
-                    if logical_expression[i+1] == "=":#than it is != ; 
+                # i+1!=len(logical_expression) is only to prohibit errors
+                if i+1 != len(logical_expression):
+                    if logical_expression[i+1] == "=":  # than it is != ;
                         last_symbol = "!="
                         positions = (i,)
                         i += 1
-                    else:#than it is a !
+                    else:  # than it is a !
                         last_symbol = "!"
-                        positions = (0,)#iso n each case on position 0
+                        positions = (0,)  # iso n each case on position 0
                 else:
-                    raise RuntimeError("There is an ! on wrong point")#raise an exception because of a ! on a wrong place
+                    # raise an exception because of a ! on a wrong place
+                    raise RuntimeError("There is an ! on wrong point")
             elif logical_expression[i] in "<>" and last_symbol not in "|&!":
-                if i+1 != len(logical_expression):#i+1!=len(logical_expression) is only to prohibit errors
+                # i+1!=len(logical_expression) is only to prohibit errors
+                if i+1 != len(logical_expression):
                     last_symbol = logical_expression[i]
                     positions = (i,)
-                    if logical_expression[i+1] == "=":#it is <= or >=
+                    if logical_expression[i+1] == "=":  # it is <= or >=
                         last_symbol += "="
                         i += 1
-                else: 
-                    raise RuntimeError("There is an "+logical_expression[i]+" on wrong point")#raise an exception because of a < or > on a wrong place
+                else:
+                    # raise an exception because of a < or > on a wrong place
+                    raise RuntimeError(
+                        "There is an "+logical_expression[i]+" on wrong point")
             elif logical_expression[i] == "=" and last_symbol not in "|&!":
-                 
+
                 last_symbol = logical_expression[i]
                 positions = (i,)
         i += 1
 
-    #check which operator was the importanst symbol
-    #and than add this operator with its operands
+    # check which operator was the importanst symbol
+    # and than add this operator with its operands
     if last_symbol in "|&":
-        return_tupel = (last_symbol,parse_logical_expression(logical_expression[:positions[0]]))#set the maker and add first argument
-        for i in range(1,len(positions)):
-            return_tupel += (parse_logical_expression(logical_expression[positions[i-1]+1:positions[i]]),) # add operand 
-        return_tupel += (parse_logical_expression(logical_expression[positions[len(positions)-1]+1:]),)#add last operand
+        return_tupel = (last_symbol, parse_logical_expression(
+            logical_expression[:positions[0]]))  # set the maker and add first argument
+        for i in range(1, len(positions)):
+            # add operand
+            return_tupel += (parse_logical_expression(
+                logical_expression[positions[i-1]+1:positions[i]]),)
+        # add last operand
+        return_tupel += (parse_logical_expression(
+            logical_expression[positions[len(positions)-1]+1:]),)
         return return_tupel
     elif last_symbol == "!":
-        return ('!',parse_logical_expression(logical_expression[1:]))
-    elif last_symbol[0] in "!=<>":#than it is relational
+        return ('!', parse_logical_expression(logical_expression[1:]))
+    elif last_symbol[0] in "!=<>":  # than it is relational
         return_tupel = (last_symbol,)
-        
-        if len(last_symbol) > 1: #than it is >= <= or !=
-            if last_symbol == "!=":#it can be logical or arithmetic
-                return_tupel += (parse_expression(logical_expression[:positions[0]]),parse_expression(logical_expression[positions[0]+2:]))
-            else:#it only can be arithemtic with the <= and >=
-                return_tupel += (parse_arithmetic_expression(logical_expression[:positions[0]]),parse_arithmetic_expression(logical_expression[positions[0]+2:]))
-        else:#than it is < > or =
-            if last_symbol == "=":#it can be logical or arithmetic
-                return_tupel += (parse_expression(logical_expression[:positions[0]]),parse_expression(logical_expression[positions[0]+1:]))
-            else:#it only can be arithemtic with the < and >
-                return_tupel += (parse_arithmetic_expression(logical_expression[:positions[0]]),parse_arithmetic_expression(logical_expression[positions[0]+1:]))
+
+        if len(last_symbol) > 1:  # than it is >= <= or !=
+            if last_symbol == "!=":  # it can be logical or arithmetic
+                return_tupel += (parse_expression(logical_expression[:positions[0]]), parse_expression(
+                    logical_expression[positions[0]+2:]))
+            else:  # it only can be arithemtic with the <= and >=
+                return_tupel += (parse_arithmetic_expression(
+                    logical_expression[:positions[0]]), parse_arithmetic_expression(logical_expression[positions[0]+2:]))
+        else:  # than it is < > or =
+            if last_symbol == "=":  # it can be logical or arithmetic
+                return_tupel += (parse_expression(logical_expression[:positions[0]]), parse_expression(
+                    logical_expression[positions[0]+1:]))
+            else:  # it only can be arithemtic with the < and >
+                return_tupel += (parse_arithmetic_expression(
+                    logical_expression[:positions[0]]), parse_arithmetic_expression(logical_expression[positions[0]+1:]))
         return return_tupel
     elif logical_expression == "t":
         return True
@@ -178,13 +195,13 @@ def parse_logical_expression(logical_expression):
         for op in operators:
             if op in logical_expression:
                 no_operators = False
-        if not no_operators:#there are operators
+        if not no_operators:  # there are operators
             return parse_arithmetic_expression(logical_expression)
-        elif logical_expression[0] == ".":#maybe it is a single method
+        elif logical_expression[0] == ".":  # maybe it is a single method
             return parse_method(logical_expression)
-        elif logical_expression[0] ==" $":#is variabel
+        elif logical_expression[0] == " $":  # is variabel
             return parse_variabel(logical_expression)
-    
+
         try:
             return float(logical_expression)
         except ValueError:
@@ -192,13 +209,14 @@ def parse_logical_expression(logical_expression):
                 return parse_variabel(logical_expression)
             return logical_expression
 
+
 def parse_arithmetic_expression(arithmetic_expression):
     """return parsed arithmetic expression"""
     arithmetic_expression = delete_outside_brackets(arithmetic_expression)
 
-    #Seperate fist on + and - first than * thand / and % than ^
+    # Seperate fist on + and - first than * thand / and % than ^
     i = 0
-    last_symbol = "f"#is only a filler
+    last_symbol = "f"  # is only a filler
     positions = ()
     open_bracket_count = 0
 
@@ -207,24 +225,27 @@ def parse_arithmetic_expression(arithmetic_expression):
             open_bracket_count += 1
         elif arithmetic_expression[i] == ")":
             open_bracket_count -= 1
-        elif open_bracket_count == 0: #only look for operators if we are not in Brackets
+        elif open_bracket_count == 0:  # only look for operators if we are not in Brackets
             if arithmetic_expression[i] == "+":
                 if last_symbol == "-":
                     last_symbol = "+-"
-                    positions = ((i,),positions)#left side for the + and right side for -
+                    # left side for the + and right side for -
+                    positions = ((i,), positions)
                 elif last_symbol == "+-":
-                    positions = (positions[0]+(i,),positions[1])
+                    positions = (positions[0]+(i,), positions[1])
                 elif last_symbol == "+":
                     positions += (i,)
                 else:
-                    last_symbol="+"
+                    last_symbol = "+"
                     positions = (i,)
-            elif arithmetic_expression[i] == "-" and i!=0 and arithmetic_expression[i-1] not in "+-*/^%|!=&<>":#not a negative number
+            # not a negative number
+            elif arithmetic_expression[i] == "-" and i != 0 and arithmetic_expression[i-1] not in "+-*/^%|!=&<>":
                 if last_symbol == "+":
                     last_symbol = "+-"
-                    positions=(positions,(i,))#left side for the + and right side for -
+                    # left side for the + and right side for -
+                    positions = (positions, (i,))
                 elif last_symbol == "+-":
-                    positions = (positions[0],positions[1]+ (i,))
+                    positions = (positions[0], positions[1] + (i,))
                 elif last_symbol == "-":
                     positions += (i,)
                 else:
@@ -239,21 +260,23 @@ def parse_arithmetic_expression(arithmetic_expression):
             elif arithmetic_expression[i] == "/" and last_symbol not in "+-*":
                 if last_symbol == "%":
                     last_symbol = "/%"
-                    positions = ((i,),positions)#left side for the / and right side for %
+                    # left side for the / and right side for %
+                    positions = ((i,), positions)
                 elif last_symbol == "/%":
 
-                    positions = (positions[0]+(i,),positions[1])
+                    positions = (positions[0]+(i,), positions[1])
                 elif last_symbol == "/":
                     positions += (i,)
                 else:
                     last_symbol = "/"
                     positions = (i,)
-            elif arithmetic_expression[i] == "%"and last_symbol not in "+-*":
+            elif arithmetic_expression[i] == "%" and last_symbol not in "+-*":
                 if last_symbol == "/":
                     last_symbol = "/%"
-                    positions = (positions,(i,))#left side for the / and right side for %
+                    # left side for the / and right side for %
+                    positions = (positions, (i,))
                 elif last_symbol == "/%":
-                    positions = (positions[0],positions[1]+ (i,))
+                    positions = (positions[0], positions[1] + (i,))
                 elif last_symbol == "%":
                     positions += (i,)
                 else:
@@ -267,17 +290,20 @@ def parse_arithmetic_expression(arithmetic_expression):
                     positions = (i,)
         i += 1
     if last_symbol in "-+%/^":
-        return_tupel = (last_symbol,parse_logical_expression(arithmetic_expression[:positions[0]]))#set the maker and add first argument
-        for i in range(1,len(positions)):
-            return_tupel += (parse_arithmetic_expression(arithmetic_expression[positions[i-1]+1:positions[i]]),) # add operand 
-        return_tupel += (parse_arithmetic_expression(arithmetic_expression[positions[len(positions)-1]+1:]),)#add last operand
+        return_tupel = (last_symbol, parse_logical_expression(
+            arithmetic_expression[:positions[0]]))  # set the maker and add first argument
+        for i in range(1, len(positions)):
+            return_tupel += (parse_arithmetic_expression(
+                arithmetic_expression[positions[i-1]+1:positions[i]]),)  # add operand
+        return_tupel += (parse_arithmetic_expression(
+            arithmetic_expression[positions[len(positions)-1]+1:]),)  # add last operand
         return return_tupel
     elif last_symbol == "+-":
-        #create one Tupel with all posizions of + and -(merge together)
+        # create one Tupel with all posizions of + and -(merge together)
         new_positions = ()
-        l = 0#for the plusses
-        k = 0#for the minuses
-        while l<len(positions[0]) and k < len(positions[1]):
+        l = 0  # for the plusses
+        k = 0  # for the minuses
+        while l < len(positions[0]) and k < len(positions[1]):
             if positions[0][l] < positions[1][k]:
                 new_positions += (positions[0][l],)
                 l += 1
@@ -286,44 +312,53 @@ def parse_arithmetic_expression(arithmetic_expression):
                 k += 1
 
         if l < len(positions[0]):
-            for i in range(l,len(positions[0])):
+            for i in range(l, len(positions[0])):
                 new_positions += (positions[0][i],)
         elif k < len(positions[1]):
-            for i in range(k,len(positions[1])):
+            for i in range(k, len(positions[1])):
                 new_positions += (positions[1][i],)
-        
-        #save followerposition of every operator by its position
-        follower = {}
-        for i in range(0,len(new_positions)-1):
-            follower[new_positions[i]] = new_positions[i+1]
-        follower[new_positions[len(new_positions)-1]] = len(arithmetic_expression)
-        
-        return_tupel = ("+",)#set the maker
-        #add all adition operands
-        for i in range (0,len(positions[0])):
-            return_tupel += (parse_arithmetic_expression(arithmetic_expression[positions[0][i]+1:follower[positions[0][i]]]),)
 
-        #add all subtraction operands
-        return_tupel2 = ("-",parse_arithmetic_expression(arithmetic_expression[:new_positions[0]]))#set the maker and add first argument(first operand)
-        for i in range (0,len(positions[1])):
-            return_tupel2 += (parse_arithmetic_expression(arithmetic_expression[positions[1][i]+1:follower[positions[1][i]]]),)
+        # save followerposition of every operator by its position
+        follower = {}
+        for i in range(0, len(new_positions)-1):
+            follower[new_positions[i]] = new_positions[i+1]
+        follower[new_positions[len(new_positions)-1]
+                 ] = len(arithmetic_expression)
+
+        return_tupel = ("+",)  # set the maker
+        # add all adition operands
+        for i in range(0, len(positions[0])):
+            return_tupel += (parse_arithmetic_expression(
+                arithmetic_expression[positions[0][i]+1:follower[positions[0][i]]]),)
+
+        # add all subtraction operands
+        # set the maker and add first argument(first operand)
+        return_tupel2 = (
+            "-", parse_arithmetic_expression(arithmetic_expression[:new_positions[0]]))
+        for i in range(0, len(positions[1])):
+            return_tupel2 += (parse_arithmetic_expression(
+                arithmetic_expression[positions[1][i]+1:follower[positions[1][i]]]),)
         return_tupel += (return_tupel2,)
 
         return return_tupel
 
     elif last_symbol == "*":
-        return_tupel = ("*",parse_arithmetic_expression(arithmetic_expression[:positions[0]]))#set the maker and add first argument
-        for i in range(0,len(positions)-1):
-            return_tupel += (parse_arithmetic_expression(arithmetic_expression[positions[i]+1:positions[i+1]]),)
-        return_tupel += (parse_arithmetic_expression(arithmetic_expression[positions[len(positions)-1]+1:]),)
+        # set the maker and add first argument
+        return_tupel = (
+            "*", parse_arithmetic_expression(arithmetic_expression[:positions[0]]))
+        for i in range(0, len(positions)-1):
+            return_tupel += (parse_arithmetic_expression(
+                arithmetic_expression[positions[i]+1:positions[i+1]]),)
+        return_tupel += (parse_arithmetic_expression(
+            arithmetic_expression[positions[len(positions)-1]+1:]),)
         return return_tupel
     elif last_symbol == "/%":
-        #create one Tupel with all positions of / and %(merge together)
+        # create one Tupel with all positions of / and %(merge together)
         new_positions = ()
-        operators = ()#save the operator to the position
-        l=0#for the /
-        k=0#for the %
-        while l<len(positions[0]) and k < len(positions[1]):
+        operators = ()  # save the operator to the position
+        l = 0  # for the /
+        k = 0  # for the %
+        while l < len(positions[0]) and k < len(positions[1]):
             if positions[0][l] < positions[1][k]:
                 new_positions += (positions[0][l],)
                 operators += ("/",)
@@ -334,34 +369,38 @@ def parse_arithmetic_expression(arithmetic_expression):
                 k += 1
 
         if l < len(positions[0]):
-            for i in range(l,len(positions[0])):
+            for i in range(l, len(positions[0])):
                 new_positions += (positions[0][i],)
                 operators += ("/",)
         elif k < len(positions[1]):
-            for i in range(k,len(positions[1])):
+            for i in range(k, len(positions[1])):
                 new_positions += (positions[1][i],)
                 operators += ("%",)
 
-        return_tupel = (operators[0],parse_arithmetic_expression(arithmetic_expression[0:new_positions[0]]),parse_arithmetic_expression(arithmetic_expression[new_positions[0]+1:new_positions[1]]))
-        for i in range(1,len(operators)-1):
-            return_tupel = (operators[i],return_tupel,parse_arithmetic_expression(arithmetic_expression[new_positions[i]+1:new_positions[i+1]]))
-        return_tupel = (operators[len(operators)-1],return_tupel,parse_arithmetic_expression(arithmetic_expression[new_positions[len(operators)-1]+1:]))
+        return_tupel = (operators[0], parse_arithmetic_expression(arithmetic_expression[0:new_positions[0]]),
+                        parse_arithmetic_expression(arithmetic_expression[new_positions[0]+1:new_positions[1]]))
+        for i in range(1, len(operators)-1):
+            return_tupel = (operators[i], return_tupel, parse_arithmetic_expression(
+                arithmetic_expression[new_positions[i]+1:new_positions[i+1]]))
+        return_tupel = (operators[len(operators)-1], return_tupel, parse_arithmetic_expression(
+            arithmetic_expression[new_positions[len(operators)-1]+1:]))
         return return_tupel
-    elif arithmetic_expression[0] == ".":#is method
+    elif arithmetic_expression[0] == ".":  # is method
         return parse_method(arithmetic_expression)
-    elif arithmetic_expression[0] == "$":#is variabel
+    elif arithmetic_expression[0] == "$":  # is variabel
         return parse_variabel(arithmetic_expression)
     else:
         try:
             return float(arithmetic_expression)
         except ValueError:
-            print("Es gab ein Problem, da der Wert keine Nummer ist!",arithmetic_expression)
+            print("Es gab ein Problem, da der Wert keine Nummer ist!",
+                  arithmetic_expression)
             return arithmetic_expression
 
 
 def delete_outside_brackets(command):
     """delete all Brackets if they are completely outside e.g.: "(hallo())" is going to be hallo()"""
-    changed = True#shows, that the logical Expression is a new one. Have to be checked for Brackets
+    changed = True  # shows, that the logical Expression is a new one. Have to be checked for Brackets
     while changed:
         changed = False
         if command[0] == "(":
@@ -374,7 +413,7 @@ def delete_outside_brackets(command):
                     open_bracket_count -= 1
 
                 if open_bracket_count == 0:
-                    
+
                     if i == len(command) - 1:
                         command = command[1:-1]
                         changed = True
@@ -382,11 +421,12 @@ def delete_outside_brackets(command):
                 i += 1
     return command
 
+
 def parse_expression(expression):
     """decide which type of expression it is and parse ist"""
     operators = "<>=!&|"
     is_logic = False
-    i=  0
+    i = 0
     if expression == "t":
         return True
     elif expression == "f":
@@ -407,40 +447,42 @@ def parse_variabel(variabel):
     """gets variabel command with the $ and return parsed variabel"""
     variabel = variabel[1:]
     variabel_name = ""
-    variabel_definition = "n"#filler
-    if "=" in variabel:#with definition
-        variabels = variabel.split("=",1)
+    variabel_definition = "n"  # filler
+    if "=" in variabel:  # with definition
+        variabels = variabel.split("=", 1)
         variabel_name = variabels[0]
         variabel_definition = variabels[1]
         variabel_definition = parse_expression(variabel_definition)
     else:
         variabel_name = variabel
-    
+
     if variabel_definition == "n":
-        return ("$",variabel_name)
+        return ("$", variabel_name)
     else:
-        return ("$",variabel_name,variabel_definition)
+        return ("$", variabel_name, variabel_definition)
+
 
 def parse_method(method):
     """gets method command with . and return parsed method"""
     method = method[1:]
-    methods = method.split("(",1)
+    methods = method.split("(", 1)
     method_name = methods[0]
     method_parameter = methods[1][:-1]
     if method_parameter == "":
-        return (".",method_name)
+        return (".", method_name)
     else:
         parameters = ()
         start = 0
         open_bracket_counter = 0
-        for i in range(0,len(method_parameter)):
+        for i in range(0, len(method_parameter)):
             if method_parameter[i] == "(":
                 open_bracket_counter += 1
             elif method_parameter[i] == ")":
                 open_bracket_counter -= 1
             elif open_bracket_counter == 0:
                 if method_parameter[i] == ",":
-                    parameters += (parse_expression(method_parameter[start:i]),)
-                    start = i+1#set next start
+                    parameters += (parse_expression(
+                        method_parameter[start:i]),)
+                    start = i+1  # set next start
         parameters += (parse_expression(method_parameter[start:]),)
-        return (".",method_name) + parameters
+        return (".", method_name) + parameters

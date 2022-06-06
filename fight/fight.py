@@ -10,13 +10,14 @@ from overworld.config import asset
 from fight.menu import Menu
 from level import Level
 
+
 class Fight(Level):
     def __init__(self):
-        #Entities
+        # Entities
         self.wait_for_selection = True
         self.data_accessor = SqliteDataAccess()
-        self.player = ShootingPlayer("","", False)
-        self.opponent = ShootingPlayer("","", True)
+        self.player = ShootingPlayer("", "", False)
+        self.opponent = ShootingPlayer("", "", True)
         self.player.opponent = self.opponent
         self.opponent.opponent = self.player
         bg_case = pygame.image.load(asset["ground"])
@@ -25,15 +26,15 @@ class Fight(Level):
         for x in range(0, 1281, 40):
             for y in range(0, 721, 40):
                 self.bg.blit(bg_case, (x, y))
-        
+
         self.menu = Menu()
         self.last_time = pygame.time.get_ticks()
-        
+
     def reset(self, opponent_type):
         self.game_over_screen = GameOverScreen()
         self.menu.wait = True
         self.last_time = pygame.time.get_ticks()
-        
+
         self.wait_for_selection = True
         self.selection_input = SelectionInput("Choose your code:")
         self.selection_input.load(self.data_accessor.get_all_items())
@@ -41,8 +42,9 @@ class Fight(Level):
         op_type = opponent_type[0]
         op_strength = opponent_type[1]
 
-        codes = self.data_accessor.get_all_items(True, op_type)#get all codes
-        
+        codes = self.data_accessor.get_all_items(
+            True, op_type)  # get all codes
+
         choosen_one = random.randint(0, len(codes) - 1)
         item_id = codes[choosen_one][1]
         item_code = self.data_accessor.get_item(item_id)
@@ -53,18 +55,20 @@ class Fight(Level):
         if op_strength > 1:
             opponent_damage = 15
 
-        if op_type == "s":#is shooting player
-            self.opponent = ShootingPlayer(item_code[1], item_code[0], True, opponent_damage)
-        else:#is melee
-            self.opponent = TouchingPlayer(item_code[1], item_code[0], True, opponent_damage)
+        if op_type == "s":  # is shooting player
+            self.opponent = ShootingPlayer(
+                item_code[1], item_code[0], True, opponent_damage)
+        else:  # is melee
+            self.opponent = TouchingPlayer(
+                item_code[1], item_code[0], True, opponent_damage)
 
-        #set remaining time to 3 minutes
+        # set remaining time to 3 minutes
         self.remaining_time = 3 * 60 * 1000
         self.game_over = False
 
     def update(self):
         if not self.wait_for_selection and not self.game_over:
-            #calculate elapsed time
+            # calculate elapsed time
             new_time = pygame.time.get_ticks()
             elapsed_time = new_time - self.last_time
             self.last_time = new_time
@@ -79,7 +83,7 @@ class Fight(Level):
 
                 self.player.update(elapsed_time)
                 self.opponent.update(elapsed_time)
-                #check collsion between the two players
+                # check collsion between the two players
                 if self.player.rect.colliderect(self.opponent.rect):
                     self.player.process_collision(elapsed_time)
                     self.opponent.process_collision(elapsed_time)
@@ -97,19 +101,21 @@ class Fight(Level):
                 if pygame.mouse.get_pressed()[0]:
                     if self.game_over_screen.check_collision(pygame.mouse.get_pos()):
                         self.game_over = False
-                        return self.game_over_screen.state     
+                        return self.game_over_screen.state
         else:
             if self.wait_for_selection:
                 if event.type == MOUSEWHEEL:
                     self.selection_input.scroll(event.y)
                 elif event.type == MOUSEBUTTONDOWN:
                     if pygame.mouse.get_pressed()[0]:
-                        result = self.selection_input.check_collision(pygame.mouse.get_pos())
+                        result = self.selection_input.check_collision(
+                            pygame.mouse.get_pos())
                         if result or result == 0:
                             if not str(result).isnumeric():
                                 result = 1
                             item = self.data_accessor.get_item(result)
-                            self.player = ShootingPlayer(item[1], item[0], False)
+                            self.player = ShootingPlayer(
+                                item[1], item[0], False)
                             self.player.opponent = self.opponent
                             self.opponent.opponent = self.player
 
@@ -125,10 +131,9 @@ class Fight(Level):
                     if self.menu.is_mouse_on_play():
                         self.menu.wait = not self.menu.wait
 
-
-    def draw(self,screen):
-        #Redisplay
-        screen.blit(self.bg, (0,0))
+    def draw(self, screen):
+        # Redisplay
+        screen.blit(self.bg, (0, 0))
         self.player.draw(screen)
         self.opponent.draw(screen)
         self.menu.draw(screen)
@@ -136,7 +141,7 @@ class Fight(Level):
         if self.wait_for_selection:
             self.selection_input.draw(screen)
 
-        #create the new time_text and its rect and draw it
+        # create the new time_text and its rect and draw it
         self.draw_time_text(screen)
 
         if self.game_over:
@@ -144,13 +149,13 @@ class Fight(Level):
 
     def draw_time_text(self, screen):
         seconds = int(self.remaining_time // 1000)
-        
+
         if seconds > 120:
-            text_color = (0,200,0)
+            text_color = (0, 200, 0)
         elif seconds > 60:
-            text_color = (200,200,0)
+            text_color = (200, 200, 0)
         else:
-            text_color = (200,0,0)
+            text_color = (200, 0, 0)
 
         minutes = int(seconds // 60)
         seconds -= 60 * minutes
@@ -159,16 +164,13 @@ class Fight(Level):
         minutes = str(minutes)
         if len(seconds) == 1:
             seconds = "0" + seconds
-        
+
         if len(minutes) == 1:
             minutes = "0" + minutes
 
-        time_text = self.time_font.render(f"Time: {minutes}:{seconds}",True, text_color)
+        time_text = self.time_font.render(
+            f"Time: {minutes}:{seconds}", True, text_color)
         time_rect = time_text.get_rect()
         time_rect.right = 1260
         time_rect.top = 20
         screen.blit(time_text, time_rect)
-        
-        
-    
-    

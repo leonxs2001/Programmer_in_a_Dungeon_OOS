@@ -31,7 +31,7 @@ while keep_going:
             break
         else:
             overworld.give_event(event)
-    #update
+    # update
     overworld.update()
     overworld.draw(screen)
     # Redisplay
