@@ -19,7 +19,7 @@ You have to go there:
 Press arrowkeys to move. Dont touch the enemies:
 
 1) weak melee </br> ![image](https://user-images.githubusercontent.com/79515919/172142208-c339a8a8-60f9-4e67-ac4a-e4b4129b9e13.png)
-2) strong shooting </br> ![image](https://user-images.githubusercontent.com/79515919/172142239-5647f46e-5071-4b6b-9425-122bcc8c7c7e.png)
+2) strong melee </br> ![image](https://user-images.githubusercontent.com/79515919/172142239-5647f46e-5071-4b6b-9425-122bcc8c7c7e.png)
 3) weak shooting </br> ![image](https://user-images.githubusercontent.com/79515919/172142168-87e15617-be16-4d6e-b4c3-41b1f8692328.png) 
 4) strong shooting </br> ![image](https://user-images.githubusercontent.com/79515919/172142418-ae6579a7-3972-440c-9cb4-b0137eaf3491.png)</br></br>
 
