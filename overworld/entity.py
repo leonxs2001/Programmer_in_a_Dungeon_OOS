@@ -59,6 +59,7 @@ class Entity(pygame.sprite.Sprite):
 
                 if pygame.Rect.colliderect(tem.rect, monster.rect):
                     tup = monster.info()
+                    monster.kill()
                     return tup
 
         if not(pygame.sprite.groupcollide(temp, groups, False, False)):
