@@ -8,12 +8,9 @@ class SqliteDataAccess:
         self.cursor = self.connection.cursor()
 
         self.cursor.execute("""
-        CREATE TABLE IF NOT EXISTS playercode(
+        CREATE TABLE IF NOT EXISTS scorelist(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name VARCHAR(20),
-            code TEXT,
-            initializationcode TEXT,
-            player INTEGER DEFAULT 1
+            score INTEGER
         );
         """)
 
@@ -60,3 +57,21 @@ class SqliteDataAccess:
         SELECT code, initializationcode FROM playercode WHERE id = {id};
         """)
         return self.cursor.fetchone()
+
+    def save_score(self, score):
+        self.cursor.execute(f"""
+            INSERT INTO scorelist(score) VALUES({score});
+            """)
+
+        self.connection.commit()
+
+    def get_5_best_scores(self):
+        self.cursor.execute("""
+        SELECT score FROM scorelist 
+        ORDER BY score ASC;
+        """)
+        scores = self.cursor.fetchall()[:5]
+        new_scores = []
+        for score in scores:
+            new_scores.append(*score)
+        return new_scores
