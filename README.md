@@ -49,3 +49,6 @@ For loading a old piece of code, press the "Load"-Button and click on your choic
 To stop and resume the fight press the "Play"- and "Stop"-Button:</br>
 ![image](https://user-images.githubusercontent.com/79515919/172149432-6d3d0e43-2167-475c-bbdc-7113295b4a95.png)</br>
 ![image](https://user-images.githubusercontent.com/79515919/172149466-b147139e-4763-438f-b00c-7dc545eeb777.png)</br>
+Now enjoy the fight! But you losse if the time is over!</br>
+![image](https://user-images.githubusercontent.com/79515919/172149900-aa44cd43-7169-4afd-aa7b-f7e571f4ec0f.png)
+
