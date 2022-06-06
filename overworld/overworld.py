@@ -24,7 +24,8 @@ class OverWorld(Level):
         maps = get_level_list()
         self.maprenderer = MapRenderer(asset,maps)
         self.load_map()
-        
+        self.last_time = pygame.time.get_ticks()
+        self.time = 0
 
     def load_map(self):
         """Entities, Assign Variables etc"""
@@ -38,6 +39,10 @@ class OverWorld(Level):
             if fight_tup != None:
                 self.fight.reset(fight_tup)
                 self.state = 1
+            new_time = pygame.time.get_ticks()
+            elapsed_time = new_time - self.last_time
+            self.last_time = new_time
+            self.time += elapsed_time
             self.menu.update()
         elif self.state == 1:
             self.fight.update()
@@ -51,6 +56,7 @@ class OverWorld(Level):
             self.entity.draw(screen)
             self.monster.draw(screen)
             self.menu.draw(screen)
+            self.draw_time_text(screen)
             if self.state == 3:
                 self.game_over.draw(screen)
         elif self.state == 1:
@@ -82,9 +88,12 @@ class OverWorld(Level):
             result = self.fight.give_event(event)
             if result != None:
                 if result:
-                    print("gewonnen")#fill later
+                    pass
                 else:
-                    print("verloren")#fill later
+                    self.maprenderer.render()
+                    self.load_map()
+                    
+                    
                 self.state = 0
         elif self.state == 2:
             if self.code.give_event(event):
@@ -94,3 +103,25 @@ class OverWorld(Level):
                 if self.game_over.check_collision(pygame.mouse.get_pos()):
                     pygame.quit()
 
+    def draw_time_text(self, screen):
+        seconds = int(self.time // 1000)
+        time_font = pygame.font.Font(None, 30)
+        
+        text_color = (93, 217, 72)
+
+        minutes = int(seconds // 60)
+        seconds -= 60 * minutes
+
+        seconds = str(seconds)
+        minutes = str(minutes)
+        if len(seconds) == 1:
+            seconds = "0" + seconds
+        
+        if len(minutes) == 1:
+            minutes = "0" + minutes
+
+        time_text = time_font.render(f"Time: {minutes}:{seconds}",True, text_color)
+        time_rect = time_text.get_rect()
+        time_rect.right = 1260
+        time_rect.top = 20
+        screen.blit(time_text, time_rect)
