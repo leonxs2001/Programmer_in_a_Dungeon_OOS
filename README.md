@@ -20,7 +20,7 @@ Press arrowkeys to move. Dont touch the enemys:
 4) strong melee</br> ![image](https://user-images.githubusercontent.com/79515919/172142418-ae6579a7-3972-440c-9cb4-b0137eaf3491.png)</br></br>
 
 <h3>To programm your robot:</h3> press the Code button in the right-lower corner:</br>
-![image](https://user-images.githubusercontent.com/79515919/172144433-7684b732-c002-400d-994e-7161d3f658b1.png)
+<image src="https://user-images.githubusercontent.com/79515919/172144433-7684b732-c002-400d-994e-7161d3f658b1.png"></image>
 
 You have 2 blocks. 
 ![image](https://user-images.githubusercontent.com/79515919/172144777-bebe3cb5-670f-49b2-ada5-f978836c2f25.png)</br>
@@ -45,10 +45,10 @@ For loading a old piece of code, press the "Load"-Button and click on your choic
 ![image](https://user-images.githubusercontent.com/79515919/172148144-8f870474-0c06-4500-8ebb-76c90174896c.png)</br>
 </br>
 <h3>In a fight:</h3>First you have to choose your best piece of code by pressing on your choice:</br>
-![image](https://user-images.githubusercontent.com/79515919/172148144-8f870474-0c06-4500-8ebb-76c90174896c.png)</br>
+<image src="https://user-images.githubusercontent.com/79515919/172148144-8f870474-0c06-4500-8ebb-76c90174896c.png"></image></br>
 To stop and resume the fight press the "Play"- and "Stop"-Button:</br>
-![image](https://user-images.githubusercontent.com/79515919/172149432-6d3d0e43-2167-475c-bbdc-7113295b4a95.png)</br>
-![image](https://user-images.githubusercontent.com/79515919/172149466-b147139e-4763-438f-b00c-7dc545eeb777.png)</br>
-Now enjoy the fight! But you losse if the time is over!</br>
-![image](https://user-images.githubusercontent.com/79515919/172149900-aa44cd43-7169-4afd-aa7b-f7e571f4ec0f.png)
+<image src="https://user-images.githubusercontent.com/79515919/172149432-6d3d0e43-2167-475c-bbdc-7113295b4a95.png"></image></br>
+<image src="https://user-images.githubusercontent.com/79515919/172149466-b147139e-4763-438f-b00c-7dc545eeb777.png"></image></br>
+Now enjoy the fight! But you loose if the time is over!</br>
+<image src="https://user-images.githubusercontent.com/79515919/172149900-aa44cd43-7169-4afd-aa7b-f7e571f4ec0f.png"></image></br>
 
