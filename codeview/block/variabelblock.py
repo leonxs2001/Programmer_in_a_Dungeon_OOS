@@ -2,15 +2,15 @@ from unittest import result
 import pygame
 from codeview.block.valueblock import ValueBlock
 from codeview.block.methodblock import MethodBlock
-class VariableBlock(ValueBlock):
+class VariabelBlock(ValueBlock):
     def __init__(self, name="var"):
         super().__init__(name, name, parameters=())
     def get_code_string(self):
         return f"${self.representation}"
 
-class VariableDefinitionBlock(MethodBlock):
-    def __init__(self, variable_name):
-        super().__init__("", variable_name, parameters=(variable_name+" = ",))
+class VariabelDefinitionBlock(MethodBlock):
+    def __init__(self, variabel_name):
+        super().__init__("", variabel_name, parameters=(variabel_name+" = ",))
     
     def render_text(self, text):
         font = pygame.font.Font(None, int(25 * self.scale_factor))

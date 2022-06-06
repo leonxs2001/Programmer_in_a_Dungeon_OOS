@@ -1,16 +1,18 @@
-from random import random
+import random
 import pygame
 from pygame.locals import *
 from fight.interpreter.interpreter import Interpreter
 from fight.player.lifecontroller import LifeController
+from overworld.config import asset
 
 class Player:
     """Player is a template for special players."""
-    def __init__(self,initial_sequence_string : str, sequence_string : str, isOpponent : bool):
+    def __init__(self,initial_sequence_string : str, sequence_string : str, is_opponent : bool, damage = 10):
         super().__init__()
-        self.image = pygame.image.load("fight/image/player.png")
+        self.damage = damage
+        self.image = self.load_image(is_opponent, damage)
         self.size = (70,70)
-        self.image = pygame.transform.scale(self.image,self.size)
+        self.image = pygame.transform.scale(self.image, self.size)
         self.rect = self.image.get_rect()
         self.rect.center = (100, 360)
 
@@ -23,11 +25,12 @@ class Player:
         self.life_controller = LifeController(100,self.size[1])
         self.interpreter = Interpreter(initial_sequence_string,sequence_string,self)
 
-        if isOpponent:
-            self.image = pygame.transform.rotate(self.image, 180)
+        if is_opponent:
             self.rect.center = (1180, 360)
             self.position = pygame.Vector2(self.rect.topleft)
-    
+    def load_image(self, is_opponent, damage):
+        return pygame.image.load(asset["player"])
+        
     def setOpponent(self,opponent):
         self.opponent_player = opponent 
     opponent = property(fset=setOpponent)
@@ -58,6 +61,23 @@ class Player:
                 if self.rect.colliderect(bullet.rect):
                     self.life_controller.lifes -= bullet.damage
                     bullet.kill()
+            if isinstance(self, ShootingPlayer):
+                pass#hier collision von den Bullets der beiden Shootingplayers !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        #check if player is outside the field
+        if self.rect.top < 0:
+            self.rect.top = 0
+            self.position.update(self.rect.topleft)
+        elif self.rect.bottom > 720:
+            self.rect.bottom = 720
+            self.position.update(self.rect.topleft)
+
+        if self.rect.left < 0:
+            self.rect.left = 0
+            self.position.update(self.rect.topleft)
+        elif self.rect.right > 1280:
+            self.rect.right = 1280
+            self.position.update(self.rect.topleft)
                 
     def process_collision(self, elapsed_time):
         movement = self.movement * (elapsed_time/33.333)
@@ -70,19 +90,31 @@ class Player:
             if len(parameters) == 2:
                 x, y = parameters
             else:#if parameter is a tupel
-                x, y = parameters[0]
+                if isinstance(parameters[0], tuple):
+                    x, y = parameters[0]
+                else:
+                    x,y = self.position.x, self.position.y
             self.goto(x,y)
         elif name == "move":
             if len(parameters) == 2:
                 x, y = parameters
             else:#if parameter is a tupel
-                x, y = parameters[0]
+                if isinstance(parameters[0], tuple):
+                    x, y = parameters[0]
+                else:
+                    x,y = self.position.x, self.position.y
+
             self.goto(self.position.x + x, self.position.y + y)
         elif name == "getRandom":
             if len(parameters) == 2:
                 min, max = parameters
             else:#if parameter is a tupel
+                if isinstance(parameters[0], tuple):
+                    min, max = parameters[0]
+                else:
+                    min,max = 1,1
                 min, max = parameters[0]
+
             return random.randint(min, max)
         elif name == "getX":
             return self.rect.left
@@ -104,8 +136,11 @@ class Player:
             if len(parameters) == 2:
                 x, y = parameters
             else:#if parameter is a tupel
-                x, y = parameters[0]
-            pos = pygame.Vector2(x,y)
+                if isinstance(parameters[0], tuple):
+                    x, y = parameters[0]
+                else:
+                    x,y = self.position.x, self.position.y
+                pos = pygame.Vector2(x,y)
             return (pos - self.position).length()
         elif name == "getTimeToNextAttack":#in milliseconds
             if isinstance(self, ShootingPlayer):
@@ -131,6 +166,10 @@ class Player:
             return self.life_controller.getLifePercentage()
         elif name == "getOpLifes":#get opponent lives in percent
             return self.opponent_player.life_controller.getLifePercentage() 
+        elif name == "getOwnMaxTimeToNextAttack":
+            return self.get_max_time_to_attack()
+        elif name == "getOpMaxTimeToNextAttack":
+            return self.opponent_player.get_max_time_to_attack()
         elif name == "destinationReached":#is destination reached
             return self.position == self.destination
         elif name == "onPos":#checks if is on Position
@@ -157,6 +196,14 @@ class Player:
             return self.position.y <= 0
         elif name == "onBottomBorder":
             return self.position.y >= 720 - self.size[1]
+        elif name == "getOwnWidth":
+            return self.size[0]
+        elif name == "getOwnHeight":
+            return self.size[1]
+        elif name == "getArenaWidth":
+            return 720
+        elif name == "getArenaHeight":
+            return 1280
         elif name == "print":
             if len(parameters) > 0:
                 print(parameters)
@@ -185,6 +232,8 @@ class Player:
                 self.destination.y = 0
             elif self.destination.y > 720 - self.size[1]:
                 self.destination.y = 720 - self.size[1]    
+    def get_max_time_to_attack(self):
+        return 0
         
         
 

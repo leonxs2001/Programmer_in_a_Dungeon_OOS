@@ -51,7 +51,6 @@ class MapRenderer(pygame.sprite.Sprite , Map):
         self.end.draw(screen)
 
     def get_map(self)->List:
-        print(self.map_index)
         self.map_index += 1
         map = Map(self.loc_maps[self.map_index])
         # parse the csv and check if input is valid
@@ -67,9 +66,7 @@ class MapRenderer(pygame.sprite.Sprite , Map):
         return render_map
     
     def checkend(self,group):
-        if (pygame.sprite.groupcollide(self.end, group, False,False)):
-            self.done_map = self.get_map()
-            self.render()
+        return pygame.sprite.groupcollide(self.end, group, False,False)
     def render(self):
         self.walls = pygame.sprite.Group()
         self.ground = pygame.sprite.Group()

@@ -15,7 +15,7 @@ class SelectionInput:
         self.frame_image = pygame.Surface(self.size)
         self.frame_image.fill((220,220,220))
         self.frame_rect = self.frame_image.get_rect()
-        pygame.draw.rect(self.frame_image, (0,0,0), self.frame_rect, width=4)
+        pygame.draw.rect(self.frame_image, (70, 70, 70), self.frame_rect, width=4)
         self.frame_rect.center = (640, 250)
 
         font = pygame.font.Font(None, 45)
@@ -94,9 +94,13 @@ class SelectionInput:
                 max = self.scroll_background_rect.top + 8
                 max2 = self.scroll_background_rect.bottom - 8
                 if self.selection_buttons[0][1].top + scrollment > max:
-                    scrollment = max - self.selection_buttons[0][1].top
-                elif self.selection_buttons[-1][1].bottom + scrollment < max2:
-                    scrollment = max2 - self.selection_buttons[-1][1].bottom
+                        scrollment = max - self.selection_buttons[0][1].top
+                else:
+                    if len(self.selection_buttons) >= 5:
+                        if self.selection_buttons[-1][1].bottom + scrollment < max2:
+                            scrollment = max2 - self.selection_buttons[-1][1].bottom
+                    elif scrollment < 0:
+                        scrollment = 0
 
                 for button in self.selection_buttons:
                     button[1].top += scrollment

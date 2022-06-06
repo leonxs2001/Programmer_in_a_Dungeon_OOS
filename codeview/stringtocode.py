@@ -1,5 +1,5 @@
 import copy
-from codeview.block.variableblock import *
+from codeview.block.variabelblock import *
 from fight.interpreter.parser import parse_sequence
 from codeview.block.blockcreation import block_dict
 
@@ -24,7 +24,21 @@ def get_blocks_from_sequence(sequence, block_dict):
         block = None
         if sequence[0][0] == ".":#the block is a method block
             #get the block from the block dict and copy it
-            block = block_dict[(sequence[0][1], "method")]
+            method_name = sequence[0][1]
+            if method_name == "goto" or method_name == "move" or method_name == "shootTo":
+                if len(sequence[0]) == 4:
+                    method_name += "0"
+                else:
+                    method_name += "1"
+            elif method_name == "shoot":
+                if len(sequence[0]) == 2:
+                    method_name += "0"
+                elif len(sequence[0]) == 4:
+                    method_name += "1"
+                else:
+                    method_name += "2"
+
+            block = block_dict[(method_name, "method")]
             block = copy.copy(block)
             #go through the parameters, create them as a block and rebuild 
             parameters = sequence[0][2:]
@@ -68,12 +82,12 @@ def get_blocks_from_sequence(sequence, block_dict):
                 if_true_block.parent_block = block
                 block.rebuild()
 
-        elif sequence[0][0] == "$":#it is a variable definition
-            #create the right block and the VariableBlock and add them to the Block dict
+        elif sequence[0][0] == "$":#it is a variabel definition
+            #create the right block and the VariabelBlock and add them to the Block dict
             name = sequence[0][1]
-            block = VariableDefinitionBlock(name)
-            block_dict[(name,"variabledefinition")] = copy.copy(block)
-            block_dict[(name,"variable")] = VariableBlock(name)
+            block = VariabelDefinitionBlock(name)
+            block_dict[(name,"variabeldefinition")] = copy.copy(block)
+            block_dict[(name,"variabel")] = VariabelBlock(name)
             if isinstance(sequence[0][2], tuple):
                 block.input_fields[0].append(get_block_from_expression(sequence[0][2]))
             else:
@@ -92,7 +106,7 @@ def get_blocks_from_sequence(sequence, block_dict):
     return block
 
 def get_block_from_expression(expression):
-    """Create the expression Visualisation (for opperations like +- and or etc and Methods with return value and Variables)"""
+    """Create the expression Visualisation (for opperations like +- and or etc and Methods with return value and Variabels)"""
     block = None
     if expression[0] == ".":#it is a Method with return value
         #create the block from the block_dict with inputs etc.
@@ -127,10 +141,10 @@ def get_block_from_expression(expression):
                 block.input_fields[count].value =get_string_from_value(param)
                 block.input_fields[count].rebuild()
     elif expression[0] == "$":
-        #create the right block and the VariableBlock and add them to the Block dict
+        #create the right block and the VariabelBlock and add them to the Block dict
         name = expression[1]
-        block = VariableBlock(name)
-        block_dict[(name,"variable")] = copy.copy(block)
-        block_dict[(name,"variabledefinition")] = VariableDefinitionBlock(name)
+        block = VariabelBlock(name)
+        block_dict[(name,"variabel")] = copy.copy(block)
+        block_dict[(name,"variabeldefinition")] = VariabelDefinitionBlock(name)
 
     return block

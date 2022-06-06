@@ -1,10 +1,10 @@
 import pygame
 from pygame.locals import *
 from codeview.stringtocode import get_blocks_from_string
-from codeview.selectioninput import SelectionInput
-from codeview.sqlitedataaccess import SqliteDataAccess
+from selectioninput import SelectionInput
+from sqlitedataaccess import SqliteDataAccess
 from codeview.textinput import TextInput
-from codeview.block.variableblock import VariableDefinitionBlock
+from codeview.block.variabelblock import VariabelDefinitionBlock
 from codeview.menu import Menu
 from codeview.selector import Selector
 from codeview.block.block import Block
@@ -29,7 +29,20 @@ class CodeView(Level):
         self.selection_input = SelectionInput("Choose your code:")
 
         self.data_accessor = SqliteDataAccess()
+
+    def reset(self):
+        #delete old variabels
+        erasable = []
+        for tup in block_dict:
+            if tup[1] == "variabel" or tup[1] == "variabeldefinition":
+                erasable.append(tup)
+        for e_tup in erasable:
+            del block_dict[e_tup]
+            self.scale_factor = 1
         
+        self.code_block_list = [StartBlock(), InitializationBlock()]
+        self.selector.reset()
+
     def give_event(self, event):
         if self.wait_for_input:
             if event.type == KEYDOWN:
@@ -48,7 +61,7 @@ class CodeView(Level):
                                     code = block.get_code_string()
                                 elif isinstance(block, InitializationBlock):
                                     initialization_code = block.get_code_string()
-                            self.data_accessor.save_item(result, code, initialization_code)
+                            self.data_accessor.save_item(result, code, initialization_code, opponent=False)
                             return True
                         else:
                             self.wait_for_input = False
@@ -58,10 +71,10 @@ class CodeView(Level):
                     result = self.selection_input.check_collision(pygame.mouse.get_pos())
                     if result or result == 0:
                         if str(result).isnumeric():
-                            #delete old variables
+                            #delete old variabels
                             erasable = []
                             for tup in block_dict:
-                                if tup[1] == "variable" or tup[1] == "variabledefinition":
+                                if tup[1] == "variabel" or tup[1] == "variabeldefinition":
                                     erasable.append(tup)
                             for e_tup in erasable:
                                 del block_dict[e_tup]
@@ -78,7 +91,7 @@ class CodeView(Level):
                             start_block.update_scale_factor(self.scale_factor)
                             initialization_block.update_scale_factor(self.scale_factor)
                             self.code_block_list = [start_block, initialization_block]
-                            
+                            self.selector.open = False
                             self.selector.build()
                         self.wait_for_selection = False
             elif event.type == MOUSEWHEEL:
@@ -98,7 +111,7 @@ class CodeView(Level):
                         selector_collision = self.selector.check_collision(pygame.Vector2(mouse_position))
                         if selector_collision:
                             if isinstance(selector_collision, Block):#add to the block list
-                                if not isinstance(selector_collision, VariableDefinitionBlock):
+                                if not isinstance(selector_collision, VariabelDefinitionBlock):
                                     selector_collision.in_focus = True
                                     self.is_mouse_button_down = True
                                 self.last_mouse_position = mouse_position#reset last mouseposition
