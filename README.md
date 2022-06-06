@@ -17,16 +17,46 @@ Press arrowkeys to move. Dont touch the enemys:
 1) weak shooting </br> ![image](https://user-images.githubusercontent.com/79515919/172142208-c339a8a8-60f9-4e67-ac4a-e4b4129b9e13.png)
 2) strong shooting </br> ![image](https://user-images.githubusercontent.com/79515919/172142239-5647f46e-5071-4b6b-9425-122bcc8c7c7e.png)
 3) weak melee </br> ![image](https://user-images.githubusercontent.com/79515919/172142168-87e15617-be16-4d6e-b4c3-41b1f8692328.png) 
-4) strong melee</br> ![image](https://user-images.githubusercontent.com/79515919/172142418-ae6579a7-3972-440c-9cb4-b0137eaf3491.png)
+4) strong melee</br> ![image](https://user-images.githubusercontent.com/79515919/172142418-ae6579a7-3972-440c-9cb4-b0137eaf3491.png)</br></br>
 
-To programm your robot press the Code button in the right corner:</br>
+<h3>To programm your robot:</h3> press the Code button in the right-lower corner:</br>
 ![image](https://user-images.githubusercontent.com/79515919/172144433-7684b732-c002-400d-994e-7161d3f658b1.png)
 
 You have 2 blocks. 
 ![image](https://user-images.githubusercontent.com/79515919/172144777-bebe3cb5-670f-49b2-ada5-f978836c2f25.png)</br>
-Use Initialization for every variable initialization and Start for the fightcode. </br>
+Use the Initialization-Block for every variable initialization and Start-Block for the fightcode. </br>
 For opening and close the blockselection press the little arrowbutton:</br>
 ![image](https://user-images.githubusercontent.com/79515919/172145440-7612cd79-6f74-4cbd-9f9b-e301852f39e7.png)</br>
+For adding a new block to the coodeview use drag and drop.
+For adding a new variable press the "Create Variabel"-Button, type in the variabelname and click confrim. Now you can find 2 new blocks in the blockselection.</br>
+![image](https://user-images.githubusercontent.com/79515919/172146748-273f3997-831c-4544-ae88-e61e972fceb6.png)</br>
+![image](https://user-images.githubusercontent.com/79515919/172146811-70006f06-df6b-418a-af4d-6bf9565a8ab6.png)</br>
+![image](https://user-images.githubusercontent.com/79515919/172146859-e7805962-824d-479b-8ec8-54a0f42816bb.png)</br>
+For deleting a block, drag it and drop it on the "Delete"-Button: </br>
+![image](https://user-images.githubusercontent.com/79515919/172147230-4021559b-5dc0-444f-b1ef-9281a6c7ea34.png)</br>
+</br>
+For connect two blocks drag and drop them on eachother.</br>
+</br>
+For saving your code press the "Save"-Button, type in the name of your new code, and press the "Confirm"-Button. This is also the only way to leave the codeview.</br>
+![image](https://user-images.githubusercontent.com/79515919/172147553-69c1432e-d5d6-4905-ab0d-f30be681bdb8.png)</br>
+![image](https://user-images.githubusercontent.com/79515919/172147597-4dc6592e-ae6e-4378-aa7d-2bfb84154505.png)</br>
+For loading a old piece of code, press the "Load"-Button and click on your choice.</br>
+![image](https://user-images.githubusercontent.com/79515919/172148121-18c85af1-ab26-4575-8d7a-0276cc530f5d.png)</br>
+![image](https://user-images.githubusercontent.com/79515919/172148144-8f870474-0c06-4500-8ebb-76c90174896c.png)</br>
+</br>
+<h3>In a fight:</h3>First you have to choose your best piece of code by pressing on your choice:</br>
+![image](https://user-images.githubusercontent.com/79515919/172148144-8f870474-0c06-4500-8ebb-76c90174896c.png)</br>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
