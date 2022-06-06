@@ -8,7 +8,7 @@ pygame.init()
 # Display
 size = (1280, 720)
 screen = pygame.display.set_mode(size)
-pygame.display.set_caption("Labi")
+pygame.display.set_caption("Programmer in the Dungeon")
 
 # Entities
 fight_scene = Fight()

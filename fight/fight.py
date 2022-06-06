@@ -57,7 +57,7 @@ class Fight(Level):
             self.opponent = ShootingPlayer(item_code[1], item_code[0], True, opponent_damage)
         else:#is melee
             self.opponent = TouchingPlayer(item_code[1], item_code[0], True, opponent_damage)
-
+        self.player = ShootingPlayer("","",False)
         #set remaining time to 3 minutes
         self.remaining_time = 3 * 60 * 1000
         self.game_over = False
