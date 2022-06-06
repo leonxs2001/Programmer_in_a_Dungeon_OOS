@@ -10,11 +10,14 @@ class ShootingPlayer(Player):
         self.bullet_group = pygame.sprite.Group()
         super().__init__(initial_sequence_string, sequence_string, is_opponent, damage)
 
-    def load_image(self, is_opponent):
+    def load_image(self, is_opponent, damage):
         if is_opponent:
-            return pygame.image.load(asset["shooting_e"])
+            if damage == 10:
+                return pygame.image.load(asset["shooting_e"])
+            else:
+                return pygame.image.load(asset["big_shooting_e"])
         else:
-            return super().load_image(is_opponent)
+            return super().load_image(is_opponent, damage)
             
     def update(self, elapsed_time):
         if self.elapsed_time <= self.shoot_delay:

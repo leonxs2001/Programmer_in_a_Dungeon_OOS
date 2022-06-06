@@ -7,8 +7,7 @@ class Player(pygame.sprite.Sprite):
             self.image = pygame.transform.scale(pygame.image.load(assets['player']),size)
             self.rect = self.image.get_rect()
             self.rect.topleft = pos
-
-
+            
 
 class Entity(pygame.sprite.Sprite):
     
@@ -25,6 +24,8 @@ class Entity(pygame.sprite.Sprite):
                         self.playergroup.add(self.player)
 
 
+    def group(self):
+        return self.playergroup
 
     def move(self, event, groups:List):
 
@@ -33,12 +34,10 @@ class Entity(pygame.sprite.Sprite):
         if event.key == pygame.K_LEFT:
                 
             temp.add(Player(self.assets, self.uni_size, (self.player.rect.x-40, self.player.rect.y)))
-
-                
+              
         if event.key == pygame.K_RIGHT:
             
             temp.add(Player(self.assets, self.uni_size, (self.player.rect.x+40, self.player.rect.y)))
-
 
         if event.key == pygame.K_UP:
     
