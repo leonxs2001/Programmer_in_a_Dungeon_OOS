@@ -220,12 +220,14 @@ class Player:
         self.movement = self.destination - self.position
 
         if self.movement.length() != 0:
-
-            if self.movement.length() < self.speed:
-                self.movement.scale_to_length(self.speed)
+            try:
+                if self.movement.length() < self.speed:
+                    self.movement.scale_to_length(self.speed)
+                    self.destination = self.position + self.movement
+                else:
+                    self.movement.scale_to_length(self.speed)
+            except:
                 self.destination = self.position + self.movement
-            else:
-                self.movement.scale_to_length(self.speed)
 
             if self.destination.x < 0:
                 self.destination.x = 0
