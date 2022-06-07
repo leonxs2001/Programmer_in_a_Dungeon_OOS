@@ -34,7 +34,7 @@ class GameOverScreen:
         centerx = self.frame_rect.size[0] / 2
 
         for i, score_b in enumerate(score_list):
-            text = font.render(f"{i}. {self.get_time_string(score_b)}", True, (0, 0, 0))
+            text = font.render(f"{i + 1}. {self.get_time_string(score_b)}", True, (0, 0, 0))
             text_rect = text.get_rect()
 
             text_rect.center = (centerx, centery)
