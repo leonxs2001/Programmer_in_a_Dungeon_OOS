@@ -1,3 +1,6 @@
+# What is this?
+A small game of a programmer who has to fight against other robots with his own programmed robot.
+Created for the computer science study in the object-oriented scripting languages module.
 # What you need:
  - Python 3
  - Pygame
