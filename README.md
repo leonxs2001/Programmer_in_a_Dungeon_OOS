@@ -7,8 +7,8 @@ Created for the computer science study in the object-oriented scripting language
 
 # How to Run
  1) clone the repo
- 2) cd into the dirctory where `main.py` is
- 3) run `main.py` with `py main.py`
+ 2) cd into the directory where `main.py` is
+ 3) run `main.py` with `python main.py`
 
 # How to Play
 This is you:
@@ -19,14 +19,14 @@ You have to go there:
 
 ![image](https://user-images.githubusercontent.com/79515919/172140773-e9afc7b4-a546-43c0-a2ea-b23ee18d7def.png)
 
-Press arrowkeys to move. Dont touch the enemies:
+Press arrowkeys to move. Don't touch the enemies:
 
 1) weak melee </br> ![image](https://user-images.githubusercontent.com/79515919/172142208-c339a8a8-60f9-4e67-ac4a-e4b4129b9e13.png)
 2) strong melee </br> ![image](https://user-images.githubusercontent.com/79515919/172142239-5647f46e-5071-4b6b-9425-122bcc8c7c7e.png)
 3) weak shooting </br> ![image](https://user-images.githubusercontent.com/79515919/172142168-87e15617-be16-4d6e-b4c3-41b1f8692328.png) 
 4) strong shooting </br> ![image](https://user-images.githubusercontent.com/79515919/172142418-ae6579a7-3972-440c-9cb4-b0137eaf3491.png)</br></br>
 
-### To programm your robot:
+### To program your robot:
 press the Code button in the right-lower corner:</br>
 <image src="https://user-images.githubusercontent.com/79515919/172144433-7684b732-c002-400d-994e-7161d3f658b1.png"></image>
 
